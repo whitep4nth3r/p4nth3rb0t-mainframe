@@ -12,7 +12,7 @@ Genuine bugs may happen and these are appreciated, but your opinion of how the c
 
 Before submitting a bug request, please follow the questions in this chart:
 
-![mainsplaining](./images/mansplaining.jpg)
+![mansplaining](./images/mansplaining.jpg)
 
 If you hit the 'Not mansplaining' box then please continue ❤
 
