@@ -179,6 +179,14 @@ tmi.on(
           tmi.say(config.channel, Giveaway.getNoEntrantsMessage());
         }
       }
+
+      if (message === Giveaway.commands.entrants) {
+        if(Giveaway.isOpen) {
+          tmi.say(config.channel, Giveaway.getCurrentEntrantsMessage())
+        } else {
+          tmi.say(config.channel, Giveaway.getNoEntrantsMessage());
+        }
+      }
     }
 
     if (config.teamShoutoutEnabled && process.env.NODE_ENV === "production") {
