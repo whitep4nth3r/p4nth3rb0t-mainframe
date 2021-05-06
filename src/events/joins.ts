@@ -1,13 +1,15 @@
 import { tmi } from "../tmi";
 import WebSocketServer from "../WebSocketServer";
 import { config } from "../config";
-import { MainframeEvent, SpecialUserJoinPacket } from "p4nth3rb0t-types";
+import {
+  MainframeEvent,
+  SpecialUserJoinPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 const sendSpecialUserJoinEvent = async (username: string) => {
   try {
     const specialUserJoin: SpecialUserJoinPacket = {
-       
-      event:  MainframeEvent.specialUserJoin,
+      event: MainframeEvent.specialUserJoin,
       id: username + "-" + Date.now(),
       data: {
         username: username,

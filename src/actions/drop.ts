@@ -10,7 +10,7 @@ import {
   WeatherTrailPacket,
   YeetUserPacket,
   ImageDropPacket,
-} from "p4nth3rb0t-types";
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 export const sendWeatherTrailEvent = async (trailing: boolean) => {
   try {

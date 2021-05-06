@@ -1,24 +1,7 @@
 import { tmi } from "../tmi";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../config";
-import WebSocketServer from "../WebSocketServer";
-import { MoodChangePacket, MainframeEvent } from "p4nth3rb0t-types";
-
-export const sendMoodChangeEvent = async (mood: string, rewardId: string) => {
-  try {
-    const moodChangeEvent: MoodChangePacket = {
-      event: MainframeEvent.moodChange,
-      id: rewardId,
-      data: {
-        mood,
-      },
-    };
-
-    WebSocketServer.sendData(moodChangeEvent);
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { sendMoodChangeEvent } from "./moods";
 
 tmi.on(
   "message",

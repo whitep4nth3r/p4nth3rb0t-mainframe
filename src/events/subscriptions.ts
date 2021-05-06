@@ -3,7 +3,7 @@ import WebSocketServer from "../WebSocketServer";
 import { tmi } from "./../tmi";
 import { Userstate } from "tmi.js";
 import UserManager from "../users/UserManager";
-import { MainframeEvent, SubPacket } from "p4nth3rb0t-types";
+import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 
 export const sendSubEvent = async (
   userId: string,
@@ -23,8 +23,8 @@ export const sendSubEvent = async (
     const logoUrl =
       giftRecipient !== null ? giftRecipient.users[0].logo : user.logo;
 
-    const subEvent: SubPacket = {  
-      event:  MainframeEvent.sub,
+    const subEvent: SubPacket = {
+      event: MainframeEvent.sub,
       id: messageId,
       data: {
         logoUrl,

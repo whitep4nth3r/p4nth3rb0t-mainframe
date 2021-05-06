@@ -7,7 +7,7 @@ import {
   EnterGiveawayPacket,
   MainframeEvent,
   StartGiveawayPacket,
-} from "p4nth3rb0t-types";
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 const sendGiveawayAnnounceEvent = async () => {
   try {

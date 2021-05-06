@@ -1,4 +1,4 @@
-import { Packet } from "p4nth3rb0t-types";
+import { Packet } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocket from "ws";
 import { webServer } from "./webserver";
 

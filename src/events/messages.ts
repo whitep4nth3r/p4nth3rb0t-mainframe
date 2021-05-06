@@ -23,7 +23,7 @@ import {
   DeletedChatMessagePacket,
   MainframeEvent,
   TeamMemberJoinPacket,
-} from "p4nth3rb0t-types";
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 let possibleTeamMember: TeamMember | undefined;
 const teamMembers: TeamMembers = Team.getUserNames();
