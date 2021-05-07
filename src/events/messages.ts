@@ -182,9 +182,15 @@ tmi.on(
 
       if (message === Giveaway.commands.entrants) {
         if(Giveaway.isOpen) {
-          tmi.say(config.channel, Giveaway.getCurrentEntrantsMessage())
+          if(Giveaway.entrants.size <= 0)
+          {
+            tmi.say(config.channel, Giveaway.getNoEntrantsMessage())
+          }
+          else {
+            tmi.say(config.channel, Giveaway.getCurrentEntrantsMessage())
+          }          
         } else {
-          tmi.say(config.channel, Giveaway.getNoEntrantsMessage());
+          tmi.say(config.channel, Giveaway.getInactiveMessage());
         }
       }
     }
