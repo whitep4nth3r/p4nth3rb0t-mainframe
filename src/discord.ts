@@ -65,6 +65,10 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         )} is now live on Twitch! https://twitch.tv/${streamInfo.user_name}`,
         embed,
       });
+
+      if (message.channel.type === "news") {
+        message.crosspost();
+      }
     }
 
     await DiscordAnnouncementModel.updateOne(
