@@ -1,6 +1,6 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
+import Discord, { MessageEmbed, MessageReaction, Presence, User, VoiceState } from "discord.js";
 import { config } from "./config";
 import { fetchGameById, fetchVideoByUserId } from "./utils/twitchUtils";
 import type { PartialUser, TextChannel } from "discord.js";
@@ -84,6 +84,63 @@ discord.on(
 
     guild.member(user.id)?.roles.remove(reactionRole.role_id);
   },
+);
+
+discord.on(
+  "voiceStateUpdate",
+  (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
+    if (oldVoiceState.channelID && !newVoiceState.channelID) {
+      if (
+        newVoiceState.member?.roles.cache.has(
+          config.discord.liveStreamingRoleId
+        )
+      ) {
+        newVoiceState.member?.roles.remove(config.discord.liveStreamingRoleId);
+      }
+    } else if (oldVoiceState.channelID && newVoiceState.streaming) {
+      if (
+        !newVoiceState.member?.roles.cache.has(
+          config.discord.liveStreamingRoleId
+        )
+      ) {
+        newVoiceState.member?.roles.add(config.discord.liveStreamingRoleId);
+      }
+    } else if (oldVoiceState.channelID && !newVoiceState.streaming) {
+      if (
+        newVoiceState.member?.roles.cache.has(
+          config.discord.liveStreamingRoleId
+        )
+      ) {
+        newVoiceState.member?.roles.remove(config.discord.liveStreamingRoleId);
+      }
+    }
+  }
+);
+
+discord.on(
+  "presenceUpdate",
+  (oldPresence: Presence | undefined, newPresence: Presence) => {
+    if (newPresence.activities.length !== 0) {
+      if (
+        newPresence.activities.find((activity) => activity.type === "STREAMING")
+      ) {
+        newPresence.member?.roles.add(config.discord.liveStreamingRoleId);
+      }
+    } else if (
+      newPresence.activities.length === 0 &&
+      oldPresence != undefined
+    ) {
+      if (
+        oldPresence.activities.length >= 1 &&
+        oldPresence.activities.find(
+          (activity) => activity.type === "STREAMING"
+        ) &&
+        newPresence.member?.roles.cache.has(config.discord.liveStreamingRoleId)
+      ) {
+        newPresence.member?.roles.remove(config.discord.liveStreamingRoleId);
+      }
+    }
+  }
 );
 
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {

@@ -23,6 +23,7 @@ interface Config {
   discord: {
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
+    liveStreamingRoleId: string;
     liveAnnouncementColorOnline: string;
     liveAnnouncementColorOffline: string;
     liveAnnouncementImageSize: string;
@@ -171,6 +172,7 @@ const config: Config = {
   discord: {
     liveAnnouncementsChannelId: "770041334534635520",
     liveAnnouncementsRoleId: "756956508234842145",
+    liveStreamingRoleId: "857144961421410304",
     liveAnnouncementColorOnline: "#84AE39",
     liveAnnouncementColorOffline: "#AE8439",
     liveAnnouncementImageSize: "1280x720",
