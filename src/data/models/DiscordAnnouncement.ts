@@ -8,7 +8,7 @@ export interface DiscordAnnouncementData {
 }
 
 export interface DiscordAnnouncementDoc
-  extends Document,
+    extends Document,
     DiscordAnnouncementData {}
 
 export const DiscordAnnouncementSchema: Schema = new mongoose.Schema({

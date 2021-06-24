@@ -28,7 +28,17 @@ export default class AccessToken {
     }
   }
 
-  async set(data: AccessTokenResponse): Promise<AccessTokenDoc> {
+  /**
+   * 15/05/2020
+   * Added | any to method signature due to mongoose update getting confused
+   * Here's some reading about mongoose and TS: https://mongoosejs.com/docs/typescript.html
+   * It recommends:
+   *
+   * "This approach works, but we recommend your document interface not extend Document. Using extends Document makes it difficult for Mongoose to infer which properties are present on query filters, lean documents, and other cases."
+   * But how else would one interact with AccessTokenDoc unless it extends the Document signature?
+   * */
+
+  async set(data: AccessTokenResponse): Promise<AccessTokenDoc | any> {
     const setAccessToken = await AccessTokenModel.updateOne(
       {},
       {
@@ -37,7 +47,7 @@ export default class AccessToken {
         expiresIn: data.expires_in,
         updatedAt: Math.floor(Date.now() / 1000),
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     return setAccessToken;
@@ -58,7 +68,7 @@ export default class AccessToken {
           headers: {
             accept: "application/vnd.twitchtv.v5+json",
           },
-        }
+        },
       );
 
       return response.data;

@@ -1,12 +1,15 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { MessageEmbed } from "discord.js";
+import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
 import { config } from "./config";
 import { fetchGameById, fetchVideoByUserId } from "./utils/twitchUtils";
-import type { TextChannel } from "discord.js";
-import type { StreamInfo } from "./data/types";
+import type { PartialUser, TextChannel } from "discord.js";
+import type { DiscordReactionRole, StreamInfo } from "./data/types";
 
-export const discord = new Discord.Client();
+export const discord = new Discord.Client({
+  partials: ["USER", "REACTION", "MESSAGE"],
+});
+
 let announcementsChannel: TextChannel;
 
 discord.on("ready", async () => {
@@ -16,6 +19,72 @@ discord.on("ready", async () => {
     config.discord.liveAnnouncementsChannelId
   )) as TextChannel;
 });
+
+discord.on(
+  "messageReactionAdd",
+  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+    if (user.bot) {
+      return;
+    }
+
+    if (messageReaction.partial) {
+      await messageReaction.fetch();
+    }
+
+    const { guild } = messageReaction.message;
+
+    if (!guild) {
+      return;
+    }
+
+    const reactionRole:
+      | DiscordReactionRole
+      | undefined = config.discord.reactionRole.find(
+      (role) =>
+        role.emoji_tag == messageReaction.emoji.toString() &&
+        role.message_id == messageReaction.message.id,
+    );
+
+    if (!reactionRole) {
+      return;
+    }
+
+    guild.member(user.id)?.roles.add(reactionRole.role_id);
+  },
+);
+
+discord.on(
+  "messageReactionRemove",
+  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+    if (user.bot) {
+      return;
+    }
+
+    if (messageReaction.partial) {
+      await messageReaction.fetch();
+    }
+
+    const { guild } = messageReaction.message;
+
+    if (!guild) {
+      return;
+    }
+
+    const reactionRole:
+      | DiscordReactionRole
+      | undefined = config.discord.reactionRole.find(
+      (role) =>
+        role.emoji_tag == messageReaction.emoji.toString() &&
+        role.message_id == messageReaction.message.id,
+    );
+
+    if (!reactionRole) {
+      return;
+    }
+
+    guild.member(user.id)?.roles.remove(reactionRole.role_id);
+  },
+);
 
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   if (announcementsChannel) {

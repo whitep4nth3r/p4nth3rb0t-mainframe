@@ -10,13 +10,15 @@ import {
   sendImageDropEvent,
 } from "../actions/drop";
 import { sendMoodChangeEvent } from "../events/moods";
+import { sendShoutoutEvent } from "../events/shoutout";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops } from "../data/types";
 import { sendMerchEvent } from "../events/merch";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
-const getRestOfMessage = (message: string) => message.split(" ").slice(1);
+export const getRestOfMessage = (message: string) =>
+  message.split(" ").slice(1);
 
 type Handler = (tags: ChatUserstate, message: string) => void;
 
@@ -24,30 +26,47 @@ type Commands = {
   [key: string]: Handler;
 };
 
+export const ExclusiveCommands: Commands = {};
+
 export const BroadcasterCommands: Commands = {
+  "!coffee": async (tags, message) => {
+    sendMoodChangeEvent("coffee", tags["id"] as string);
+  },
   "!cool": async (tags, message) => {
-    sendMoodChangeEvent("cool", tags["custom-reward-id"]);
+    sendMoodChangeEvent("cool", tags["id"] as string);
   },
   "!dolla": async (tags, message) => {
-    sendMoodChangeEvent("dolla", tags["custom-reward-id"]);
+    sendMoodChangeEvent("dolla", tags["id"] as string);
   },
   "!fire": async (tags, message) => {
-    sendMoodChangeEvent("fire", tags["custom-reward-id"]);
+    sendMoodChangeEvent("fire", tags["id"] as string);
   },
   "!heart": async (tags, message) => {
-    sendMoodChangeEvent("heart", tags["custom-reward-id"]);
+    sendMoodChangeEvent("heart", tags["id"] as string);
   },
   "!majick": async (tags, message) => {
-    sendMoodChangeEvent("majick", tags["custom-reward-id"]);
+    sendMoodChangeEvent("majick", tags["id"] as string);
   },
   "!pewpew": async (tags, message) => {
-    sendMoodChangeEvent("pewpew", tags["custom-reward-id"]);
+    sendMoodChangeEvent("pewpew", tags["id"] as string);
+  },
+  "!rap": async (tags, message) => {
+    sendMoodChangeEvent("rap", tags["id"] as string);
   },
   "!sad": async (tags, message) => {
-    sendMoodChangeEvent("sad", tags["custom-reward-id"]);
+    sendMoodChangeEvent("sad", tags["id"] as string);
+  },
+  "!so": async (tags, message) => {
+    sendShoutoutEvent(tags, message);
   },
   "!star": async (tags, message) => {
-    sendMoodChangeEvent("star", tags["custom-reward-id"]);
+    sendMoodChangeEvent("star", tags["id"] as string);
+  },
+  "!tattoo": async (tags, message) => {
+    sendMoodChangeEvent("tattoo", tags["id"] as string);
+  },
+  "!troll": async (tags, message) => {
+    sendMoodChangeEvent("troll", tags["id"] as string);
   },
   "!merch": async (tags, message) => {
     sendMerchEvent(tags["id"] as string);
@@ -136,5 +155,8 @@ export const ChatCommands: Commands = {
   },
   "!checkmark": async (tags, message) => {
     sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
+  },
+  "!battlesnake": async (tags, message) => {
+    sendImageDropEvent(ImageDrops.Battlesnake, tags["id"] as string);
   },
 };

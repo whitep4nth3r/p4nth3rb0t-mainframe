@@ -7,6 +7,7 @@ import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
 import { testConfig } from "./../testConfig";
+import { config } from "./config";
 
 import "./webhooks";
 
@@ -41,6 +42,9 @@ async function run() {
         tmi.say(testConfig.channel, testConfig.command);
       }, 5000);
     }
+
+    // Bot is online 🔥
+    tmi.say(config.channel, "whitep30PEWPEW [object Object] whitep30PEWPEW");
   } catch (error) {
     console.log(error);
   }

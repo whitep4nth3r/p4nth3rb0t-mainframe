@@ -6,6 +6,7 @@ import {
   getCommandFromMessage,
   ChatCommands,
   BroadcasterCommands,
+  ExclusiveCommands,
 } from "../utils/commands";
 import { isSillyQuestion } from "../utils/sillyQuestions";
 import {
@@ -121,9 +122,8 @@ tmi.on(
      * Mods can also change the mood on the overlay
      */
     if (tags["user-type"] === "mod") {
-      const possibleBroadcasterCommand: string = getCommandFromMessage(
-        message,
-      ).toLowerCase();
+      const possibleBroadcasterCommand: string =
+        getCommandFromMessage(message).toLowerCase();
       const foundHandler = BroadcasterCommands[possibleBroadcasterCommand];
 
       if (typeof foundHandler === "function") {
@@ -132,9 +132,17 @@ tmi.on(
     }
 
     if (tags.username === config.broadcaster.name) {
-      const possibleBroadcasterCommand: string = getCommandFromMessage(
-        message,
-      ).toLowerCase();
+      /* Super special limited edition commands for broadcaster only */
+      const possibleExclusiveCommand: string =
+        getCommandFromMessage(message).toLowerCase();
+      const foundExclusiveCommand = ExclusiveCommands[possibleExclusiveCommand];
+
+      if (typeof foundExclusiveCommand === "function") {
+        foundExclusiveCommand(tags, message);
+      }
+
+      const possibleBroadcasterCommand: string =
+        getCommandFromMessage(message).toLowerCase();
       const foundHandler = BroadcasterCommands[possibleBroadcasterCommand];
 
       if (typeof foundHandler === "function") {
@@ -222,9 +230,8 @@ tmi.on(
       tmi.say(config.channel, config.botResponses.SillyQuestion(tags.username));
     }
 
-    const possibleCommand: string = getCommandFromMessage(
-      message,
-    ).toLowerCase();
+    const possibleCommand: string =
+      getCommandFromMessage(message).toLowerCase();
     const foundHandler = ChatCommands[possibleCommand];
 
     if (typeof foundHandler === "function") {
