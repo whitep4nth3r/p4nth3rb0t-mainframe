@@ -98,6 +98,7 @@ export default class Giveaway {
     open: "!startga",
     close: "!endga",
     draw: "!drawga",
+    entrants: "!getentrants",
   };
 
   static getAnnounceMessage = (): string => {
@@ -127,6 +128,10 @@ export default class Giveaway {
   static getAlreadyOpenMessage = (): string => {
     return "whitep30TROLL @whitep4nth3r pressed the wrong button. Giveaway is already open! whitep30TROLL";
   };
+
+  static getCurrentEntrantsMessage = (): string => {
+    return `whitep30PEWPEW There are currently @${Giveaway.getTotalEntrants()} entrants in the draw!`;
+  }
 
   static announce = (): void => {
     sendGiveawayAnnounceEvent();
@@ -168,8 +173,12 @@ export default class Giveaway {
       Giveaway.entrants.delete(winner);
 
       return winner;
-    }
+    }    
 
     return null;
   };
+
+  static getTotalEntrants = (): number => {
+    return Giveaway.entrants.size;
+  }
 }
