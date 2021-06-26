@@ -4,12 +4,15 @@ import { config } from "../config";
 import UserManager from "../users/UserManager";
 import { MainframeEvent, RaidPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
+import { sendTimerEvent } from "./timer";
 
 const getRaidShoutout = (username: string, viewers: number): string => {
   return `whitep30PEWPEW Welcome to ${viewers} raiders! Thank you for the raid @${username}! Check out their channel at https://twitch.tv/${username} whitep30PEWPEW`;
 };
 
 const sendRaidEvent = async (raiderCount: number, username: string) => {
+  await sendTimerEvent(5, "follower-only chat disabled");
+
   const user = await UserManager.getUserByLogin(username as string);
 
   try {

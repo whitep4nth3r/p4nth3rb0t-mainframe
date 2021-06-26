@@ -231,9 +231,7 @@ export interface StreamByBroadcasterIdResponse {
 export enum ImageDrops {
   Contentful = "contentful",
   Partner = "partner",
-  Shopify = "shopify",
-  Shy = "shy",
-  Nextjs = "nextjs",
+  Battlesnake = "battlesnake",
 }
 
 export interface DiscordReactionRole {
