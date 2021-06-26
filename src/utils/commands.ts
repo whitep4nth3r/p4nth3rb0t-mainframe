@@ -10,13 +10,15 @@ import {
   sendImageDropEvent,
 } from "../actions/drop";
 import { sendMoodChangeEvent } from "../events/moods";
+import { sendShoutoutEvent } from "../events/shoutout";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops } from "../data/types";
 import { sendMerchEvent } from "../events/merch";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
-const getRestOfMessage = (message: string) => message.split(" ").slice(1);
+export const getRestOfMessage = (message: string) =>
+  message.split(" ").slice(1);
 
 type Handler = (tags: ChatUserstate, message: string) => void;
 
@@ -24,17 +26,7 @@ type Commands = {
   [key: string]: Handler;
 };
 
-export const ExclusiveCommands: Commands = {
-  "!shopify": async (tags, message) => {
-    sendImageDropEvent(ImageDrops.Shopify, tags["id"] as string);
-  },
-  "!shy": async (tags, message) => {
-    sendImageDropEvent(ImageDrops.Shy, tags["id"] as string);
-  },
-  "!nextjs": async (tags, message) => {
-    sendImageDropEvent(ImageDrops.Nextjs, tags["id"] as string);
-  },
-};
+export const ExclusiveCommands: Commands = {};
 
 export const BroadcasterCommands: Commands = {
   "!coffee": async (tags, message) => {
@@ -63,6 +55,9 @@ export const BroadcasterCommands: Commands = {
   },
   "!sad": async (tags, message) => {
     sendMoodChangeEvent("sad", tags["id"] as string);
+  },
+  "!so": async (tags, message) => {
+    sendShoutoutEvent(tags, message);
   },
   "!star": async (tags, message) => {
     sendMoodChangeEvent("star", tags["id"] as string);
@@ -160,5 +155,8 @@ export const ChatCommands: Commands = {
   },
   "!checkmark": async (tags, message) => {
     sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
+  },
+  "!battlesnake": async (tags, message) => {
+    sendImageDropEvent(ImageDrops.Battlesnake, tags["id"] as string);
   },
 };

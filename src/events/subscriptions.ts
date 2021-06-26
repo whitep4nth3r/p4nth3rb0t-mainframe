@@ -1,4 +1,3 @@
-import { testConfig } from "./../../testConfig";
 import WebSocketServer from "../WebSocketServer";
 import { tmi } from "./../tmi";
 import { Userstate } from "tmi.js";
@@ -47,34 +46,55 @@ export const sendSubEvent = async (
   }
 };
 
-//TODO ADD MYSTERY GIFT?
-//According to tmijs docs that is what is happening.
-//Subgif is a gift to someone directly as in 1:1,
-//where as mysterygift can be 1:N number of gifts given
+/**
+ * Untested!
+ */
 
-// tmi.on(
-//   "anongiftpaidupgrade",
-//   (channel: string, username: string, userstate: Userstate) => {
-//     sendGiftSubEvent(
-//       userstate["user-id"] as string,
-//       userstate["id"] as string,
-//       userstate["msg-param-recipient-user-name"],
-//       "subtier",
-//     );
-//   },
-// );
+tmi.on(
+  "anongiftpaidupgrade",
+  (
+    channel: string,
+    username: string,
+    methods: {},
+    message: string,
+    userstate: Userstate,
+  ) => {
+    sendSubEvent(
+      userstate["user-id"] as string,
+      userstate["display-name"] as string,
+      userstate["id"] as string,
+      message,
+      userstate["msg-param-sub-plan"] === "Prime"
+        ? "Prime"
+        : (userstate["msg-param-sub-plan"] / 1000).toString(),
+    );
+  },
+);
 
-// tmi.on(
-//   "giftpaidupgrade",
-//   (channel: string, username: string, sender: string, userstate: Userstate) => {
-//     sendGiftSubEvent(
-//       userstate["user-id"] as string,
-//       userstate["id"] as string,
-//       userstate["msg-param-recipient-user-name"],
-//       "subtier",
-//     );
-//   },
-// );
+/**
+ * Untested!
+ */
+
+tmi.on(
+  "giftpaidupgrade",
+  (
+    channel: string,
+    username: string,
+    methods: {},
+    message: string,
+    userstate: Userstate,
+  ) => {
+    sendSubEvent(
+      userstate["user-id"] as string,
+      userstate["display-name"] as string,
+      userstate["id"] as string,
+      message,
+      userstate["msg-param-sub-plan"] === "Prime"
+        ? "Prime"
+        : (userstate["msg-param-sub-plan"] / 1000).toString(),
+    );
+  },
+);
 
 tmi.on(
   "subgift",
@@ -86,25 +106,16 @@ tmi.on(
     methods: {},
     userstate: Userstate,
   ) => {
-    testConfig.connectToFdgt
-      ? sendSubEvent(
-          testConfig.userId,
-          testConfig.username,
-          testConfig.userId,
-          "this is a test message",
-          "1",
-          true,
-        )
-      : sendSubEvent(
-          userstate["user-id"] as string,
-          userstate["msg-param-recipient-user-name"],
-          userstate["id"] as string,
-          "",
-          userstate["msg-param-sub-plan"] === "Prime"
-            ? "Prime"
-            : (userstate["msg-param-sub-plan"] / 1000).toString(),
-          true,
-        );
+    sendSubEvent(
+      userstate["user-id"] as string,
+      userstate["msg-param-recipient-user-name"],
+      userstate["id"] as string,
+      "",
+      userstate["msg-param-sub-plan"] === "Prime"
+        ? "Prime"
+        : (userstate["msg-param-sub-plan"] / 1000).toString(),
+      true,
+    );
   },
 );
 
@@ -117,23 +128,15 @@ tmi.on(
     message: string,
     userstate: Userstate,
   ) => {
-    testConfig.connectToFdgt
-      ? sendSubEvent(
-          testConfig.userId,
-          testConfig.username,
-          testConfig.userId,
-          "test message",
-          "1",
-        )
-      : sendSubEvent(
-          userstate["user-id"] as string,
-          userstate["display-name"] as string,
-          userstate["id"] as string,
-          message,
-          userstate["msg-param-sub-plan"] === "Prime"
-            ? "Prime"
-            : (userstate["msg-param-sub-plan"] / 1000).toString(),
-        );
+    sendSubEvent(
+      userstate["user-id"] as string,
+      userstate["display-name"] as string,
+      userstate["id"] as string,
+      message,
+      userstate["msg-param-sub-plan"] === "Prime"
+        ? "Prime"
+        : (userstate["msg-param-sub-plan"] / 1000).toString(),
+    );
   },
 );
 

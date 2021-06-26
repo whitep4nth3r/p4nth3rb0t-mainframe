@@ -26,7 +26,7 @@
     "@types/ws": "^7.2.6",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
-    "@whitep4nth3r/p4nth3rb0t-types": "^1.0.4",
+    "@whitep4nth3r/p4nth3rb0t-types": "^1.0.9",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
