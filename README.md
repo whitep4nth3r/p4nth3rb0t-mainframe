@@ -8,6 +8,7 @@ The P4nth3rb0t mainframe provides Twitch chat and Discord server functionality a
 - [Twitch events](./docs/twitch-events.md)
 - [Twitch webhooks](./docs/twitch-webhooks.md)
 - [Twitch chat commands](./docs/chat-commands.md)
+- [Glimesh live updates](./docs/glimesh-live-updates.md)
 - [Setting up your stream team]('./docs/stream-team.md)
 - [Testing Twitch events with fdgt](./docs/testing-with-fdgt.md)
 
