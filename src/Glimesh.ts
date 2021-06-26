@@ -1,6 +1,6 @@
 import WebSocket from "ws";
-import { sendOfflineAnnouncement, sendLiveAnnouncement, sendTwitchOfflineAnnouncement } from "./discord";
-import { GlimeshStreamInfoProvider } from "./data/types";
+import { sendOfflineAnnouncement, sendLiveAnnouncement } from "./discord";
+import { GlimeshStreamAnnouncementInfoResolver } from "./data/types";
 import { config } from "./config";
 
 export default class GlimeshClient {
@@ -30,10 +30,9 @@ export default class GlimeshClient {
       if (parsedData[3] === 'subscription:data') {
         const channelData = parsedData[4].result.data.channel;
         if (channelData.status === 'LIVE') {
-          await sendLiveAnnouncement(new GlimeshStreamInfoProvider(channelData));
+          await sendLiveAnnouncement(new GlimeshStreamAnnouncementInfoResolver(channelData));
         } else if (channelData.status === 'OFFLINE') {
-          const streamInfo = await new GlimeshStreamInfoProvider(channelData).resolve();
-          await sendOfflineAnnouncement(streamInfo);
+          await sendOfflineAnnouncement(new GlimeshStreamAnnouncementInfoResolver(channelData));
         }
       }
     });

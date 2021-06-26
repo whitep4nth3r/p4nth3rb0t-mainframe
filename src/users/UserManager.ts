@@ -39,15 +39,15 @@ export default class UserManager {
     return response.data;
   }
   static async getUserAsStreamerInfoById(userId: string): Promise<StreamerInfo> {
-    return this.getUserById(userId).then((twitchUser) => {
-      return {
+    const twitchUser = await this.getUserById(userId);
+    return {
         id: twitchUser._id,
         name: twitchUser.name,
         display_name: twitchUser.display_name,
         avatar_url: twitchUser.logo,
       };
-    });
   }
+
   static async getUserById(userId: string): Promise<UserByIdResponse> {
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);

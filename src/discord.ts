@@ -1,10 +1,8 @@
-import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
 import { config } from "./config";
-import { fetchGameById, fetchVideoByUserId } from "./utils/twitchUtils";
 import type { PartialUser, TextChannel } from "discord.js";
-import { DiscordReactionRole, GlimeshStreamInfoProvider, StreamAnnouncementInfo, StreamAnnouncementInfoResolver, StreamerInfo, StreamInfo, StreamingService, Twitch, TwitchStreamInfoResolver, VideoByUserIdResponse } from "./data/types";
+import { DiscordReactionRole, StreamAnnouncementInfoResolver, StreamingService } from "./data/types";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
@@ -14,12 +12,10 @@ let announcementsChannel: TextChannel;
 
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
-
   
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId
   )) as TextChannel;
-  
 });
 
 discord.on(
@@ -88,10 +84,6 @@ discord.on(
   },
 );
 
-export const sendTwitchLiveAnnouncement = async (streamInfo: StreamInfo) => {
-  await sendLiveAnnouncement(new TwitchStreamInfoResolver(streamInfo));
-};
-
 export const sendLiveAnnouncement = async (streamInfo: StreamAnnouncementInfoResolver) => {
   if (announcementsChannel) {
     const info = await streamInfo.resolve();
@@ -147,7 +139,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamAnnouncementInfoRes
     );
   }
 };
-export const sendOfflineAnnouncement = async (announcement: StreamAnnouncementInfo) => {
+
+export const sendOfflineAnnouncement = async (announcementResolver: StreamAnnouncementInfoResolver) => {
+  const announcement = await announcementResolver.resolve();
   const saved_message = await DiscordAnnouncementModel.findOne({
     memberId: announcement.streamer_info.id,
   });
@@ -181,35 +175,6 @@ export const sendOfflineAnnouncement = async (announcement: StreamAnnouncementIn
   });
 
   await DiscordAnnouncementModel.deleteOne({ memberId: announcement.streamer_info.id });
-};
-
-export const sendTwitchOfflineAnnouncement = async (member_id: string) => {
-  const video = await fetchVideoByUserId(member_id);
-  if (!video) {
-    return;
-  }
-
-  const user = await UserManager.getUserById(member_id);
-  const announcement: StreamAnnouncementInfo = {
-    online: false,
-    streamer_info: {
-      name: user.name,
-      display_name: user.display_name,
-      id: member_id,
-      avatar_url: user.logo
-    },
-    streaming_service: Twitch,
-    thumbnail_url: video.thumbnail_url,
-    title: video.title,
-    viewer_count: 0, // not used
-    archivedStream: video,
-    id: "notused",
-    language: "notused",
-    started_at: new Date(), // not used
-    category_name: "not used"
-  }
-
-  sendOfflineAnnouncement(announcement);
 };
 
 const buildDiscordEmbed = (

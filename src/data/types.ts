@@ -1,6 +1,6 @@
 import { Badges } from "tmi.js";
 import UserManager from "../users/UserManager";
-import { fetchGameById } from "../utils/twitchUtils";
+import { fetchGameById, fetchVideoByUserId } from "../utils/twitchUtils";
 
 export interface TwitchChannel {
   broadcaster_id: string;
@@ -125,7 +125,8 @@ export const Twitch: StreamingService = {
 export interface StreamAnnouncementInfoResolver {
   resolve(): Promise<StreamAnnouncementInfo>;
 }
-export class TwitchStreamInfoResolver
+
+export class TwitchStreamAnnouncementInfoResolver
   implements StreamAnnouncementInfoResolver
 {
   constructor(private streamInfo: StreamInfo) {}
@@ -139,41 +140,66 @@ export class TwitchStreamInfoResolver
     const started_at = new Date(this.streamInfo.started_at);
 
     return {
-      id: this.streamInfo.id,
-      title: this.streamInfo.title,
       category_name: category.name,
+      id: this.streamInfo.id,
       language: this.streamInfo.language,
+      online:true,
       started_at: started_at,
-      thumbnail_url: this.streamInfo.thumbnail_url,
-      viewer_count: this.streamInfo.viewer_count,
       streamer_info: streamer,
       streaming_service: Twitch,
-      online:true
+      thumbnail_url: this.streamInfo.thumbnail_url,
+      title: this.streamInfo.title,
+      viewer_count: this.streamInfo.viewer_count,
     };
   }
 }
 
-export class GlimeshStreamInfoProvider
+export class TwitchStreamOfflineAnnouncementInfoResolver
   implements StreamAnnouncementInfoResolver
 {
-  constructor(private streamInfo: GlimeshStreamInfo) {} // private streamInfo: GlimeshStreamInfo) {}
+  constructor(private member_id: string, private video: VideoByUserIdResponse) {}
+
+  async resolve(): Promise<StreamAnnouncementInfo> {
+    const streamer = await UserManager.getUserAsStreamerInfoById(this.member_id);
+    
+    return {
+      archivedStream: this.video,
+      category_name: "not used",
+      id: "notused",
+      language: "notused",
+      online: false,
+      started_at: new Date(), // not used
+      streamer_info: streamer,
+      streaming_service: Twitch,
+      thumbnail_url: this.video?.thumbnail_url,
+      title: this.video?.title,
+      viewer_count: 0, // not used
+    };
+  }
+}
+
+export class GlimeshStreamAnnouncementInfoResolver
+  implements StreamAnnouncementInfoResolver
+{
+  constructor(private streamInfo: GlimeshStreamInfo) {}
+  
   async resolve(): Promise<StreamAnnouncementInfo> {
     return {
       category_name: this.streamInfo.stream?.category.name,
       id: this.streamInfo.id,
       language: this.streamInfo.language,
+      online: this.streamInfo.status === "LIVE",
       started_at: this.streamInfo.stream ? new Date(this.streamInfo.stream.startedAt) : new Date(),
-      thumbnail_url: this.streamInfo.stream?.thumbnail,
-      title: this.streamInfo.title,
       streamer_info: {
+        avatar_url: this.streamInfo.streamer.avatarUrl,
+        display_name: this.streamInfo.streamer.displayname,
         id: this.streamInfo.streamer.username,
         name: this.streamInfo.streamer.username,
-        display_name: this.streamInfo.streamer.displayname,
-        avatar_url: this.streamInfo.streamer.avatarUrl,
       },
-      viewer_count: this.streamInfo.stream?.avgViewers,
       streaming_service: Glimesh,
-      online: this.streamInfo.status === "LIVE"
+      thumbnail_url: this.streamInfo.stream?.thumbnail,
+      title: this.streamInfo.title,
+      viewer_count: this.streamInfo.stream?.avgViewers,
     };
   }
 }
