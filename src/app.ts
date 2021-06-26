@@ -4,6 +4,7 @@ import Database from "./data/database";
 
 import { webServer } from "./webserver";
 import WebSocketServer from "./WebSocketServer";
+import GlimeshClient from "./Glimesh";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
 import { testConfig } from "./../testConfig";
@@ -36,7 +37,8 @@ async function run() {
     await discord.login(process.env.DISCORD_TOKEN);
 
     WebSocketServer.create();
-
+    GlimeshClient.create();
+    
     if (testConfig.connectToFdgt) {
       setTimeout(() => {
         tmi.say(testConfig.channel, testConfig.command);

@@ -4,7 +4,7 @@ import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
 import { config } from "./config";
 import { fetchGameById, fetchVideoByUserId } from "./utils/twitchUtils";
 import type { PartialUser, TextChannel } from "discord.js";
-import type { DiscordReactionRole, StreamInfo } from "./data/types";
+import { DiscordReactionRole, GlimeshStreamInfoProvider, StreamAnnouncementInfoResolver, StreamInfo, TwitchStreamInfoResolver } from "./data/types";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
@@ -15,9 +15,11 @@ let announcementsChannel: TextChannel;
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
 
+  
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId
   )) as TextChannel;
+  
 });
 
 discord.on(
@@ -86,26 +88,22 @@ discord.on(
   },
 );
 
-export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
+export const sendTwitchLiveAnnouncement = async (streamInfo: StreamInfo) => {
+  await sendLiveAnnouncement(new TwitchStreamInfoResolver(streamInfo));
+};
+
+export const sendLiveAnnouncement = async (streamInfo: StreamAnnouncementInfoResolver) => {
   if (announcementsChannel) {
-    const user = await UserManager.getUserById(streamInfo.user_id);
-    const started_at = new Date(streamInfo.started_at);
-
-    // Fetch category name
-    let category = await fetchGameById(streamInfo.game_id);
-    if (!category) {
-      category = { name: "" };
-    }
-
+    const info = await streamInfo.resolve();
     const embed = buildDiscordEmbed(
       true,
-      user.name,
-      user.display_name,
-      user.logo,
-      streamInfo.title,
-      streamInfo.thumbnail_url,
-      `Started streaming • Today at ${started_at.toTimeString()}`,
-      category.name
+      info.streamer_info.name,
+      info.streamer_info.display_name,
+      info.streamer_info.avatar_url,
+      info.title,
+      info.thumbnail_url,
+      `Started streaming • Today at ${info.started_at.toTimeString()}`,
+      info.category_name
     );
 
     const onlineAnnouncementPrefix: string =
@@ -114,7 +112,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         : "";
 
     const existing = await DiscordAnnouncementModel.findOne({
-      streamId: streamInfo.id,
+      streamId: info.id,
     });
     let message;
     if (existing) {
@@ -123,26 +121,26 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       );
       await message.edit({
         content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-          streamInfo.user_name
-        )} is now live on Twitch! https://twitch.tv/${streamInfo.user_name}`,
+          info.streamer_info.name
+        )} is now live on ${info.streaming_service.name}! ${info.streaming_service.base_url}${info.streamer_info.name}`,
         embed,
       });
     } else {
       message = await announcementsChannel.send({
         content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-          streamInfo.user_name
-        )} is now live on Twitch! https://twitch.tv/${streamInfo.user_name}`,
+          info.streamer_info.name
+        )} is now live on ${info.streaming_service.name}! ${info.streaming_service.base_url}${info.streamer_info.name}`,
         embed,
       });
     }
 
     await DiscordAnnouncementModel.updateOne(
-      { memberId: streamInfo.user_id },
+      { memberId: info.streamer_info.id },
       {
-        memberId: streamInfo.user_id,
+        memberId: info.streamer_info.id,
         messageId: message.id,
-        streamId: streamInfo.id,
-        category: category.name,
+        streamId: info.id,
+        category: info.category_name,
       },
       { upsert: true }
     );
