@@ -101,8 +101,11 @@ export interface StreamAnnouncementInfo {
   title: string;
   streamer_info: StreamerInfo;
   viewer_count: number;
-  streaming_service: StreamingService
+  streaming_service: StreamingService;
+  online: boolean;
+  archivedStream?: VideoByUserIdResponse;
 }
+
 
 export interface StreamingService {
   name: string;
@@ -128,19 +131,13 @@ export class TwitchStreamInfoResolver
   constructor(private streamInfo: StreamInfo) {}
 
   async resolve(): Promise<StreamAnnouncementInfo> {
-    const twitchUser = await UserManager.getUserById(this.streamInfo.user_id);
+    const streamer = await UserManager.getUserAsStreamerInfoById(this.streamInfo.user_id);
     let category = await fetchGameById(this.streamInfo.game_id);
     if (!category) {
       category = { name: "" };
     }
     const started_at = new Date(this.streamInfo.started_at);
 
-    const streamer: StreamerInfo = {
-      id: this.streamInfo.user_id,
-      name: twitchUser.name,
-      display_name: twitchUser.display_name,
-      avatar_url: twitchUser.logo,
-    };
     return {
       id: this.streamInfo.id,
       title: this.streamInfo.title,
@@ -150,7 +147,8 @@ export class TwitchStreamInfoResolver
       thumbnail_url: this.streamInfo.thumbnail_url,
       viewer_count: this.streamInfo.viewer_count,
       streamer_info: streamer,
-      streaming_service: Twitch
+      streaming_service: Twitch,
+      online:true
     };
   }
 }
@@ -174,7 +172,8 @@ export class GlimeshStreamInfoProvider
         avatar_url: this.streamInfo.streamer.avatarUrl,
       },
       viewer_count: this.streamInfo.stream?.avgViewers,
-      streaming_service: Glimesh
+      streaming_service: Glimesh,
+      online: this.streamInfo.status === "LIVE"
     };
   }
 }
@@ -204,6 +203,10 @@ export interface GlimeshStreamer {
   avatarUrl:   string;
   displayname: string;
   username:    string;
+}
+
+export interface StreamerInfoResolver {
+  resolve(): Promise<StreamerInfo>;
 }
 
 export interface StreamerInfo {

@@ -3,7 +3,7 @@ import cors from "cors";
 import http from "http";
 import bodyParser from "body-parser";
 import asyncWrapper from "./utils/asyncWrapper";
-import { sendTwitchLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
+import { sendTwitchLiveAnnouncement, sendTwitchOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/follows";
 import { config } from "./config";
 
@@ -38,7 +38,7 @@ app.post(
     console.log("🔔 Notification received");
 
     if (!req.body.data.length) {
-      await sendOfflineAnnouncement(req.params.member_id);
+      await sendTwitchOfflineAnnouncement(req.params.member_id);
     } else if (req.body.data[0].type === "live") {
       await sendTwitchLiveAnnouncement(req.body.data[0]);
     }
