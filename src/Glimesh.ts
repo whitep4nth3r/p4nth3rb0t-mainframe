@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import { sendLiveAnnouncement, sendTwitchLiveAnnouncement } from "./discord";
 import { GlimeshStreamInfoProvider } from "./data/types";
+import { config } from "./config";
 
 export default class GlimeshClient {
   static ws: WebSocket;
@@ -13,42 +14,9 @@ export default class GlimeshClient {
       this.ws.send(
         JSON.stringify(["1", "1", "__absinthe__:control", "phx_join", {}]),
       );
-      this.ws.send(
-        JSON.stringify([
-          "1",
-          "1",
-          "__absinthe__:control",
-          "doc",
-          {
-            query:
-              `subscription { channel(id: 15497) { 
-                title, 
-                id,
-                status,
-                language,
-                streamer {
-                  displayname,
-                  username,
-                  avatarUrl
-                }
-                stream {
-                  category {
-                    name
-                  }
-                  subcategory {
-                    name
-                  }
-                  title,
-                  thumbnail,
-                  startedAt,
-                  avgViewers
-                }
-              }
-            }`,
-            variables: {},
-          },
-        ]),
-      );
+      config.glimeshChannels.forEach((channelId) => {
+        this.ws.send(this._subscribeMessageForChannelId(channelId));
+      });
       const ping = setInterval(() => {
         this.ws.send(JSON.stringify(["1", "1", "phoenix", "heartbeat", {}]));
       }, 20000);
@@ -58,7 +26,6 @@ export default class GlimeshClient {
       });
     });
     this.ws.on("message", async (data) => {
-      console.log(data);
       const parsedData: (any | null)[] = JSON.parse(data.toString());
       if (parsedData[3] === 'subscription:data') {
         const channelData = parsedData[4].result.data.channel;
@@ -67,5 +34,42 @@ export default class GlimeshClient {
         }
       }
     });
+  }
+
+  static _subscribeMessageForChannelId(id: number) {
+    return JSON.stringify([
+      "1",
+      "1",
+      "__absinthe__:control",
+      "doc",
+      {
+        query:
+          `subscription { channel(id: ${id}) { 
+            title, 
+            id,
+            status,
+            language,
+            streamer {
+              displayname,
+              username,
+              avatarUrl
+            }
+            stream {
+              category {
+                name
+              }
+              subcategory {
+                name
+              }
+              title,
+              thumbnail,
+              startedAt,
+              avgViewers
+            }
+          }
+        }`,
+        variables: {},
+      },
+    ]);
   }
 }
