@@ -6,6 +6,8 @@ import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/follows";
 import { config } from "./config";
+import { TwitchStreamAnnouncementInfoResolver, TwitchStreamOfflineAnnouncementInfoResolver } from "./data/types";
+import { fetchVideoByUserId } from "./utils/twitchUtils";
 
 const app = express();
 app.use(bodyParser.json());
@@ -38,9 +40,14 @@ app.post(
     console.log("🔔 Notification received");
 
     if (!req.body.data.length) {
-      await sendOfflineAnnouncement(req.params.member_id);
+      const member_id = req.params.member_id;
+      const video = await fetchVideoByUserId(member_id);
+      if (!video) {
+        return;
+      }
+      await sendOfflineAnnouncement(new TwitchStreamOfflineAnnouncementInfoResolver(member_id, video));
     } else if (req.body.data[0].type === "live") {
-      await sendLiveAnnouncement(req.body.data[0]);
+      await sendLiveAnnouncement(new TwitchStreamAnnouncementInfoResolver(req.body.data[0]));
     }
 
     return res.status(200).send();

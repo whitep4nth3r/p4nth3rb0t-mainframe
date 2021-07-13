@@ -1,10 +1,8 @@
-import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
 import { config } from "./config";
-import { fetchGameById, fetchVideoByUserId } from "./utils/twitchUtils";
 import type { PartialUser, TextChannel } from "discord.js";
-import type { DiscordReactionRole, StreamInfo } from "./data/types";
+import { DiscordReactionRole, StreamAnnouncementInfoResolver, StreamingService } from "./data/types";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
@@ -14,7 +12,7 @@ let announcementsChannel: TextChannel;
 
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
-
+  
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId
   )) as TextChannel;
@@ -86,26 +84,19 @@ discord.on(
   },
 );
 
-export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
+export const sendLiveAnnouncement = async (streamInfo: StreamAnnouncementInfoResolver) => {
   if (announcementsChannel) {
-    const user = await UserManager.getUserById(streamInfo.user_id);
-    const started_at = new Date(streamInfo.started_at);
-
-    // Fetch category name
-    let category = await fetchGameById(streamInfo.game_id);
-    if (!category) {
-      category = { name: "" };
-    }
-
+    const info = await streamInfo.resolve();
     const embed = buildDiscordEmbed(
       true,
-      user.name,
-      user.display_name,
-      user.logo,
-      streamInfo.title,
-      streamInfo.thumbnail_url,
-      `Started streaming • Today at ${started_at.toTimeString()}`,
-      category.name
+      info.streamer_info.name,
+      info.streamer_info.display_name,
+      info.streamer_info.avatar_url,
+      info.title,
+      info.thumbnail_url,
+      `Started streaming • Today at ${info.started_at.toTimeString()}`,
+      info.category_name,
+      info.streaming_service
     );
 
     const onlineAnnouncementPrefix: string =
@@ -114,7 +105,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         : "";
 
     const existing = await DiscordAnnouncementModel.findOne({
-      streamId: streamInfo.id,
+      streamId: info.id,
     });
     let message;
     if (existing) {
@@ -123,71 +114,67 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       );
       await message.edit({
         content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-          streamInfo.user_name
-        )} is now live on Twitch! https://twitch.tv/${streamInfo.user_name}`,
+          info.streamer_info.name
+        )} is now live on ${info.streaming_service.name}! ${info.streaming_service.base_url}${info.streamer_info.name}`,
         embed,
       });
     } else {
       message = await announcementsChannel.send({
         content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-          streamInfo.user_name
-        )} is now live on Twitch! https://twitch.tv/${streamInfo.user_name}`,
+          info.streamer_info.name
+        )} is now live on ${info.streaming_service.name}! ${info.streaming_service.base_url}${info.streamer_info.name}`,
         embed,
       });
     }
 
     await DiscordAnnouncementModel.updateOne(
-      { memberId: streamInfo.user_id },
+      { memberId: info.streamer_info.id },
       {
-        memberId: streamInfo.user_id,
+        memberId: info.streamer_info.id,
         messageId: message.id,
-        streamId: streamInfo.id,
-        category: category.name,
+        streamId: info.id,
+        category: info.category_name,
       },
       { upsert: true }
     );
   }
 };
 
-export const sendOfflineAnnouncement = async (member_id: string) => {
-  const video = await fetchVideoByUserId(member_id);
-
-  if (!video) {
-    return;
-  }
-
+export const sendOfflineAnnouncement = async (announcementResolver: StreamAnnouncementInfoResolver) => {
+  const announcement = await announcementResolver.resolve();
   const saved_message = await DiscordAnnouncementModel.findOne({
-    memberId: member_id,
+    memberId: announcement.streamer_info.id,
   });
 
   if (!saved_message) {
     return;
   }
-
   const message = await announcementsChannel.messages.fetch(
     `${saved_message.messageId}`
   );
-
-  const user = await UserManager.getUserById(member_id);
-
+  let footer = "Finished streaming";
+  if (announcement.archivedStream) {
+    footer += ` • Streamed for ${announcement.archivedStream.duration}`;
+  }
   const embed = buildDiscordEmbed(
-    false,
-    user.name,
-    user.display_name,
-    user.logo,
-    video.title,
-    video.thumbnail_url,
-    `Finished streaming • Streamed for ${video.duration}`,
+    announcement.online,
+    announcement.streamer_info.name,
+    announcement.streamer_info.display_name,
+    announcement.streamer_info.avatar_url,
+    announcement.title,
+    announcement.thumbnail_url,
+    footer,
     saved_message.category,
-    video.id
+    announcement.streaming_service,
+    announcement.archivedStream?.id
   );
 
   await message.edit({
-    content: `${user.display_name} was online!`,
+    content: `${announcement.streamer_info.display_name} was online!`,
     embed,
   });
 
-  await DiscordAnnouncementModel.deleteOne({ memberId: member_id });
+  await DiscordAnnouncementModel.deleteOne({ memberId: announcement.streamer_info.id });
 };
 
 const buildDiscordEmbed = (
@@ -199,6 +186,7 @@ const buildDiscordEmbed = (
   imageUrl: string,
   footer: string,
   gameName: string,
+  service: StreamingService,
   videoId?: string
 ) => {
   const embed = new MessageEmbed();
@@ -208,15 +196,15 @@ const buildDiscordEmbed = (
   embed.setThumbnail(userLogo);
 
   embed.setURL(
-    online
-      ? `https://twitch.tv/${userName}`
-      : `https://twitch.tv/videos/${videoId}`
+    online || videoId === undefined
+      ? `${service.base_url}${userName}`
+      : `${service.base_url}videos/${videoId}`
   );
 
   const imageReplaceString = online ? "{width}x{height}" : "%{width}x%{height}";
-
+  
   embed.setImage(
-    imageUrl.replace(
+    imageUrl?.replace(
       imageReplaceString,
       config.discord.liveAnnouncementImageSize
     )

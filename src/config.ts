@@ -28,6 +28,7 @@ interface Config {
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
   };
+  glimeshChannels: number[],
   redemptions: {
     [key: string]: string;
   };
@@ -186,6 +187,18 @@ const config: Config = {
       },
     ],
   },
+  glimeshChannels: [
+    3980, // Dr_DinoMight
+    3984, // Luce
+    1899, // MadhouseSteve
+    3987, // SketchNI
+    3977, // SociableSteve
+    15758, // ToeFrog
+    3981, // copperbeardy
+    15497, // jwalter
+    12452, // stephfh
+    15756, // whitep4nth3r
+  ],
   redemptions: {
     "40496421-bf68-4854-a417-cf03390062f2": "coffee",
     "2a8f5598-0d54-47c7-a1cb-c2f2068f13f5": "cool",
