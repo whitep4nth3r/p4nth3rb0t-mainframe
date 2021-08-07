@@ -14,6 +14,7 @@ import { sendShoutoutEvent } from "../events/shoutout";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops } from "../data/types";
 import { sendMerchEvent } from "../events/merch";
+import { sendBackseatEvent, sendClearBackSeatEvent } from "../events/backseat";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -57,7 +58,7 @@ export const BroadcasterCommands: Commands = {
     sendMoodChangeEvent("sad", tags["id"] as string);
   },
   "!so": async (tags, message) => {
-    sendShoutoutEvent(tags, message);
+    sendShoutoutEvent(tags["id"] as string, message);
   },
   "!star": async (tags, message) => {
     sendMoodChangeEvent("star", tags["id"] as string);
@@ -74,6 +75,13 @@ export const BroadcasterCommands: Commands = {
 };
 
 export const ChatCommands: Commands = {
+  "!nobs": async (tags, message) => {
+    sendClearBackSeatEvent();
+  },
+  "!bs": async (tags, message) => {
+    const username = getRestOfMessage(message)[0].replace("@", "");
+    sendBackseatEvent(username);
+  },
   "!win": async (tags, message) => {
     if (Giveaway.inProgress()) {
       Giveaway.enter(tags.username as string);
@@ -149,7 +157,7 @@ export const ChatCommands: Commands = {
   "!content": async (tags, message) => {
     tmi.say(
       config.channel,
-      "Salma is a Developer Evangelist for Contentful. Find out more about Contentful at the Developer Portal: https://www.contentful.com/developers/",
+      "Salma works in Developer Relations for Contentful. Find out more about Contentful at the Developer Portal: https://www.contentful.com/developers/",
     );
     sendImageDropEvent(ImageDrops.Contentful, tags["id"] as string);
   },

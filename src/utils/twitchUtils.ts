@@ -5,8 +5,21 @@ import type {
   StreamByBroadcasterIdResponse,
   VideoByUserIdResponse,
 } from "../data/types";
+import { config } from "../config";
 
 const accessTokenUtil = new AccessToken();
+
+export const getCurrentChatters = async (): Promise<any> => {
+  const response = await axios.get(
+    `https://tmi.twitch.tv/group/user/${config.broadcaster.name}/chatters`,
+  );
+
+  const { data } = response;
+  const { chatters } = data;
+  const { vips, moderators, staff, viewers } = chatters;
+
+  return [...vips, ...moderators, ...moderators, ...staff, ...viewers];
+};
 
 export const fetchGameById = async (
   id: string,
@@ -28,7 +41,6 @@ export const fetchGameById = async (
   return response.data.data[0];
 };
 
-//
 export const fetchVideoByUserId = async (
   user_id: string,
 ): Promise<VideoByUserIdResponse | null> => {

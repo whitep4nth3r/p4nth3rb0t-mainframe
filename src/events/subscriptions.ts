@@ -50,51 +50,51 @@ export const sendSubEvent = async (
  * Untested!
  */
 
-tmi.on(
-  "anongiftpaidupgrade",
-  (
-    channel: string,
-    username: string,
-    methods: {},
-    message: string,
-    userstate: Userstate,
-  ) => {
-    sendSubEvent(
-      userstate["user-id"] as string,
-      userstate["display-name"] as string,
-      userstate["id"] as string,
-      message,
-      userstate["msg-param-sub-plan"] === "Prime"
-        ? "Prime"
-        : (userstate["msg-param-sub-plan"] / 1000).toString(),
-    );
-  },
-);
+// tmi.on(
+//   "anongiftpaidupgrade",
+//   (
+//     channel: string,
+//     username: string,
+//     methods: {},
+//     message: string,
+//     userstate: Userstate,
+//   ) => {
+//     sendSubEvent(
+//       userstate["user-id"] as string,
+//       userstate["display-name"] as string,
+//       userstate["id"] as string,
+//       message,
+//       userstate["msg-param-sub-plan"] === "Prime"
+//         ? "Prime"
+//         : (userstate["msg-param-sub-plan"] / 1000).toString(),
+//     );
+//   },
+// );
 
 /**
  * Untested!
  */
 
-tmi.on(
-  "giftpaidupgrade",
-  (
-    channel: string,
-    username: string,
-    methods: {},
-    message: string,
-    userstate: Userstate,
-  ) => {
-    sendSubEvent(
-      userstate["user-id"] as string,
-      userstate["display-name"] as string,
-      userstate["id"] as string,
-      message,
-      userstate["msg-param-sub-plan"] === "Prime"
-        ? "Prime"
-        : (userstate["msg-param-sub-plan"] / 1000).toString(),
-    );
-  },
-);
+// tmi.on(
+//   "giftpaidupgrade",
+//   (
+//     channel: string,
+//     username: string,
+//     methods: {},
+//     message: string,
+//     userstate: Userstate,
+//   ) => {
+//     sendSubEvent(
+//       userstate["user-id"] as string,
+//       userstate["display-name"] as string,
+//       userstate["id"] as string,
+//       message,
+//       userstate["msg-param-sub-plan"] === "Prime"
+//         ? "Prime"
+//         : (userstate["msg-param-sub-plan"] / 1000).toString(),
+//     );
+//   },
+// );
 
 tmi.on(
   "subgift",

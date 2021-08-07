@@ -5,6 +5,7 @@ import UserManager from "../users/UserManager";
 import { MainframeEvent, RaidPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { sendTimerEvent } from "./timer";
+import { sendShoutoutEvent } from "./shoutout";
 
 const getRaidShoutout = (username: string, viewers: number): string => {
   return `whitep30PEWPEW Welcome to ${viewers} raiders! Thank you for the raid @${username}! Check out their channel at https://twitch.tv/${username} whitep30PEWPEW`;
@@ -32,6 +33,10 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
       const newRandomMood: string = Moods.getRandomNewMood();
       await sendMoodChangeEvent(newRandomMood, Date.now().toString());
     }, 3500);
+
+    setTimeout(async () => {
+      sendShoutoutEvent(user.users[0]._id, `!so ${user.users[0].name}`);
+    }, 7000);
 
     setTimeout(() => {
       tmi.say(
