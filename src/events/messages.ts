@@ -251,7 +251,9 @@ tmi.on(
       !config.FREEZE_MODE
     ) {
       possibleTeamMember = teamMembers.find(
-        (member) => member.user_name === tags.username,
+        (member) =>
+          member.user_name.toLowerCase() ===
+          (tags.username as string).toLowerCase(),
       );
 
       if (
