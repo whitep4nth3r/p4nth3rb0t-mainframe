@@ -9,18 +9,18 @@ export interface TwitchChannel {
   title: string;
 }
 
-export interface TeamMember {
+export interface TwitchUser {
   user_id: string;
   user_name: string;
   user_login: string;
 }
 
-export type TeamMembers = TeamMember[];
+export type TeamMembers = TwitchUser[];
 
 export interface TeamResponse {
   data: [
     {
-      users: TeamMember[];
+      users: TwitchUser[];
       background_image_url: string;
       banner: string;
       created_at: string;
@@ -152,6 +152,7 @@ export enum ImageDrops {
   Partner = "partner",
   Battlesnake = "battlesnake",
   TheClaw = "theclaw",
+  Spooky = "spooky",
 }
 
 export interface DiscordReactionRole {

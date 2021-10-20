@@ -1,7 +1,7 @@
 import axios from "axios";
 import AccessToken from "./classes/AccessToken";
 import { config } from "./config";
-import { TeamMembers, TeamMember, EventSubscriptionResponse, EventSubDefinition, EventSubType } from "./data/types";
+import { TeamMembers, TwitchUser, EventSubscriptionResponse, EventSubDefinition, EventSubType } from "./data/types";
 import Team from "./users/Team";
 
 const accessTokenUtil = new AccessToken();
@@ -150,7 +150,7 @@ function callbackUrlAllowed(url: string):boolean {
   
   // Register any team member stream listeners that are not already registered
   const teamMembers: TeamMembers = await Team.getMembers();
-  teamMembers.forEach(async (member: TeamMember) => {
+  teamMembers.forEach(async (member: TwitchUser) => {
     const offlineDefinition = createStreamerOfflineDefinition(member.user_id);
     if (existingSubs.has(JSON.stringify(offlineDefinition))) {
       console.log("Already subscribed to streamer offline for " + member.user_name);

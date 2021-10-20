@@ -11,7 +11,7 @@ import {
 import {
   TwitchChannel,
   TeamMembers,
-  TeamMember,
+  TwitchUser,
   MyBadges,
 } from "../data/types";
 import UserManager from "../users/UserManager";
@@ -27,7 +27,7 @@ import {
   TeamMemberJoinPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 
-let possibleTeamMember: TeamMember | undefined;
+let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
 
 const sendTimeoutUserEvent = async (userId: string) => {
@@ -92,7 +92,7 @@ const sendChatMessageEvent = async (data: ChatMessageData) => {
   }
 };
 
-const sendteamMemberJoinEvent = async (teamMember: TeamMember) => {
+const sendteamMemberJoinEvent = async (teamMember: TwitchUser) => {
   try {
     const user = await UserManager.getUserById(teamMember.user_id as string);
 
@@ -250,7 +250,7 @@ tmi.on(
       process.env.NODE_ENV === "production" &&
       !config.FREEZE_MODE
     ) {
-      possibleTeamMember = teamMembers.find(
+    possibleTeamMember = teamMembers.find(
         (member) =>
           member.user_name.toLowerCase() ===
           (tags.username as string).toLowerCase(),

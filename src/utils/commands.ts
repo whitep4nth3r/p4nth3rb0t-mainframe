@@ -188,10 +188,6 @@ export const ChatCommands: Commands = {
         );
       }
 
-      // !drop me
-      // TODO - only do user drop if this-
-      // if (Date.now() - new Date(user.created_at) >= config.minAccountAge) {}
-
       if (getRestOfMessage(message)[0] === "me") {
         sendDropUserEvent(tags["user-id"] as string, tags["id"] as string);
       }
@@ -250,6 +246,11 @@ export const ChatCommands: Commands = {
   "!checkmark": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
+    }
+  },
+  "!spooky": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      sendImageDropEvent(ImageDrops.Spooky, tags["id"] as string);
     }
   },
   "!theclaw": async (tags, message) => {
