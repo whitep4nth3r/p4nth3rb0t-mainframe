@@ -1,8 +1,8 @@
-import { DiscordReactionRole, TwitchChannel, TeamMember } from "./data/types";
+import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
 
 interface Config {
   FREEZE_MODE: boolean;
-  broadcaster: TeamMember;
+  broadcaster: TwitchUser;
   channel: string;
   drop: {
     minAccountAge: number;
