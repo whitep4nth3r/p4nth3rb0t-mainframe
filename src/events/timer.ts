@@ -1,6 +1,7 @@
 import { TimerPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../WebSocketServer";
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sendTimerEvent = async (minutes: number, description: string) => {
   try {
     const timerEvent: TimerPacket = {

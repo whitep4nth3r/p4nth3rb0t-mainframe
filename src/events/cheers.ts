@@ -3,7 +3,6 @@ import WebSocketServer from "../WebSocketServer";
 import { ChatUserstate } from "tmi.js";
 import UserManager from "../users/UserManager";
 import { CheerPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
-import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../config";
 
 const sendCheerEvent = async (
@@ -27,10 +26,6 @@ const sendCheerEvent = async (
 
       WebSocketServer.sendData(cheerEvent);
 
-      setTimeout(async () => {
-        const newRandomMood: string = Moods.getRandomNewMood();
-        await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-      }, 3500);
     } catch (error) {
       console.log(error);
     }

@@ -2,7 +2,6 @@ import axios from "axios";
 import AccessToken from "./classes/AccessToken";
 import { config } from "./config";
 import { TeamMembers, TwitchUser, EventSubscriptionResponse, EventSubDefinition, EventSubType } from "./data/types";
-import Team from "./users/Team";
 
 const accessTokenUtil = new AccessToken();
 
@@ -149,20 +148,5 @@ function callbackUrlAllowed(url: string):boolean {
   }
   
   // Register any team member stream listeners that are not already registered
-  const teamMembers: TeamMembers = await Team.getMembers();
-  teamMembers.forEach(async (member: TwitchUser) => {
-    const offlineDefinition = createStreamerOfflineDefinition(member.user_id);
-    if (existingSubs.has(JSON.stringify(offlineDefinition))) {
-      console.log("Already subscribed to streamer offline for " + member.user_name);
-    } else {
-      await registerEventSub(offlineDefinition);
-    }
-    const onlineDefinition = createStreamerOnlineDefinition(member.user_id);
-    if (existingSubs.has(JSON.stringify(onlineDefinition))) {
-      console.log("Already subscribed to streamer online for " + member.user_name);
-    } else {
-      await registerEventSub(onlineDefinition);
-    }
-  });
   console.log("Webhooks initialization complete");
 })();

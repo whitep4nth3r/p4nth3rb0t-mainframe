@@ -23,9 +23,7 @@ discord.on("ready", async () => {
   )) as TextChannel;
 });
 
-discord.on(
-  "messageReactionAdd",
-  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+discord.on("messageReactionAdd", async (messageReaction: MessageReaction, user: User | PartialUser) => {
     if (user.bot) {
       return;
     }
@@ -55,9 +53,7 @@ discord.on(
   },
 );
 
-discord.on(
-  "messageReactionRemove",
-  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+discord.on("messageReactionRemove", async (messageReaction: MessageReaction, user: User | PartialUser) => {
     if (user.bot) {
       return;
     }
@@ -87,6 +83,7 @@ discord.on(
   },
 );
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   if (announcementsChannel) {
     const user = await UserManager.getUserById(streamInfo.broadcaster_user_id);
@@ -102,20 +99,11 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       const category = stream !== null ? stream.game_name : "";
 
       const embed = buildDiscordEmbed(
-        true,
-        user.login,
-        user.display_name,
-        user.profile_image_url,
-        videoTitle,
-        videoThumbnailUrl,
-        `Started streaming • Today at ${started_at.toTimeString()}`,
-        category,
+        true, user.login, user.display_name, user.profile_image_url, videoTitle, videoThumbnailUrl,
+        `Started streaming • Today at ${started_at.toTimeString()}`, category,
       );
 
-      const onlineAnnouncementPrefix: string =
-        process.env.NODE_ENV === "production"
-          ? `<@&${config.discord.liveAnnouncementsRoleId}> `
-          : "";
+      const onlineAnnouncementPrefix: string = process.env.NODE_ENV === "production" ? `<@&${config.discord.liveAnnouncementsRoleId}> ` : "";
 
       const existing = await DiscordAnnouncementModel.findOne({
         streamId: streamInfo.id,
@@ -154,6 +142,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sendOfflineAnnouncement = async (member_id: string) => {
   const video = await fetchVideoByUserId(member_id);
 
@@ -177,15 +166,8 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
   if (user) {
     const embed = buildDiscordEmbed(
-      false,
-      user.login,
-      user.display_name,
-      user.profile_image_url,
-      video.title,
-      video.thumbnail_url,
-      `Finished streaming • Streamed for ${video.duration}`,
-      saved_message.category,
-      video.id,
+      false, user.login, user.display_name, user.profile_image_url, video.title, video.thumbnail_url,
+      `Finished streaming • Streamed for ${video.duration}`, saved_message.category, video.id,
     );
 
     await message.edit({
@@ -214,11 +196,7 @@ const buildDiscordEmbed = (
   embed.setTitle(streamTitle);
   embed.setThumbnail(userLogo);
 
-  embed.setURL(
-    online
-      ? `https://twitch.tv/${userName}`
-      : `https://twitch.tv/videos/${videoId}`,
-  );
+  embed.setURL(online ? `https://twitch.tv/${userName}` : `https://twitch.tv/videos/${videoId}`);
 
   const imageReplaceString = online ? "{width}x{height}" : "%{width}x%{height}";
 

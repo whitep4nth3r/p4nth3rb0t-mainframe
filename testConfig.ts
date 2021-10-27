@@ -1,8 +1,8 @@
 const testConfig = {
   connectToFdgt: false,
-  userId: "469006291",
-  channel: "#channel",
-  username: "whitep4nth3r",
+  userId: "64115778",
+  channel: "#denverthecoder",
+  username: "denverthecoder",
   command: "subscription --tier 3",
 };
 

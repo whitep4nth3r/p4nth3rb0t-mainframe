@@ -18,7 +18,6 @@ import "./events/cheers";
 import "./events/joins";
 import "./events/follows";
 import "./events/redemptions";
-import "./events/moods";
 
 Database.connect();
 
