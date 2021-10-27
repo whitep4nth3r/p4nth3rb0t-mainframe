@@ -16,17 +16,18 @@ export const sendBroadcasterFollowEvent = async (
   });
 
   if (!existingFollower) {
+    console.log("🚨 NEW FOLLOWER DETECTED! 🚨");
+
     //TODO: cache this
     const broadcasterStream = await getActiveBroadcasterStreamByBroadcasterId(
       config.broadcaster.user_id,
     );
 
     if (broadcasterStream) {
-      const user = await UserManager.getUserById(
-        followerUserId as string,
-      );
+      const user = await UserManager.getUserById(followerUserId as string);
 
       if (user) {
+        console.log(`🚨 ${user.login} is now following 🚨`);
         try {
           if (!config.FREEZE_MODE) {
             const broadcasterFollowEvent: FollowPacket = {
