@@ -161,8 +161,6 @@ export const ChatCommands: Commands = {
       if (Giveaway.inProgress()) {
         Giveaway.enter(tags.username as string);
       } else {
-        console.log("here 2222");
-
         tmi.say(config.channel, Giveaway.getInactiveMessage());
       }
     }

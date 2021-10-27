@@ -96,15 +96,17 @@ const sendteamMemberJoinEvent = async (teamMember: TwitchUser) => {
   try {
     const user = await UserManager.getUserById(teamMember.user_id as string);
 
-    const teamMemberJoin: TeamMemberJoinPacket = {
-      event: MainframeEvent.teamMemberJoin,
-      id: teamMember.user_id + "-" + Date.now(),
-      data: {
-        logoUrl: user.logo,
-      },
-    };
+    if (user) {
+      const teamMemberJoin: TeamMemberJoinPacket = {
+        event: MainframeEvent.teamMemberJoin,
+        id: teamMember.user_id + "-" + Date.now(),
+        data: {
+          logoUrl: user.profile_image_url,
+        },
+      };
 
-    WebSocketServer.sendData(teamMemberJoin);
+      WebSocketServer.sendData(teamMemberJoin);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -250,7 +252,7 @@ tmi.on(
       process.env.NODE_ENV === "production" &&
       !config.FREEZE_MODE
     ) {
-    possibleTeamMember = teamMembers.find(
+      possibleTeamMember = teamMembers.find(
         (member) =>
           member.user_name.toLowerCase() ===
           (tags.username as string).toLowerCase(),
@@ -296,28 +298,30 @@ tmi.on(
 
         const user = await UserManager.getUserById(tags["user-id"] as string);
 
-        const chatMessageData: ChatMessageData = {
-          userId: tags["user-id"] as string,
-          username: tags.username as string,
-          displayName: tags["display-name"] as string,
-          messageId: tags.id as string,
-          message: message as string,
-          logoUrl: user.logo,
-          teamMemberIconUrl: user.logo,
-          isMod,
-          isVip,
-          isSubscriber,
-          isBroadcaster,
-          isPartner,
-          isTeamMember: config.teamShoutoutEnabled
-            ? possibleTeamMember !== undefined || isBroadcaster
-            : false,
-          emotes: tags.emotes,
-          type: tags["message-type"],
-          id: tags["id"],
-        };
+        if (user) {
+          const chatMessageData: ChatMessageData = {
+            userId: tags["user-id"] as string,
+            username: tags.username as string,
+            displayName: tags["display-name"] as string,
+            messageId: tags.id as string,
+            message: message as string,
+            logoUrl: user.profile_image_url,
+            teamMemberIconUrl: user.profile_image_url,
+            isMod,
+            isVip,
+            isSubscriber,
+            isBroadcaster,
+            isPartner,
+            isTeamMember: config.teamShoutoutEnabled
+              ? possibleTeamMember !== undefined || isBroadcaster
+              : false,
+            emotes: tags.emotes,
+            type: tags["message-type"],
+            id: tags["id"],
+          };
 
-        await sendChatMessageEvent(chatMessageData);
+          await sendChatMessageEvent(chatMessageData);
+        }
       }
     }
   },

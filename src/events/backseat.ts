@@ -33,7 +33,7 @@ export const sendBackseatEvent = async (username: string) => {
           event: MainframeEvent.backseat,
           id: `backseat-${username}`,
           data: {
-            imageUrl: user.users[0].logo,
+            imageUrl: user.profile_image_url,
           },
         };
 

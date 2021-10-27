@@ -22,50 +22,54 @@ export const sendBroadcasterFollowEvent = async (
     );
 
     if (broadcasterStream) {
-      const user = await UserManager.getUserById(followerUserId as string);
+      const user = await UserManager.getUserById(
+        followerUserId as string,
+      );
 
-      try {
-        if (!config.FREEZE_MODE) {
-          const broadcasterFollowEvent: FollowPacket = {
-            event: MainframeEvent.follow,
-            id: followerName + "-" + Date.now(),
-            data: {
-              followerName,
-              followerUserId,
-              logoUrl: user.logo,
+      if (user) {
+        try {
+          if (!config.FREEZE_MODE) {
+            const broadcasterFollowEvent: FollowPacket = {
+              event: MainframeEvent.follow,
+              id: followerName + "-" + Date.now(),
+              data: {
+                followerName,
+                followerUserId,
+                logoUrl: user.profile_image_url,
+              },
+            };
+
+            WebsocketServer.sendData(broadcasterFollowEvent);
+
+            setTimeout(async () => {
+              // Send random mood change
+              const newRandomMood: string = Moods.getRandomNewMood();
+              await sendMoodChangeEvent(
+                newRandomMood,
+                followerName + "-" + Date.now(),
+              );
+
+              // Announce with p4nth3rb0t
+              tmi.say(
+                config.channel,
+                `p4nth3rPEWPEW Thanks for the follow @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
+              );
+            }, 3500);
+          }
+
+          await TwitchFollowerModel.updateOne(
+            { userId: followerUserId },
+            {
+              userId: followerUserId,
+              userDisplayName: followerName,
+              streamId: broadcasterStream.id,
+              logoUrl: user.profile_image_url,
             },
-          };
-
-          WebsocketServer.sendData(broadcasterFollowEvent);
-
-          setTimeout(async () => {
-            // Send random mood change
-            const newRandomMood: string = Moods.getRandomNewMood();
-            await sendMoodChangeEvent(
-              newRandomMood,
-              followerName + "-" + Date.now(),
-            );
-
-            // Announce with p4nth3rb0t
-            tmi.say(
-              config.channel,
-              `p4nth3rPEWPEW Thanks for the follow @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
-            );
-          }, 3500);
+            { upsert: true },
+          );
+        } catch (error) {
+          console.log(error);
         }
-
-        await TwitchFollowerModel.updateOne(
-          { userId: followerUserId },
-          {
-            userId: followerUserId,
-            userDisplayName: followerName,
-            streamId: broadcasterStream.id,
-            logoUrl: user.logo,
-          },
-          { upsert: true },
-        );
-      } catch (error) {
-        console.log(error);
       }
     }
   }
