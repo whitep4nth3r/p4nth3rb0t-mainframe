@@ -14,7 +14,7 @@ const getRaidShoutout = (username: string, viewers: number): string => {
 const sendRaidEvent = async (raiderCount: number, username: string) => {
   await sendTimerEvent(5, "follower-only chat disabled");
 
-  const userResponse = await UserManager.getUserByLogin(username as string);
+  const userResponse = await UserManager.getUserByLogin(username);
 
   if (userResponse) {
     try {
