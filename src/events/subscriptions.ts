@@ -16,32 +16,36 @@ export const sendSubEvent = async (
   months: number = 0,
 ) => {
   try {
-    const user = await UserManager.getUserById(userId as string);
-    const giftRecipient = isGift
+    const userResponse = await UserManager.getUserById(userId as string);
+    const giftRecipientResponse = isGift
       ? await UserManager.getUserByLogin(username)
-      : null;
+      : undefined;
 
-    const logoUrl =
-      giftRecipient !== null ? giftRecipient.users[0].logo : user.logo;
+    if (userResponse) {
+      const logoUrl =
+        giftRecipientResponse !== undefined
+          ? giftRecipientResponse.data[0].profile_image_url
+          : userResponse.data[0].profile_image_url;
 
-    const subEvent: SubPacket = {
-      event: MainframeEvent.sub,
-      id: messageId,
-      data: {
-        logoUrl,
-        subscriberUsername: username,
-        subTier,
-        message,
-        months,
-      },
-    };
+      const subEvent: SubPacket = {
+        event: MainframeEvent.sub,
+        id: messageId,
+        data: {
+          logoUrl,
+          subscriberUsername: username,
+          subTier,
+          message,
+          months,
+        },
+      };
 
-    WebSocketServer.sendData(subEvent);
+      WebSocketServer.sendData(subEvent);
 
-    setTimeout(async () => {
-      const newRandomMood: string = Moods.getRandomNewMood();
-      await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-    }, 3500);
+      setTimeout(async () => {
+        const newRandomMood: string = Moods.getRandomNewMood();
+        await sendMoodChangeEvent(newRandomMood, Date.now().toString());
+      }, 3500);
+    }
   } catch (error) {
     console.log(error);
   }

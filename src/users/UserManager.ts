@@ -1,5 +1,8 @@
 import axios from "axios";
-import { UserByLoginResponse, UserByIdResponse } from "../data/types";
+import AccessToken from "../classes/AccessToken";
+import { TwitchUserResponse } from "../data/types";
+
+const accessTokenUtil = new AccessToken();
 
 const accountIsOlderThanSevenDays = (createdAt: string): boolean => {
   const SEVEN_DAYS = 604800;
@@ -11,66 +14,78 @@ const accountIsOlderThanSevenDays = (createdAt: string): boolean => {
   return epoch - accountCreatedEpoch > SEVEN_DAYS;
 };
 
-// TODO - Fix cache for user by login
-// it was never working anyway
-
 export default class UserManager {
   static cache = new Map<string, any>();
 
-  static async getUserByLogin(login: string): Promise<UserByLoginResponse> {
-    const response = await axios.get(
-      `https://api.twitch.tv/kraken/users?login=${login}`,
-      {
-        headers: {
-          accept: "application/vnd.twitchtv.v5+json",
-          "client-id": process.env.CLIENT_ID,
+  static async getUserByLogin(
+    login: string,
+  ): Promise<TwitchUserResponse | undefined> {
+    const accessTokenData = await accessTokenUtil.get();
+
+    if (accessTokenData) {
+      const response = await axios.get(
+        `https://api.twitch.tv/helix/users?login=${login}`,
+        {
+          headers: {
+            authorization: `Bearer ${accessTokenData.accessToken}`,
+            "client-id": process.env.CLIENT_ID,
+          },
         },
-      },
-    );
+      );
 
-    const passesAgeCheck = accountIsOlderThanSevenDays(
-      response.data.users[0].created_at,
-    );
+      const passesAgeCheck = accountIsOlderThanSevenDays(
+        response.data.data[0].created_at,
+      );
 
-    if (!passesAgeCheck) {
-      response.data.users[0].logo = "";
+      if (!passesAgeCheck) {
+        response.data.data[0].profile_image_url = "";
+      }
+
+      return response.data;
     }
 
-    return response.data;
+    return undefined;
   }
 
-  static async getUserById(userId: string): Promise<UserByIdResponse> {
+  static async getUserById(
+    userId: string,
+  ): Promise<TwitchUserResponse | undefined> {
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
       const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
 
       if (!passesAgeCheck) {
-        data.logo = "";
+        data.profile_image_url = "";
       }
 
       return data;
     }
 
-    const response = await axios.get(
-      `https://api.twitch.tv/kraken/users/${userId}`,
-      {
-        headers: {
-          accept: "application/vnd.twitchtv.v5+json",
-          "client-id": process.env.CLIENT_ID,
+    const accessTokenData = await accessTokenUtil.get();
+
+    if (accessTokenData) {
+      const response = await axios.get(
+        `https://api.twitch.tv/helix/users?id=${userId}`,
+        {
+          headers: {
+            authorization: `Bearer ${accessTokenData.accessToken}`,
+            "client-id": process.env.CLIENT_ID,
+          },
         },
-      },
-    );
+      );
 
-    this.cache.set(userId, response.data);
+      this.cache.set(userId, response.data);
 
-    const passesAgeCheck = accountIsOlderThanSevenDays(
-      response.data.created_at,
-    );
+      const passesAgeCheck = accountIsOlderThanSevenDays(
+        response.data.data[0].created_at,
+      );
 
-    if (!passesAgeCheck) {
-      response.data.logo = "";
+      if (!passesAgeCheck) {
+        response.data.data[0].profile_image_url = "";
+      }
+
+      return response.data;
     }
-
-    return response.data;
+    return undefined;
   }
 }

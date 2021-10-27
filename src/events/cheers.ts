@@ -11,27 +11,29 @@ const sendCheerEvent = async (
   messageId: string,
   username: string,
 ) => {
-  const user = await UserManager.getUserByLogin(username);
+  const userResponse = await UserManager.getUserByLogin(username);
 
-  try {
-    const cheerEvent: CheerPacket = {
-      event: MainframeEvent.cheer,
-      id: messageId,
-      data: {
-        bitCount: bitCount,
-        cheererName: username,
-        logoUrl: user.users[0].logo,
-      },
-    };
+  if (userResponse) {
+    try {
+      const cheerEvent: CheerPacket = {
+        event: MainframeEvent.cheer,
+        id: messageId,
+        data: {
+          bitCount: bitCount,
+          cheererName: username,
+          logoUrl: userResponse.data[0].profile_image_url,
+        },
+      };
 
-    WebSocketServer.sendData(cheerEvent);
+      WebSocketServer.sendData(cheerEvent);
 
-    setTimeout(async () => {
-      const newRandomMood: string = Moods.getRandomNewMood();
-      await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-    }, 3500);
-  } catch (error) {
-    console.log(error);
+      setTimeout(async () => {
+        const newRandomMood: string = Moods.getRandomNewMood();
+        await sendMoodChangeEvent(newRandomMood, Date.now().toString());
+      }, 3500);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 

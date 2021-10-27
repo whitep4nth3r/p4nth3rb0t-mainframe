@@ -53,40 +53,47 @@ const sendGiveawayEndEvent = async () => {
 };
 
 const sendGiveawayEnterEvent = async (username: string) => {
-  const user = await UserManager.getUserByLogin(username);
+  const userResponse = await UserManager.getUserByLogin(username);
 
-  try {
-    const enterGiveawayEvent: EnterGiveawayPacket = {
-      event: MainframeEvent.enterGiveaway,
-      id: `giveaway-enter${Math.random()}`,
-      data: {
-        username,
-        logoUrl: user.users[0].logo.replace("300x300", "50x50"),
-      },
-    };
+  if (userResponse) {
+    try {
+      const enterGiveawayEvent: EnterGiveawayPacket = {
+        event: MainframeEvent.enterGiveaway,
+        id: `giveaway-enter${Math.random()}`,
+        data: {
+          username,
+          logoUrl: userResponse.data[0].profile_image_url.replace(
+            "300x300",
+            "50x50",
+          ),
+        },
+      };
 
-    WebSocketServer.sendData(enterGiveawayEvent);
-  } catch (error) {
-    console.log(error);
+      WebSocketServer.sendData(enterGiveawayEvent);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 
 const sendGiveawayDrawEvent = async (winner: string) => {
-  const user = await UserManager.getUserByLogin(winner);
+  const userResponse = await UserManager.getUserByLogin(winner);
 
-  try {
-    const drawGiveawayEvent: DrawGiveawayPacket = {
-      event: MainframeEvent.drawGiveaway,
-      id: `giveaway${Math.random()}`,
-      data: {
-        winner,
-        logoUrl: user.users[0].logo,
-      },
-    };
+  if (userResponse) {
+    try {
+      const drawGiveawayEvent: DrawGiveawayPacket = {
+        event: MainframeEvent.drawGiveaway,
+        id: `giveaway${Math.random()}`,
+        data: {
+          winner,
+          logoUrl: userResponse.data[0].profile_image_url,
+        },
+      };
 
-    WebSocketServer.sendData(drawGiveawayEvent);
-  } catch (error) {
-    console.log(error);
+      WebSocketServer.sendData(drawGiveawayEvent);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 

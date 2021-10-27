@@ -81,31 +81,22 @@ export interface Transport {
   callback: string;
 }
 
-export interface UserByIdResponse {
+interface FullTwitchUser {
+  id: string;
+  login: string;
   display_name: string;
-  _id: string;
-  name: string;
-  type: "user";
-  bio: string;
+  type: string;
+  broadcaster_type: string;
+  description: string;
+  profile_image_url: string;
+  offline_image_url: string;
+  view_count: number;
+  email: string;
   created_at: string;
-  updated_at: string;
-  logo: string;
 }
 
-export interface UserByLoginResponse {
-  _total: number;
-  users: [
-    {
-      display_name: string;
-      _id: string;
-      name: string;
-      type: "user";
-      bio: string;
-      created_at: string;
-      updated_at: string;
-      logo: string;
-    },
-  ];
+export interface TwitchUserResponse {
+  data: FullTwitchUser[];
 }
 
 export interface MyBadges extends Badges {

@@ -1,5 +1,4 @@
 import { config } from "../config";
-import { UserByLoginResponse } from "../data/types";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
 import {
@@ -30,17 +29,19 @@ export const sendWeatherTrailEvent = async (trailing: boolean) => {
 
 export const sendDropUserEvent = async (userId: string, messageId: string) => {
   try {
-    const user = await UserManager.getUserById(userId as string);
+    const userResponse = await UserManager.getUserById(userId as string);
 
-    const dropUserEvent: DropUserPacket = {
-      event: MainframeEvent.dropUser,
-      id: messageId,
-      data: {
-        logoUrl: user.logo as string,
-      },
-    };
+    if (userResponse) {
+      const dropUserEvent: DropUserPacket = {
+        event: MainframeEvent.dropUser,
+        id: messageId,
+        data: {
+          logoUrl: userResponse.data[0].profile_image_url,
+        },
+      };
 
-    WebSocketServer.sendData(dropUserEvent);
+      WebSocketServer.sendData(dropUserEvent);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -91,16 +92,14 @@ export const sendWeatherEvent = (weatherType: string, messageId: string) => {
 
 export const sendYeetEvent = async (userName: string, messageId: string) => {
   try {
-    const usersResponse: UserByLoginResponse = await UserManager.getUserByLogin(
-      userName,
-    );
+    const userResponse = await UserManager.getUserByLogin(userName);
 
-    if (usersResponse.users[0].logo) {
+    if (userResponse) {
       const yeetUserEvent: YeetUserPacket = {
         event: MainframeEvent.yeetUser,
         id: messageId,
         data: {
-          logoUrl: usersResponse.users[0].logo,
+          logoUrl: userResponse.data[0].profile_image_url,
         },
       };
 
