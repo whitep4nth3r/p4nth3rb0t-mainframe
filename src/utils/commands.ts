@@ -16,6 +16,7 @@ import { ImageDrops } from "../data/types";
 import { sendMerchEvent } from "../events/merch";
 import { sendBackseatEvent, sendClearBackSeatEvent } from "../events/backseat";
 import { sendFreezeEvent } from "../events/freeze";
+import { sendTheClawEvent } from "../events/theclaw";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -132,6 +133,11 @@ export const BroadcasterCommands: Commands = {
   "!merch": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       sendMerchEvent(tags["id"] as string);
+    }
+  },
+  "!theclaw": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      sendTheClawEvent();
     }
   },
 };
