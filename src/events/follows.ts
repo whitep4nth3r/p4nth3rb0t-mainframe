@@ -15,6 +15,10 @@ export const sendBroadcasterFollowEvent = async (
     userId: followerUserId,
   });
 
+  if (existingFollower) {
+    console.log("🚨 EXISTING FOLLOWER DETECTED! 🚨");
+  }
+
   if (!existingFollower) {
     console.log("🚨 NEW FOLLOWER DETECTED! 🚨");
 
