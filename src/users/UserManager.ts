@@ -1,6 +1,6 @@
 import axios from "axios";
 import AccessToken from "../classes/AccessToken";
-import { TwitchUserResponse } from "../data/types";
+import { FullTwitchUser } from "../data/types";
 
 const accessTokenUtil = new AccessToken();
 
@@ -19,7 +19,18 @@ export default class UserManager {
 
   static async getUserByLogin(
     login: string,
-  ): Promise<TwitchUserResponse | undefined> {
+  ): Promise<FullTwitchUser | undefined> {
+    if (this.cache.has(login)) {
+      const data = this.cache.get(login);
+      const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
+
+      if (!passesAgeCheck) {
+        data.profile_image_url = "";
+      }
+
+      return data;
+    }
+
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
@@ -33,6 +44,8 @@ export default class UserManager {
         },
       );
 
+      this.cache.set(login, response.data.data[0]);
+
       const passesAgeCheck = accountIsOlderThanSevenDays(
         response.data.data[0].created_at,
       );
@@ -41,7 +54,7 @@ export default class UserManager {
         response.data.data[0].profile_image_url = "";
       }
 
-      return response.data;
+      return response.data.data[0];
     }
 
     return undefined;
@@ -49,7 +62,7 @@ export default class UserManager {
 
   static async getUserById(
     userId: string,
-  ): Promise<TwitchUserResponse | undefined> {
+  ): Promise<FullTwitchUser | undefined> {
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
       const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
@@ -74,7 +87,7 @@ export default class UserManager {
         },
       );
 
-      this.cache.set(userId, response.data);
+      this.cache.set(userId, response.data.data[0]);
 
       const passesAgeCheck = accountIsOlderThanSevenDays(
         response.data.data[0].created_at,
@@ -84,7 +97,7 @@ export default class UserManager {
         response.data.data[0].profile_image_url = "";
       }
 
-      return response.data;
+      return response.data.data[0];
     }
     return undefined;
   }

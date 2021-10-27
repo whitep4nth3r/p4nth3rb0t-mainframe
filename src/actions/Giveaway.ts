@@ -53,16 +53,16 @@ const sendGiveawayEndEvent = async () => {
 };
 
 const sendGiveawayEnterEvent = async (username: string) => {
-  const userResponse = await UserManager.getUserByLogin(username);
+  const user = await UserManager.getUserByLogin(username);
 
-  if (userResponse) {
+  if (user) {
     try {
       const enterGiveawayEvent: EnterGiveawayPacket = {
         event: MainframeEvent.enterGiveaway,
         id: `giveaway-enter${Math.random()}`,
         data: {
           username,
-          logoUrl: userResponse.data[0].profile_image_url.replace(
+          logoUrl: user.profile_image_url.replace(
             "300x300",
             "50x50",
           ),
@@ -77,16 +77,16 @@ const sendGiveawayEnterEvent = async (username: string) => {
 };
 
 const sendGiveawayDrawEvent = async (winner: string) => {
-  const userResponse = await UserManager.getUserByLogin(winner);
+  const user = await UserManager.getUserByLogin(winner);
 
-  if (userResponse) {
+  if (user) {
     try {
       const drawGiveawayEvent: DrawGiveawayPacket = {
         event: MainframeEvent.drawGiveaway,
         id: `giveaway${Math.random()}`,
         data: {
           winner,
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 

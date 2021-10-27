@@ -16,16 +16,16 @@ export const sendSubEvent = async (
   months: number = 0,
 ) => {
   try {
-    const userResponse = await UserManager.getUserById(userId as string);
-    const giftRecipientResponse = isGift
+    const user = await UserManager.getUserById(userId as string);
+    const giftRecipient = isGift
       ? await UserManager.getUserByLogin(username)
       : undefined;
 
-    if (userResponse) {
+    if (user) {
       const logoUrl =
-        giftRecipientResponse !== undefined
-          ? giftRecipientResponse.data[0].profile_image_url
-          : userResponse.data[0].profile_image_url;
+        giftRecipient !== undefined
+          ? giftRecipient.profile_image_url
+          : user.profile_image_url;
 
       const subEvent: SubPacket = {
         event: MainframeEvent.sub,

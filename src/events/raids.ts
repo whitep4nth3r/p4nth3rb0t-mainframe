@@ -14,9 +14,9 @@ const getRaidShoutout = (username: string, viewers: number): string => {
 const sendRaidEvent = async (raiderCount: number, username: string) => {
   await sendTimerEvent(5, "follower-only chat disabled");
 
-  const userResponse = await UserManager.getUserByLogin(username);
+  const user = await UserManager.getUserByLogin(username);
 
-  if (userResponse) {
+  if (user) {
     try {
       const raidEvent: RaidPacket = {
         event: MainframeEvent.raid,
@@ -24,7 +24,7 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
         data: {
           raiderCount: raiderCount,
           raider: username,
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 
@@ -37,8 +37,8 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       setTimeout(async () => {
         sendShoutoutEvent(
-          userResponse.data[0].id,
-          `!so ${userResponse.data[0].login}`,
+          user.id,
+          `!so ${user.login}`,
         );
       }, 7000);
 

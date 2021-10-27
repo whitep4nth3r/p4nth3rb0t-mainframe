@@ -29,14 +29,14 @@ export const sendWeatherTrailEvent = async (trailing: boolean) => {
 
 export const sendDropUserEvent = async (userId: string, messageId: string) => {
   try {
-    const userResponse = await UserManager.getUserById(userId as string);
+    const user = await UserManager.getUserById(userId as string);
 
-    if (userResponse) {
+    if (user) {
       const dropUserEvent: DropUserPacket = {
         event: MainframeEvent.dropUser,
         id: messageId,
         data: {
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 
@@ -92,14 +92,14 @@ export const sendWeatherEvent = (weatherType: string, messageId: string) => {
 
 export const sendYeetEvent = async (userName: string, messageId: string) => {
   try {
-    const userResponse = await UserManager.getUserByLogin(userName);
+    const user = await UserManager.getUserByLogin(userName);
 
-    if (userResponse) {
+    if (user) {
       const yeetUserEvent: YeetUserPacket = {
         event: MainframeEvent.yeetUser,
         id: messageId,
         data: {
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 

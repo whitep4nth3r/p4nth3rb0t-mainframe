@@ -26,14 +26,14 @@ export const sendBackseatEvent = async (username: string) => {
 
   if (currentChatters.includes(username)) {
     try {
-      const userResponse = await UserManager.getUserByLogin(username);
+      const user = await UserManager.getUserByLogin(username);
 
-      if (userResponse) {
+      if (user) {
         const backseatEvent: BackseatPacket = {
           event: MainframeEvent.backseat,
           id: `backseat-${username}`,
           data: {
-            imageUrl: userResponse.data[0].profile_image_url,
+            imageUrl: user.profile_image_url,
           },
         };
 

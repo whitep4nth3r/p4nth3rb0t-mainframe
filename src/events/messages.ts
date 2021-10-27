@@ -94,16 +94,14 @@ const sendChatMessageEvent = async (data: ChatMessageData) => {
 
 const sendteamMemberJoinEvent = async (teamMember: TwitchUser) => {
   try {
-    const userResponse = await UserManager.getUserById(
-      teamMember.user_id as string,
-    );
+    const user = await UserManager.getUserById(teamMember.user_id as string);
 
-    if (userResponse) {
+    if (user) {
       const teamMemberJoin: TeamMemberJoinPacket = {
         event: MainframeEvent.teamMemberJoin,
         id: teamMember.user_id + "-" + Date.now(),
         data: {
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 
@@ -298,19 +296,17 @@ tmi.on(
           ? badges.broadcaster === "1"
           : false;
 
-        const userResponse = await UserManager.getUserById(
-          tags["user-id"] as string,
-        );
+        const user = await UserManager.getUserById(tags["user-id"] as string);
 
-        if (userResponse) {
+        if (user) {
           const chatMessageData: ChatMessageData = {
             userId: tags["user-id"] as string,
             username: tags.username as string,
             displayName: tags["display-name"] as string,
             messageId: tags.id as string,
             message: message as string,
-            logoUrl: userResponse.data[0].profile_image_url,
-            teamMemberIconUrl: userResponse.data[0].profile_image_url,
+            logoUrl: user.profile_image_url,
+            teamMemberIconUrl: user.profile_image_url,
             isMod,
             isVip,
             isSubscriber,

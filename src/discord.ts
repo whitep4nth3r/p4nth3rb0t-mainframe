@@ -89,11 +89,9 @@ discord.on(
 
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   if (announcementsChannel) {
-    const userResponse = await UserManager.getUserById(
-      streamInfo.broadcaster_user_id,
-    );
+    const user = await UserManager.getUserById(streamInfo.broadcaster_user_id);
 
-    if (userResponse) {
+    if (user) {
       const started_at = new Date(streamInfo.started_at);
       const stream = await getActiveBroadcasterStreamByBroadcasterId(
         streamInfo.broadcaster_user_id,
@@ -105,9 +103,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
 
       const embed = buildDiscordEmbed(
         true,
-        userResponse.data[0].login,
-        userResponse.data[0].display_name,
-        userResponse.data[0].profile_image_url,
+        user.login,
+        user.display_name,
+        user.profile_image_url,
         videoTitle,
         videoThumbnailUrl,
         `Started streaming • Today at ${started_at.toTimeString()}`,
@@ -129,19 +127,15 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         );
         await message.edit({
           content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-            userResponse.data[0].display_name,
-          )} is now live on Twitch! https://twitch.tv/${
-            userResponse.data[0].login
-          }`,
+            user.display_name,
+          )} is now live on Twitch! https://twitch.tv/${user.login}`,
           embed,
         });
       } else {
         message = await announcementsChannel.send({
           content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
-            userResponse.data[0].display_name,
-          )} is now live on Twitch! https://twitch.tv/${
-            userResponse.data[0].login
-          }`,
+            user.display_name,
+          )} is now live on Twitch! https://twitch.tv/${user.login}`,
           embed,
         });
       }
@@ -179,14 +173,14 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
     `${saved_message.messageId}`,
   );
 
-  const userResponse = await UserManager.getUserById(member_id);
+  const user = await UserManager.getUserById(member_id);
 
-  if (userResponse) {
+  if (user) {
     const embed = buildDiscordEmbed(
       false,
-      userResponse.data[0].login,
-      userResponse.data[0].display_name,
-      userResponse.data[0].profile_image_url,
+      user.login,
+      user.display_name,
+      user.profile_image_url,
       video.title,
       video.thumbnail_url,
       `Finished streaming • Streamed for ${video.duration}`,
@@ -195,7 +189,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
     );
 
     await message.edit({
-      content: `${userResponse.data[0].display_name} was online!`,
+      content: `${user.display_name} was online!`,
       embed,
     });
 

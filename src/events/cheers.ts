@@ -11,9 +11,9 @@ const sendCheerEvent = async (
   messageId: string,
   username: string,
 ) => {
-  const userResponse = await UserManager.getUserByLogin(username);
+  const user = await UserManager.getUserByLogin(username);
 
-  if (userResponse) {
+  if (user) {
     try {
       const cheerEvent: CheerPacket = {
         event: MainframeEvent.cheer,
@@ -21,7 +21,7 @@ const sendCheerEvent = async (
         data: {
           bitCount: bitCount,
           cheererName: username,
-          logoUrl: userResponse.data[0].profile_image_url,
+          logoUrl: user.profile_image_url,
         },
       };
 

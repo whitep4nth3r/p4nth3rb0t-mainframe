@@ -81,7 +81,7 @@ export interface Transport {
   callback: string;
 }
 
-interface FullTwitchUser {
+export interface FullTwitchUser {
   id: string;
   login: string;
   display_name: string;
@@ -91,7 +91,6 @@ interface FullTwitchUser {
   profile_image_url: string;
   offline_image_url: string;
   view_count: number;
-  email: string;
   created_at: string;
 }
 

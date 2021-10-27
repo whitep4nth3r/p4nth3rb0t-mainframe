@@ -22,11 +22,11 @@ export const sendBroadcasterFollowEvent = async (
     );
 
     if (broadcasterStream) {
-      const userResponse = await UserManager.getUserById(
+      const user = await UserManager.getUserById(
         followerUserId as string,
       );
 
-      if (userResponse) {
+      if (user) {
         try {
           if (!config.FREEZE_MODE) {
             const broadcasterFollowEvent: FollowPacket = {
@@ -35,7 +35,7 @@ export const sendBroadcasterFollowEvent = async (
               data: {
                 followerName,
                 followerUserId,
-                logoUrl: userResponse.data[0].profile_image_url,
+                logoUrl: user.profile_image_url,
               },
             };
 
@@ -63,7 +63,7 @@ export const sendBroadcasterFollowEvent = async (
               userId: followerUserId,
               userDisplayName: followerName,
               streamId: broadcasterStream.id,
-              logoUrl: userResponse.data[0].profile_image_url,
+              logoUrl: user.profile_image_url,
             },
             { upsert: true },
           );
