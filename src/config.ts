@@ -1,4 +1,4 @@
-import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
+import {DiscordReactionRole, TwitchChannel, TwitchUser} from "./data/types";
 
 interface Config {
   FREEZE_MODE: boolean;
@@ -24,6 +24,7 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    techHelpChannelId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
     liveAnnouncementColorOnline: string;
@@ -83,12 +84,13 @@ const config: Config = {
     displayName: "The Claw",
   },
   teamWelcomeMessage: (channel: TwitchChannel): string => {
-    return `p4nth3rPEWPEW ${config.team.displayName} team member detected! 
-    PEW PEW, @${channel.broadcaster_name}! 
-    Check out their channel here: https://twitch.tv/${channel.broadcaster_name} 
+    return `p4nth3rPEWPEW ${config.team.displayName} team member detected!
+    PEW PEW, @${channel.broadcaster_name}!
+    Check out their channel here: https://twitch.tv/${channel.broadcaster_name}
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
+    techHelpChannelId: "748594864404561990",
     liveAnnouncementsChannelId: "770041334534635520",
     liveAnnouncementsRoleId: "756956508234842145",
     liveAnnouncementColorOnline: "#84AE39",
@@ -122,4 +124,4 @@ const config: Config = {
   },
 };
 
-export { config };
+export {config};
