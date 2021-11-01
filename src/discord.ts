@@ -9,7 +9,7 @@ import {
 import type { PartialUser, TextChannel } from "discord.js";
 import type { DiscordReactionRole, StreamInfo } from "./data/types";
 import crypto from "crypto";
-import axios from 'axios';
+import axios from "axios";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
