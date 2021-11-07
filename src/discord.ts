@@ -94,7 +94,7 @@ discord.on(
   },
 );
 
-discord.on('message', async (message: Message) => {
+discord.on("message", async (message: Message) => {
   let uniqueUser = `${message.author.username}#${message.author.discriminator}`;
   // Read message to see if it contains 3 backticks indicating a code block.
   if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {
