@@ -33,17 +33,17 @@ discord.on("ready", async () => {
 discord.on(
   "messageReactionAdd",
   async (messageReaction: MessageReaction, user: User | PartialUser) => {
-    if ( user.bot ) {
+    if (user.bot) {
       return;
     }
 
-    if ( messageReaction.partial ) {
+    if (messageReaction.partial) {
       await messageReaction.fetch();
     }
 
     const { guild } = messageReaction.message;
 
-    if ( !guild ) {
+    if (!guild) {
       return;
     }
 
@@ -54,7 +54,7 @@ discord.on(
           role.message_id == messageReaction.message.id,
       );
 
-    if ( !reactionRole ) {
+    if (!reactionRole) {
       return;
     }
 
@@ -65,17 +65,17 @@ discord.on(
 discord.on(
   "messageReactionRemove",
   async (messageReaction: MessageReaction, user: User | PartialUser) => {
-    if ( user.bot ) {
+    if (user.bot) {
       return;
     }
 
-    if ( messageReaction.partial ) {
+    if (messageReaction.partial) {
       await messageReaction.fetch();
     }
 
     const { guild } = messageReaction.message;
 
-    if ( !guild ) {
+    if (!guild) {
       return;
     }
 
@@ -86,7 +86,7 @@ discord.on(
           role.message_id == messageReaction.message.id,
       );
 
-    if ( !reactionRole ) {
+    if (!reactionRole) {
       return;
     }
 
@@ -97,7 +97,7 @@ discord.on(
 discord.on("message", async (message: Message) => {
   let uniqueUser = `${message.author.username}#${message.author.discriminator}`;
   // Read message to see if it contains 3 backticks indicating a code block.
-  if ( message.channel.id === config.discord.techHelpChannelId && message.content.includes("```") ) {
+  if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {
     // Okay, we have a message. Lets split it into an array every time the line ends.
     let msg = message.content;
     let lines = msg.split("\n");
@@ -109,10 +109,10 @@ discord.on("message", async (message: Message) => {
       .update(message.content).digest("hex");
 
     fileName.push(`${uniqueUser}-${hash}`, ".");
-    for ( let i = 0; i < lines.length; i++ ) {
-      if ( lines[i].startsWith("```") ) {
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith("```")) {
         let d = lines[i].split("```");
-        if ( d.length > 0 ) {
+        if (d.length > 0) {
           fileName.push(d.join(""));
         }
       }
@@ -125,13 +125,13 @@ discord.on("message", async (message: Message) => {
     let insideCodeBlock: boolean = false;
     let codeBlock: string[] = [];
     let lineCount: number = 0;
-    for ( let j = 0; j < lines.length; j++ ) {
-      if ( lines[j].includes("```") && insideCodeBlock ) {
+    for (let j = 0; j < lines.length; j++) {
+      if (lines[j].includes("```") && insideCodeBlock) {
         insideCodeBlock = false;
-      } else if ( lines[j].includes("```") && !insideCodeBlock ) {
+      } else if (lines[j].includes("```") && !insideCodeBlock) {
         insideCodeBlock = true;
       } else {
-        if ( !insideCodeBlock ) {
+        if (!insideCodeBlock) {
           messages.push(`> ${lines[j]}\n`);
         } else {
           lineCount++;
@@ -140,7 +140,7 @@ discord.on("message", async (message: Message) => {
       }
     }
 
-    if ( lineCount > 3 ) {
+    if (lineCount > 3) {
       axios.post("https://api.github.com/gists", {
         description: `A gist by ${uniqueUser} from #tech-help on The Claw.`,
         files: {
@@ -160,7 +160,6 @@ discord.on("message", async (message: Message) => {
           `Code in available in this gist:`,
           `<${response.data.html_url}>`,
         ];
-        console.log("got the gist!", new_message);
 
         techHelpChannel.send({
           content: new_message,
@@ -176,10 +175,10 @@ discord.on("message", async (message: Message) => {
 });
 
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
-  if ( announcementsChannel ) {
+  if (announcementsChannel) {
     const user = await UserManager.getUserById(streamInfo.broadcaster_user_id);
 
-    if ( user ) {
+    if (user) {
       const started_at = new Date(streamInfo.started_at);
       const stream = await getActiveBroadcasterStreamByBroadcasterId(
         streamInfo.broadcaster_user_id,
@@ -209,7 +208,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         streamId: streamInfo.id,
       });
       let message;
-      if ( existing ) {
+      if (existing) {
         message = await announcementsChannel.messages.fetch(
           `${existing.messageId}`,
         );
@@ -245,7 +244,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
 export const sendOfflineAnnouncement = async (member_id: string) => {
   const video = await fetchVideoByUserId(member_id);
 
-  if ( !video ) {
+  if (!video) {
     return;
   }
 
@@ -253,7 +252,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
     memberId: member_id,
   });
 
-  if ( !saved_message ) {
+  if (!saved_message) {
     return;
   }
 
@@ -263,7 +262,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
   const user = await UserManager.getUserById(member_id);
 
-  if ( user ) {
+  if (user) {
     const embed = buildDiscordEmbed(
       false,
       user.login,
@@ -325,7 +324,7 @@ const buildDiscordEmbed = (
 
   embed.setFooter(footer);
 
-  if ( category.length ) {
+  if (category.length) {
     embed.setDescription(category);
   }
 
