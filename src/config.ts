@@ -1,4 +1,4 @@
-import {DiscordReactionRole, TwitchChannel, TwitchUser} from "./data/types";
+import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
 
 interface Config {
   FREEZE_MODE: boolean;
@@ -124,4 +124,4 @@ const config: Config = {
   },
 };
 
-export {config};
+export { config };
