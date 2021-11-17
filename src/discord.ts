@@ -1,6 +1,6 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { MessageEmbed, MessageReaction, User } from "discord.js";
+import Discord, { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { config } from "./config";
 import {
   fetchVideoByUserId,
@@ -8,12 +8,15 @@ import {
 } from "./utils/twitchUtils";
 import type { PartialUser, TextChannel } from "discord.js";
 import type { DiscordReactionRole, StreamInfo } from "./data/types";
+import crypto from "crypto";
+import axios from "axios";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
 });
 
 let announcementsChannel: TextChannel;
+let techHelpChannel: TextChannel;
 
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
@@ -21,9 +24,15 @@ discord.on("ready", async () => {
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId,
   )) as TextChannel;
+
+  techHelpChannel = (await discord.channels.fetch(
+    config.discord.techHelpChannelId,
+  )) as TextChannel;
 });
 
-discord.on("messageReactionAdd", async (messageReaction: MessageReaction, user: User | PartialUser) => {
+discord.on(
+  "messageReactionAdd",
+  async (messageReaction: MessageReaction, user: User | PartialUser) => {
     if (user.bot) {
       return;
     }
@@ -53,7 +62,9 @@ discord.on("messageReactionAdd", async (messageReaction: MessageReaction, user: 
   },
 );
 
-discord.on("messageReactionRemove", async (messageReaction: MessageReaction, user: User | PartialUser) => {
+discord.on(
+  "messageReactionRemove",
+  async (messageReaction: MessageReaction, user: User | PartialUser) => {
     if (user.bot) {
       return;
     }
@@ -83,7 +94,83 @@ discord.on("messageReactionRemove", async (messageReaction: MessageReaction, use
   },
 );
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+discord.on("message", async (message: Message) => {
+  let uniqueUser = `${message.author.username}#${message.author.discriminator}`;
+  // Read message to see if it contains 3 backticks indicating a code block.
+  if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {
+    // Okay, we have a message. Lets split it into an array every time the line ends.
+    let msg = message.content;
+    let lines = msg.split("\n");
+
+    // Generate a file name.
+    let fileName = [];
+
+    let hash = crypto.createHash("shake256", { outputLength: 9 })
+      .update(message.content).digest("hex");
+
+    fileName.push(`${uniqueUser}-${hash}`, ".");
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith("```")) {
+        let d = lines[i].split("```");
+        if (d.length > 0) {
+          fileName.push(d.join(""));
+        }
+      }
+    }
+
+    let fullFileName = fileName.join("");
+
+    // Extract the rest of the message excluding the code block.
+    let messages: string[] = [];
+    let insideCodeBlock: boolean = false;
+    let codeBlock: string[] = [];
+    let lineCount: number = 0;
+    for (let j = 0; j < lines.length; j++) {
+      if (lines[j].includes("```") && insideCodeBlock) {
+        insideCodeBlock = false;
+      } else if (lines[j].includes("```") && !insideCodeBlock) {
+        insideCodeBlock = true;
+      } else {
+        if (!insideCodeBlock) {
+          messages.push(`> ${lines[j]}\n`);
+        } else {
+          lineCount++;
+          codeBlock.push(`${lines[j]}\n`);
+        }
+      }
+    }
+
+    if (lineCount > 3) {
+      axios.post("https://api.github.com/gists", {
+        description: `A gist by ${uniqueUser} from #tech-help on The Claw.`,
+        files: {
+          [fullFileName]: {
+            content: codeBlock.join(""),
+          },
+        },
+      }, {
+        headers: {
+          "Authorization": `token ${process.env.GITHUB_ACCESS_TOKEN}`,
+          "Accept": "application/vnd.github.v3+json",
+        },
+      }).then(response => {
+        let new_message = [
+          `Thanks <@${message.author.id}>! I've created a Gist on GitHub for you.\n`,
+          `Code is available in this gist:`,
+          `<${response.data.html_url}>`,
+        ];
+
+        techHelpChannel.send({
+          content: new_message,
+        });
+
+      }).catch(e => {
+        console.error(e);
+      });
+    }
+  }
+});
+
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   if (announcementsChannel) {
     const user = await UserManager.getUserById(streamInfo.broadcaster_user_id);
@@ -99,11 +186,20 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       const category = stream !== null ? stream.game_name : "";
 
       const embed = buildDiscordEmbed(
-        true, user.login, user.display_name, user.profile_image_url, videoTitle, videoThumbnailUrl,
-        `Started streaming • Today at ${started_at.toTimeString()}`, category,
+        true,
+        user.login,
+        user.display_name,
+        user.profile_image_url,
+        videoTitle,
+        videoThumbnailUrl,
+        `Started streaming • Today at ${started_at.toTimeString()}`,
+        category,
       );
 
-      const onlineAnnouncementPrefix: string = process.env.NODE_ENV === "production" ? `<@&${config.discord.liveAnnouncementsRoleId}> ` : "";
+      const onlineAnnouncementPrefix: string =
+        process.env.NODE_ENV === "production"
+          ? `<@&${config.discord.liveAnnouncementsRoleId}> `
+          : "";
 
       const existing = await DiscordAnnouncementModel.findOne({
         streamId: streamInfo.id,
@@ -142,7 +238,6 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sendOfflineAnnouncement = async (member_id: string) => {
   const video = await fetchVideoByUserId(member_id);
 
@@ -166,8 +261,15 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
   if (user) {
     const embed = buildDiscordEmbed(
-      false, user.login, user.display_name, user.profile_image_url, video.title, video.thumbnail_url,
-      `Finished streaming • Streamed for ${video.duration}`, saved_message.category, video.id,
+      false,
+      user.login,
+      user.display_name,
+      user.profile_image_url,
+      video.title,
+      video.thumbnail_url,
+      `Finished streaming • Streamed for ${video.duration}`,
+      saved_message.category,
+      video.id,
     );
 
     await message.edit({
@@ -196,7 +298,11 @@ const buildDiscordEmbed = (
   embed.setTitle(streamTitle);
   embed.setThumbnail(userLogo);
 
-  embed.setURL(online ? `https://twitch.tv/${userName}` : `https://twitch.tv/videos/${videoId}`);
+  embed.setURL(
+    online
+      ? `https://twitch.tv/${userName}`
+      : `https://twitch.tv/videos/${videoId}`,
+  );
 
   const imageReplaceString = online ? "{width}x{height}" : "%{width}x%{height}";
 
