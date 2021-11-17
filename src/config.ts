@@ -24,6 +24,7 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    techHelpChannelId: string,
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
     liveAnnouncementColorOnline: string;
@@ -75,9 +76,13 @@ const config: Config = {
     displayName: "The Claw",
   },
   teamWelcomeMessage: (channel: TwitchChannel): string => {
-    return `Hello friend @${channel.broadcaster_name}!`;
+    return `p4nth3rPEWPEW ${config.team.displayName} team member detected!
+    PEW PEW, @${channel.broadcaster_name}!
+    Check out their channel here: https://twitch.tv/${channel.broadcaster_name}
+    | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
+    techHelpChannelId: "748594864404561990",
     liveAnnouncementsChannelId: "827523976283815947",
     liveAnnouncementsRoleId: "903008079363330049",
     liveAnnouncementColorOnline: "#84AE39",
