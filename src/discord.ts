@@ -97,7 +97,10 @@ discord.on(
 discord.on("message", async (message: Message) => {
   if(message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
     if(message.author.id !== config.discord.p4nth3rb0tId) {
-      message.reply(`you are fined one credit for a violation of the Verbal Morality Statute.\n\nPlease refrain from mentioning whitep4nth3r directly if it is not extremely urgent. Thank you.`);
+      message.channel.send(
+        `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
+        `whitep4nth3r directly if it is not extremely urgent. Thank you.`
+      );
     }
   }
 
