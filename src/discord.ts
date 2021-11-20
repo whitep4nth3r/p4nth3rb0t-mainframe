@@ -95,6 +95,15 @@ discord.on(
 );
 
 discord.on("message", async (message: Message) => {
+  if(message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
+    if(message.author.id !== config.discord.p4nth3rb0tId) {
+      message.channel.send(
+        `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
+        `whitep4nth3r directly if it is not extremely urgent. Thank you.`
+      );
+    }
+  }
+
   let uniqueUser = `${message.author.username}#${message.author.discriminator}`;
   // Read message to see if it contains 3 backticks indicating a code block.
   if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {

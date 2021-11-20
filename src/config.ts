@@ -24,6 +24,8 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    whitep4nth3rId: string,
+    p4nth3rb0tId: string,
     techHelpChannelId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
@@ -90,6 +92,8 @@ const config: Config = {
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
+    whitep4nth3rId: "722393276438544404",
+    p4nth3rb0tId: "769179005315973171",
     techHelpChannelId: "748594864404561990",
     liveAnnouncementsChannelId: "770041334534635520",
     liveAnnouncementsRoleId: "756956508234842145",
