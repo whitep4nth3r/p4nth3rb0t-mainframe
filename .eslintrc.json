@@ -23,11 +23,11 @@
   },
   "rules": {
     "import/no-unresolved": "error",
-    "import/extensions": [".js", ".ts"],
-    "import/resolver": {
+    "import/extensions": [1, "never", {".js": "never", ".ts": "never"}],
+    "import/resolver": [1, "never", {
       "node": {
         "extensions": [".js", ".ts"]
       }
-    }
+    }]
   }
 }
