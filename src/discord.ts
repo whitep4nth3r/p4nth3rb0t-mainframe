@@ -17,6 +17,7 @@ export const discord = new Discord.Client({
 
 let announcementsChannel: TextChannel;
 let techHelpChannel: TextChannel;
+let anyChannel: TextChannel;
 
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
@@ -95,6 +96,12 @@ discord.on(
 );
 
 discord.on("message", async (message: Message) => {
+  if(message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
+    if(message.author.id !== config.discord.p4nth3rb0tId) {
+      message.reply(`you are fined one credit for a violation of the Verbal Morality Statute.\n\nPlease refrain from mentioning whitep4nth3r directly if it is not extremely urgent. Thank you.`);
+    }
+  }
+
   let uniqueUser = `${message.author.username}#${message.author.discriminator}`;
   // Read message to see if it contains 3 backticks indicating a code block.
   if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {
