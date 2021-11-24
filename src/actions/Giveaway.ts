@@ -62,10 +62,7 @@ const sendGiveawayEnterEvent = async (username: string) => {
         id: `giveaway-enter${Math.random()}`,
         data: {
           username,
-          logoUrl: user.profile_image_url.replace(
-            "300x300",
-            "50x50",
-          ),
+          logoUrl: user.profile_image_url.replace("300x300", "50x50"),
         },
       };
 
@@ -98,7 +95,7 @@ const sendGiveawayDrawEvent = async (winner: string) => {
 };
 
 export default class Giveaway {
-  static isOpen: boolean = false;
+  static isOpen = false;
   static entrants: Set<string> = new Set();
 
   static commands = {
@@ -171,15 +168,17 @@ export default class Giveaway {
     const winner =
       usernamesArray[Math.floor(Math.random() * usernamesArray.length)];
     const currentChatters = await getCurrentChatters();
-    if (
-      winner !== null &&
-      winner !== undefined &&
-      currentChatters.includes(winner)
-    ) {
-      sendGiveawayDrawEvent(winner);
-      Giveaway.entrants.delete(winner);
 
-      return winner;
+    if (winner !== null && winner !== undefined) {
+      if (!currentChatters.includes(winner)) {
+        // if winner is not in current chatters, go around again
+        Giveaway.draw();
+      } else {
+        // return the winner if it is in current chatters
+        sendGiveawayDrawEvent(winner);
+        Giveaway.entrants.delete(winner);
+        return winner;
+      }
     }
 
     return null;
