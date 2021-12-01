@@ -6,19 +6,19 @@ import { webServer } from "./webserver";
 import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
-import { testConfig } from "./../testConfig";
+import { testConfig } from "../testConfig";
 import { config } from "./config";
 
 import "./webhooks";
 
-import "./events/subscriptions";
-import "./events/messages";
-import "./events/raids";
-import "./events/cheers";
-import "./events/joins";
-import "./events/follows";
-import "./events/redemptions";
-import "./events/moods";
+import "./events/twitch/subscriptions";
+import "./events/twitch/messages";
+import "./events/twitch/raids";
+import "./events/twitch/cheers";
+import "./events/twitch/joins";
+import "./events/twitch/follows";
+import "./events/twitch/redemptions";
+import "./events/twitch/moods";
 
 Database.connect();
 
