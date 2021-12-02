@@ -1,6 +1,6 @@
-import { tmi } from "../../tmi";
-import WebSocketServer from "../../WebSocketServer";
-import { config } from "../../config";
+import { tmi } from "../tmi";
+import WebSocketServer from "../WebSocketServer";
+import { config } from "../config";
 import {
   MainframeEvent,
   SpecialUserJoinPacket,

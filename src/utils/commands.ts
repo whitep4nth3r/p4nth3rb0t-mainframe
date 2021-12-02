@@ -9,14 +9,14 @@ import {
   sendYeetEvent,
   sendImageDropEvent,
 } from "../actions/drop";
-import { sendMoodChangeEvent } from "../events/twitch/moods";
-import { sendShoutoutEvent } from "../events/twitch/shoutout";
+import { sendMoodChangeEvent } from "../events/moods";
+import { sendShoutoutEvent } from "../events/shoutout";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops } from "../data/types";
-import { sendMerchEvent } from "../events/twitch/merch";
-import { sendBackseatEvent, sendClearBackSeatEvent } from "../events/twitch/backseat";
-import { sendFreezeEvent } from "../events/twitch/freeze";
-import { sendTheClawEvent } from "../events/twitch/theclaw";
+import { sendMerchEvent } from "../events/merch";
+import { sendBackseatEvent, sendClearBackSeatEvent } from "../events/backseat";
+import { sendFreezeEvent } from "../events/freeze";
+import { sendTheClawEvent } from "../events/theclaw";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 

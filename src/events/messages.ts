@@ -1,22 +1,22 @@
-import { tmi } from "../../tmi";
-import WebSocketServer from "../../WebSocketServer";
+import { tmi } from "./../tmi";
+import WebSocketServer from "../WebSocketServer";
 import { ChatUserstate } from "tmi.js";
-import { config } from "../../config";
+import { config } from "../config";
 import {
   getCommandFromMessage,
   ChatCommands,
   BroadcasterCommands,
   ExclusiveCommands,
-} from "../../utils/commands";
+} from "../utils/commands";
 import {
   TwitchChannel,
   TeamMembers,
   TwitchUser,
   MyBadges,
-} from "../../data/types";
-import UserManager from "../../users/UserManager";
-import Team from "../../users/Team";
-import Giveaway from "../../actions/Giveaway";
+} from "../data/types";
+import UserManager from "../users/UserManager";
+import Team from "../users/Team";
+import Giveaway from "../actions/Giveaway";
 import {
   TimeoutUserPacket,
   BanUserPacket,

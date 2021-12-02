@@ -1,15 +1,15 @@
-import { tmi } from "../../tmi";
-import { config } from "../../config";
-import { getRestOfMessage } from "../../utils/commands";
-import UserManager from "../../users/UserManager";
-import { TwitchChannel } from "../../data/types";
+import { tmi } from "./../tmi";
+import { config } from "../config";
+import { getRestOfMessage } from "../utils/commands";
+import UserManager from "../users/UserManager";
+import { TwitchChannel } from "../data/types";
 import {
   MainframeEvent,
   ShoutOutPacket,
   ShoutOutData,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
-import Team from "../../users/Team";
+import WebSocketServer from "../WebSocketServer";
+import Team from "../users/Team";
 
 export const sendShoutoutEvent = async (messageId: string, message: string) => {
   const possibleUsername: string[] = getRestOfMessage(message);

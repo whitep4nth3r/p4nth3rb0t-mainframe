@@ -2,7 +2,7 @@ import {
   MoodChangePacket,
   MainframeEvent,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../WebSocketServer";
 
 function getRandomInt(min: number, max: number): number {
   return Math.round(Math.random() * (max - min) + min);

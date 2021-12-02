@@ -1,9 +1,9 @@
-import { tmi } from "../../tmi";
-import WebsocketServer from "../../WebSocketServer";
-import { config } from "../../config";
-import UserManager from "../../users/UserManager";
-import TwitchFollowerModel from "../../data/models/TwitchFollower";
-import { getActiveBroadcasterStreamByBroadcasterId } from "../../utils/twitchUtils";
+import { tmi } from "./../tmi";
+import WebsocketServer from "../WebSocketServer";
+import { config } from "../config";
+import UserManager from "../users/UserManager";
+import TwitchFollowerModel from "../data/models/TwitchFollower";
+import { getActiveBroadcasterStreamByBroadcasterId } from "../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 

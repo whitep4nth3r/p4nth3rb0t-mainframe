@@ -1,7 +1,7 @@
-import { tmi } from "../../tmi";
-import WebSocketServer from "../../WebSocketServer";
-import { config } from "../../config";
-import UserManager from "../../users/UserManager";
+import { tmi } from "./../tmi";
+import WebSocketServer from "../WebSocketServer";
+import { config } from "../config";
+import UserManager from "../users/UserManager";
 import { MainframeEvent, RaidPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { sendTimerEvent } from "./timer";

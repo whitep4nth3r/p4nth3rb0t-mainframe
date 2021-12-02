@@ -1,13 +1,13 @@
-import { tmi } from "../../tmi";
+import { tmi } from "../tmi";
 import { ChatUserstate } from "tmi.js";
-import { config } from "../../config";
+import { config } from "../config";
 import { sendMoodChangeEvent } from "./moods";
 import {
   NumeronymPacket,
   MainframeEvent,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
-import { MoodEmotes } from "../../data/types";
+import WebSocketServer from "../WebSocketServer";
+import { MoodEmotes } from "../data/types";
 
 export const sendNumeronymEvent = async (isActive: boolean) => {
   try {
