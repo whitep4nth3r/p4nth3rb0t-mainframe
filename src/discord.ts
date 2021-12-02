@@ -1,23 +1,23 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, { MessageEmbed } from "discord.js";
+import type { TextChannel } from "discord.js";
 import { config } from "./config";
 import {
   fetchVideoByUserId,
   getActiveBroadcasterStreamByBroadcasterId,
 } from "./utils/twitchUtils";
-import type { TextChannel } from "discord.js";
 import type { StreamInfo } from "./data/types";
-
-import "./events/discord/message"
-import "./events/discord/messageReactionAdd"
-import "./events/discord/messageReactionRemove"
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
 });
 
 let announcementsChannel: TextChannel;
+
+import "./events/discord/message";
+import "./events/discord/messageReactionAdd";
+import "./events/discord/messageReactionRemove";
 
 discord.on("ready", async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
