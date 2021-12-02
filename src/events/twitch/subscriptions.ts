@@ -1,10 +1,10 @@
-import WebSocketServer from "../WebSocketServer";
-import { tmi } from "./../tmi";
+import WebSocketServer from "../../WebSocketServer";
+import { tmi } from "../../tmi";
 import { Userstate } from "tmi.js";
-import UserManager from "../users/UserManager";
+import UserManager from "../../users/UserManager";
 import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
-import { config } from "../config";
+import { config } from "../../config";
 
 export const sendSubEvent = async (
   userId: string,
