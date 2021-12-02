@@ -9,6 +9,10 @@ import {
 import type { TextChannel } from "discord.js";
 import type { StreamInfo } from "./data/types";
 
+import "./events/discord/message"
+import "./events/discord/messageReactionAdd"
+import "./events/discord/messageReactionRemove"
+
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
 });
