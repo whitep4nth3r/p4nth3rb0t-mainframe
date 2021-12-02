@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import crypto from "crypto";
 import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
-import { sendBroadcasterFollowEvent } from "./events/twitch/follows";
+import { sendBroadcasterFollowEvent } from "./events/follows";
 import { TeamMembers } from "./data/types";
 import Team from "./users/Team";
 

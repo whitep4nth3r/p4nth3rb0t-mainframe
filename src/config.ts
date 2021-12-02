@@ -33,8 +33,6 @@ interface Config {
     liveAnnouncementColorOffline: string;
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
-    welcomeChannelId: string;
-    randomMessage: string[];
   };
   moodRedemptions: {
     [key: string]: string;
@@ -42,10 +40,6 @@ interface Config {
   channelRedemptions: {
     [key: string]: string;
   };
-  twitch: {
-    client_id: string,
-    client_secret: string,
-  }
 }
 
 const config: Config = {
@@ -113,11 +107,6 @@ const config: Config = {
         message_id: "841608870001508372",
       },
     ],
-    welcomeChannelId: "749219869408493588",
-    randomMessage: [
-      "Ahoy #USER#!",
-      "Welcome to The Claw, #USER#."
-    ]
   },
   moodRedemptions: {
     "40496421-bf68-4854-a417-cf03390062f2": "coffee",
@@ -137,10 +126,6 @@ const config: Config = {
   channelRedemptions: {
     "a5ac6965-dd33-4d09-8787-a177debc6e14": "numeronym",
   },
-  twitch: {
-    client_id: `${process.env.CLIENT_ID}`,
-    client_secret: `${process.env.CLIENT_SECRET}`
-  }
 };
 
 export { config };
