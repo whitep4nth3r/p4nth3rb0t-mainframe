@@ -1,0 +1,36 @@
+import { MessageReaction, PartialUser, User } from "discord.js";
+import { DiscordReactionRole } from "../../data/types";
+import { config } from "../../config";
+import { discord } from "../../discord";
+
+discord.on(
+  "messageReactionRemove",
+  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+    if (user.bot) {
+      return;
+    }
+
+    if (messageReaction.partial) {
+      await messageReaction.fetch();
+    }
+
+    const { guild } = messageReaction.message;
+
+    if (!guild) {
+      return;
+    }
+
+    const reactionRole: DiscordReactionRole | undefined =
+      config.discord.reactionRole.find(
+        (role) =>
+          role.emoji_tag == messageReaction.emoji.toString() &&
+          role.message_id == messageReaction.message.id,
+      );
+
+    if (!reactionRole) {
+      return;
+    }
+
+    guild.member(user.id)?.roles.remove(reactionRole.role_id);
+  },
+);

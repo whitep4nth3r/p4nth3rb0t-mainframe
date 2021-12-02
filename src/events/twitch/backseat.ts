@@ -1,9 +1,9 @@
-import { tmi } from "./../tmi";
-import { config } from "../config";
+import { tmi } from "../../tmi";
+import { config } from "../../config";
 import { BackseatPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../WebSocketServer";
-import UserManager from "../users/UserManager";
-import { getCurrentChatters } from "../utils/twitchUtils";
+import WebSocketServer from "../../WebSocketServer";
+import UserManager from "../../users/UserManager";
+import { getCurrentChatters } from "../../utils/twitchUtils";
 
 export const sendClearBackSeatEvent = async () => {
   try {
