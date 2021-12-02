@@ -62,17 +62,19 @@ export default class AccessToken {
 
   async fetch(): Promise<AccessTokenResponse | undefined> {
     try {
+      // @ts-ignore
+      const params = new URLSearchParams({
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        grant_type: "client_credentials",
+        scope: "user:edit",
+      });
       const response = await axios.post<AccessTokenResponse>(
-        `https://id.twitch.tv/oauth2/token?scope=user:edit&response_type=token&client_secret=${process.env.CLIENT_SECRET}&grant_type=client_credentials&client_id=${process.env.CLIENT_ID}`,
-        {
-          headers: {
-            accept: "application/vnd.twitchtv.v5+json",
-          },
-        },
+        `https://id.twitch.tv/oauth2/token?${params}`,
       );
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
     }
 
