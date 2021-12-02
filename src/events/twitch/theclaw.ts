@@ -1,12 +1,12 @@
-import { TwitchUser } from "./../data/types";
+import { TwitchUser } from "../../data/types";
 import {
   TheClawPacket,
   MainframeEvent,
   TeamMemberForOverlay,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../WebSocketServer";
-import Team from "../users/Team";
-import UserManager from "../users/UserManager";
+import WebSocketServer from "../../WebSocketServer";
+import Team from "../../users/Team";
+import UserManager from "../../users/UserManager";
 
 export const sendTheClawEvent = async () => {
   const team = await Team.getMembers();
