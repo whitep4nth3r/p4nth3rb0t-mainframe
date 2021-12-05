@@ -138,7 +138,7 @@ export interface StreamByBroadcasterIdResponse {
 }
 
 export enum ImageDrops {
-  Contentful = "contentful",
+  Netlify = "netlify",
   Partner = "partner",
   Battlesnake = "battlesnake",
   TheClaw = "theclaw",

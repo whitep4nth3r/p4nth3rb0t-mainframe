@@ -1,22 +1,26 @@
 import { tmi } from "./../tmi";
 import { config } from "../config";
-import { sendDropEmotesEvent } from "./../actions/drop";
-import { ChatUserstate } from "tmi.js";
 import {
+  sendDropEmotesEvent,
   sendDropUserEvent,
   sendWeatherEvent,
   sendWeatherTrailEvent,
   sendYeetEvent,
   sendImageDropEvent,
-} from "../actions/drop";
+} from "./../actions/drop";
+import { ChatUserstate } from "tmi.js";
 import { sendMoodChangeEvent } from "../events/twitch/moods";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops } from "../data/types";
 import { sendMerchEvent } from "../events/twitch/merch";
-import { sendBackseatEvent, sendClearBackSeatEvent } from "../events/twitch/backseat";
+import {
+  sendBackseatEvent,
+  sendClearBackSeatEvent,
+} from "../events/twitch/backseat";
 import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
+import { sendSpecialEvent } from "./../events/twitch/special";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -29,7 +33,23 @@ type Commands = {
   [key: string]: Handler;
 };
 
-export const ExclusiveCommands: Commands = {};
+export const ExclusiveCommands: Commands = {
+  "!announcenetlify": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      sendImageDropEvent(ImageDrops.Netlify, tags["id"] as string);
+      sendSpecialEvent({ type: "announcenetlify" });
+    }
+  },
+  "!job": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      tmi.say(
+        config.channel,
+        "Salma is on the DX team at Netlify. Find out more about Netlify at https://www.netlify.com/",
+      );
+      sendImageDropEvent(ImageDrops.Netlify, tags["id"] as string);
+    }
+  },
+};
 
 export const BroadcasterCommands: Commands = {
   "!freeze": async (tags, message) => {
@@ -236,15 +256,6 @@ export const ChatCommands: Commands = {
       } else if (userToYeet.length === 1) {
         sendYeetEvent(userToYeet[0].replace("@", ""), tags["id"] as string);
       }
-    }
-  },
-  "!content": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      tmi.say(
-        config.channel,
-        "Salma works in Developer Relations for Contentful. Find out more about Contentful at the Developer Portal: https://www.contentful.com/developers/",
-      );
-      sendImageDropEvent(ImageDrops.Contentful, tags["id"] as string);
     }
   },
   "!checkmark": async (tags, message) => {
