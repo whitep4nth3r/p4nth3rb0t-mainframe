@@ -272,7 +272,7 @@ export const ChatCommands: Commands = {
     if (!config.FREEZE_MODE) {
       tmi.say(
         config.channel,
-        "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH The Claw Stream Team has landed! https://twitch.tv/team/theclaw p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
+        "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH The Claw Stream Team has landed! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
       );
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
