@@ -7,7 +7,7 @@ import { discord } from "../../discord";
 let techHelpChannel: TextChannel;
 
 discord.on("ready", async () => {
-  console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
+  console.log(`Loading message handler.`);
 
   techHelpChannel = (await discord.channels.fetch(
     config.discord.techHelpChannelId,
@@ -15,19 +15,30 @@ discord.on("ready", async () => {
 });
 
 discord.on("message", async (message: Message) => {
-  if(message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
-    if(message.author.id !== config.discord.p4nth3rb0tId) {
+  /* Intent: MESSAGE_READ
+   * Purpose: Kindly remind user not to mention whitep4nth3r.
+   */
+  if (message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
+    if (message.author.id !== config.discord.p4nth3rb0tId) {
       message.channel.send(
         `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
-        `whitep4nth3r directly if it is not extremely urgent. Thank you.`
+        `whitep4nth3r directly if it is not extremely urgent. Thank you.`,
       );
     }
   }
 
+  /* Intent: MESSAGE_READ
+   * Purpose: If a message contains a code block that is longer than a configurable
+   *    number of lines, we create a gist on GitHub unless the message contains !nogist.
+   */
   const uniqueUser = `${message.author.username}#${message.author.discriminator}`;
   // Read message to see if it contains 3 backticks indicating a code block.
-  if (message.channel.id === config.discord.techHelpChannelId && message.content.includes("```")) {
-    // Okay, we have a message. Lets split it into an array every time the line ends.
+  if (
+    message.channel.id === config.discord.techHelpChannelId &&
+    message.content.includes("```") &&
+    !message.content.includes("!nogist")
+  ) {
+    // Okay, we have a message. Let's split it into an array every time the line ends.
     const msg = message.content;
     const lines = msg.split("\n");
 
@@ -66,7 +77,7 @@ discord.on("message", async (message: Message) => {
       }
     }
 
-    if (lineCount > 3) {
+    if (lineCount >= config.discord.linesBeforeGisting) {
       axios.post("https://api.github.com/gists", {
         description: `A gist by ${uniqueUser} from #tech-help on The Claw.`,
         files: {
@@ -81,7 +92,8 @@ discord.on("message", async (message: Message) => {
         },
       }).then(response => {
         const new_message = [
-          `Thanks <@${message.author.id}>! I've created a Gist on GitHub for you.\n`,
+          `Thanks <@${message.author.id}>! I've created a Gist on GitHub for you.`,
+          `(If you would prefer no gist, simply include \`!nogist\` somewhere in a message with a code block. Contact Sketch to have a gist removed if it has already been created).\n`,
           `Code is available in this gist:`,
           `<${response.data.html_url}>`,
         ];
