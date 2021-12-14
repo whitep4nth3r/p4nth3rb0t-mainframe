@@ -16,7 +16,7 @@ interface Config {
   ignoredCharacters: string[];
   ignoredWords: string[];
   ignoredMessages: string[];
-  botResponses: any;
+  botResponses: Record<string, unknown>;
   teamShoutoutEnabled: boolean;
   team: {
     name: string;
@@ -24,6 +24,7 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    linesBeforeGisting: number,
     whitep4nth3rId: string,
     p4nth3rb0tId: string,
     techHelpChannelId: string;
@@ -92,6 +93,7 @@ const config: Config = {
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
+    linesBeforeGisting: 15,
     whitep4nth3rId: "722393276438544404",
     p4nth3rb0tId: "769179005315973171",
     techHelpChannelId: "748594864404561990",
