@@ -11,7 +11,10 @@ import {
 import WebSocketServer from "../../WebSocketServer";
 import Team from "../../users/Team";
 
-export const sendShoutoutEvent = async (messageId: string, message: string) => {
+export const sendShoutoutEvent = async (
+  messageId: string,
+  message: string,
+): Promise<void> => {
   const possibleUsername: string[] = getRestOfMessage(message);
 
   try {
@@ -46,5 +49,7 @@ export const sendShoutoutEvent = async (messageId: string, message: string) => {
         WebSocketServer.sendData(shoutOutEvent);
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
