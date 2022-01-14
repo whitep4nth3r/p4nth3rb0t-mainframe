@@ -37,7 +37,7 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       setTimeout(async () => {
         // this will trigger twitch guru stream clips
-        tmi.say(`!so ${user.login}`);
+        tmi.say(config.channel, `!so ${user.login}`);
         sendShoutoutEvent(user.id, `!so ${user.login}`);
       }, 7000);
 
