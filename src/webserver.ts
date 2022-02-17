@@ -7,6 +7,8 @@ import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/twitch/follows";
 import { TeamMembers } from "./data/types";
+import { config } from "./config";
+import { deploySite } from "./utils/netlifyUtils";
 import Team from "./users/Team";
 
 const app = express();
@@ -52,14 +54,24 @@ app.post(
 
     const subType = req.body.subscription.type;
     if (req.body.challenge) {
-      console.log(`↪️  Webhook subscribed for ${member.user_name} ${subType} events!`);
+      console.log(
+        `↪️  Webhook subscribed for ${member.user_name} ${subType} events!`,
+      );
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else if (subType === "stream.offline") {
       console.log("🔔 Stream Offline notification received");
       await sendOfflineAnnouncement(req.params.member_id);
+
+      if (req.params.member_id === config.broadcaster.user_id) {
+        await deploySite();
+      }
     } else if (subType === "stream.online") {
       console.log("🔔 Stream Online notification received");
       await sendLiveAnnouncement(req.body.event);
+
+      if (req.body.event.broadcaster_user_id === config.broadcaster.user_id) {
+        await deploySite();
+      }
     }
 
     return res.status(200).send();
@@ -87,7 +99,6 @@ app.post(
     return res.status(200).send();
   }),
 );
-
 
 app.use("/", (req: Request, res: Response) => {
   res.send("🔥 Welcome to the p4nth3rb0t mainframe");
