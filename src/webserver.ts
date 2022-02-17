@@ -62,7 +62,7 @@ app.post(
       console.log("🔔 Stream Offline notification received");
       await sendOfflineAnnouncement(req.params.member_id);
 
-      if (req.body.event.broadcaster_user_id === req.params.member_id) {
+      if (req.params.member_id === config.broadcaster.user_id) {
         await deploySite();
       }
     } else if (subType === "stream.online") {
@@ -99,7 +99,6 @@ app.post(
     return res.status(200).send();
   }),
 );
-
 
 app.use("/", (req: Request, res: Response) => {
   res.send("🔥 Welcome to the p4nth3rb0t mainframe");
