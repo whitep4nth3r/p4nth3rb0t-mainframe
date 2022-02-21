@@ -24,9 +24,9 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
-    linesBeforeGisting: number,
-    whitep4nth3rId: string,
-    p4nth3rb0tId: string,
+    linesBeforeGisting: number;
+    whitep4nth3rId: string;
+    p4nth3rb0tId: string;
     techHelpChannelId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
@@ -121,6 +121,7 @@ const config: Config = {
     "c496ca07-506f-426a-ac3a-c18f9e313819": "pewpew",
     "0e9ac3dc-36fa-44a2-811a-21c062ab15cb": "rap",
     "22f97669-4655-4524-83e2-1ae7ddf7401b": "sad",
+    "184901ce-126f-48f4-a089-bea80eb2afb5": "scam",
     "dd1bd410-ce90-4669-a9a7-59adf4fc226a": "star",
     "f8494e84-1089-48c1-a411-1d1a33ac38be": "tattoo",
     "899073ec-e720-4431-ba6b-5953f1bd246e": "troll",

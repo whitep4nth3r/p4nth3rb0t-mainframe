@@ -36,6 +36,7 @@ const MoodEmotesForChatResponse: MoodEmotes = {
   pewpew: "p4nth3rPEWPEW",
   rap: "p4nth3rUP",
   sad: "p4nth3rSAD",
+  scam: "p4nth3rSCAM",
   star: "p4nth3rSTAR",
   tattoo: "p4nth3rUP",
   troll: "p4nth3rTROLL",
@@ -60,6 +61,7 @@ tmi.on(
             setTimeout(async () => {
               sendNumeronymEvent(false);
             }, 300000);
+            break;
           default:
             return null;
         }
