@@ -130,6 +130,11 @@ export const BroadcasterCommands: Commands = {
       sendMoodChangeEvent("sad", tags["id"] as string);
     }
   },
+  "!scam": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      sendMoodChangeEvent("scam", tags["id"] as string);
+    }
+  },
   "!so": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       sendShoutoutEvent(tags["id"] as string, message);
