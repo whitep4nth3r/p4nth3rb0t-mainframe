@@ -21,7 +21,7 @@ discord.on("message", async (message: Message) => {
    * todo: clean this up. 3 nested ifs is very smelly.
    */
   if (message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
-    if(!config.discord.excludedChannels.indexOf(message.channel.id)) {
+    if(!config.discord.excludedChannels.includes(message.channel.id)) {
       if (message.author.id !== config.discord.p4nth3rb0tId) {
         message.channel.send(
           `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
