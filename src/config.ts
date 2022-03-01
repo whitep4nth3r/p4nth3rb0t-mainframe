@@ -34,6 +34,7 @@ interface Config {
     liveAnnouncementColorOffline: string;
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
+    excludedChannels: string[]
   };
   moodRedemptions: {
     [key: string]: string;
@@ -109,6 +110,10 @@ const config: Config = {
         message_id: "841608870001508372",
       },
     ],
+    excludedChannels: [
+      '748546478825275435',
+      '749651628067651674'
+    ]
   },
   moodRedemptions: {
     "40496421-bf68-4854-a417-cf03390062f2": "coffee",
