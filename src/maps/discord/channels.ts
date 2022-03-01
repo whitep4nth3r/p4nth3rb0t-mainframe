@@ -34,7 +34,7 @@ export const channels = {
   twitchTeam: '874000051570106429',
 
   // Off Topic
-  chatChat: '738414281594372200',
+  chitChat: '738414281594372200',
   health: '765461390198177793',
   music: '768923301980143627',
   gaming: '763432926918344724',
