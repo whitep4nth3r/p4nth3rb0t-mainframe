@@ -1,4 +1,5 @@
 import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
+import { channels } from "./maps/discord/channels";
 
 interface Config {
   FREEZE_MODE: boolean;
@@ -34,6 +35,7 @@ interface Config {
     liveAnnouncementColorOffline: string;
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
+    excludedChannels: string[]
   };
   moodRedemptions: {
     [key: string]: string;
@@ -96,8 +98,8 @@ const config: Config = {
     linesBeforeGisting: 15,
     whitep4nth3rId: "722393276438544404",
     p4nth3rb0tId: "769179005315973171",
-    techHelpChannelId: "748594864404561990",
-    liveAnnouncementsChannelId: "770041334534635520",
+    techHelpChannelId: channels.techHelp,
+    liveAnnouncementsChannelId: channels.announcements,
     liveAnnouncementsRoleId: "756956508234842145",
     liveAnnouncementColorOnline: "#84AE39",
     liveAnnouncementColorOffline: "#AE8439",
@@ -109,6 +111,10 @@ const config: Config = {
         message_id: "841608870001508372",
       },
     ],
+    excludedChannels: [
+      channels.introductions,
+      channels.mods,
+    ]
   },
   moodRedemptions: {
     "40496421-bf68-4854-a417-cf03390062f2": "coffee",
