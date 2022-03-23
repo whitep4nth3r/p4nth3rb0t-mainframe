@@ -21,6 +21,7 @@ import {
 import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { sendSpecialEvent } from "./../events/twitch/special";
+import { megaTimeOut } from "./../events/twitch/megatimeout";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -34,6 +35,9 @@ type Commands = {
 };
 
 export const ExclusiveCommands: Commands = {
+  "!megatimeout": async (tags, message) => {
+    await megaTimeOut();
+  },
   "!announcenetlify": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       sendImageDropEvent(ImageDrops.Netlify, tags["id"] as string);

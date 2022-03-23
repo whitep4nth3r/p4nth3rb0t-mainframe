@@ -9,6 +9,18 @@ import { config } from "../config";
 
 const accessTokenUtil = new AccessToken();
 
+export const getCurrentMods = async (): Promise<any> => {
+  const response = await axios.get(
+    `https://tmi.twitch.tv/group/user/${config.broadcaster.user_name}/chatters`,
+  );
+
+  const { data } = response;
+  const { chatters } = data;
+  const { moderators } = chatters;
+
+  return moderators;
+};
+
 export const getCurrentChatters = async (): Promise<any> => {
   const response = await axios.get(
     `https://tmi.twitch.tv/group/user/${config.broadcaster.user_name}/chatters`,
