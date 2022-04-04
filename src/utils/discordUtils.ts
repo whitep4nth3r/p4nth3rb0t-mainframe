@@ -1,7 +1,7 @@
 import { Message, PartialMessage } from "discord.js";
 import { config } from "../config";
 
-export function warnUser(message: Message | PartialMessage): Promise<any> {
+export async function warnUser(message: Message | PartialMessage): Promise<any> {
   if (message.content !== null && message.author !== null) {
     if (
       message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)
