@@ -1,8 +1,9 @@
-import { Message, TextChannel } from "discord.js";
+import { Message, PartialMessage, TextChannel } from "discord.js";
 import { config } from "../../config";
 import crypto from "crypto";
 import axios from "axios";
 import { discord } from "../../discord";
+import { warnUser } from "../../utils/discordUtils";
 
 let techHelpChannel: TextChannel;
 
@@ -14,22 +15,12 @@ discord.on("ready", async () => {
   )) as TextChannel;
 });
 
+discord.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
+  await warnUser(newMessage);
+});
+
 discord.on("message", async (message: Message) => {
-  /* Intent: MESSAGE_READ
-   * Purpose: Kindly remind user not to mention whitep4nth3r.
-   *
-   * todo: clean this up. 3 nested ifs is very smelly.
-   */
-  if (message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)) {
-    if(!config.discord.excludedChannels.includes(message.channel.id)) {
-      if (message.author.id !== config.discord.p4nth3rb0tId) {
-        message.channel.send(
-          `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
-          `whitep4nth3r directly if it is not extremely urgent. Thank you.`,
-        );
-      }
-    }
-  }
+  await warnUser(message);
 
   /* Intent: MESSAGE_READ
    * Purpose: If a message contains a code block that is longer than a configurable
