@@ -108,8 +108,8 @@ async function warnUser(message: Message | PartialMessage) {
   if (message.content !== null && message.author !== null) {
     if (
       message.content.includes(`<@!${config.discord.whitep4nth3rId}>`)
-      || !config.discord.excludedChannels.includes(message.channel.id)
-      || message.author.id !== config.discord.p4nth3rb0tId
+      && !config.discord.excludedChannels.includes(message.channel.id)
+      && message.author.id !== config.discord.p4nth3rb0tId
     ) {
       await message.channel.send(
         `Attention <@!${message.author.id}>! Please refrain from mentioning ` +
