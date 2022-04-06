@@ -44,7 +44,10 @@ async function run() {
     }
 
     // Bot is online 🔥
-    tmi.say(config.channel, "p4nth3rPEWPEW [object Object] p4nth3rPEWPEW");
+    tmi.say(
+      config.channel,
+      "/announce p4nth3rPEWPEW [object Object] p4nth3rPEWPEW",
+    );
   } catch (error) {
     console.log(error);
   }
