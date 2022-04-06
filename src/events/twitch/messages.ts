@@ -234,13 +234,7 @@ tmi.on(
       }
 
       if (message === Giveaway.commands.draw && !config.FREEZE_MODE) {
-        const winner = await Giveaway.draw();
-
-        if (winner !== null) {
-          tmi.say(config.channel, Giveaway.getDrawMessage(winner));
-        } else {
-          tmi.say(config.channel, Giveaway.getNoEntrantsMessage());
-        }
+        await Giveaway.draw();
       }
     }
 
