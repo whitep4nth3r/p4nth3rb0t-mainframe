@@ -312,6 +312,7 @@ tmi.on(
             emotes: tags.emotes,
             type: tags["message-type"],
             id: tags["id"],
+            isHighlighted: tags["msg-id"] === "highlighted-message",
           };
 
           await sendChatMessageEvent(chatMessageData);
