@@ -121,7 +121,7 @@ export default class Giveaway {
   };
 
   static getDrawMessage = (winner: string): string => {
-    return `/announce p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW`;
+    return `/announce p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`;
   };
 
   static getInactiveMessage = (): string => {
