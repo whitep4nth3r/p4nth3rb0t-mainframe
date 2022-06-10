@@ -1,7 +1,5 @@
 # Welcome to the p4nth3rb0t MAINFRAME
 
-![p4nth3rb0t-mainframe: My Twitch live streaming and community bot](https://p4nth3rblog-og-image.vercel.app/p4nth3rb0t-mainframe%3A%20My%20Twitch%20live%20streaming%20and%20community%20bot.png?theme=light&md=0&fontSize=80px&images=https%3A%2F%2Fp4nth3rlabs.netlify.app%2Fassets%2Fsvgs%2Fpanthers%2Fcool.svg)
-
 The P4nth3rb0t mainframe provides Twitch chat and Discord server functionality and is aimed at helping Science and Technology streamers and their communities.
 
 - [Getting started with development](./docs/getting-started.md)
