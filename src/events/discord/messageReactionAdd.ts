@@ -1,11 +1,19 @@
-import { MessageReaction, PartialUser, User } from "discord.js";
+import {
+  MessageReaction,
+  PartialMessageReaction,
+  PartialUser,
+  User,
+} from "discord.js";
 import { DiscordReactionRole } from "../../data/types";
 import { config } from "../../config";
 import { discord } from "../../discord";
 
 discord.on(
   "messageReactionAdd",
-  async (messageReaction: MessageReaction, user: User | PartialUser) => {
+  async (
+    messageReaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+  ) => {
     if (user.bot) {
       return;
     }
@@ -31,6 +39,6 @@ discord.on(
       return;
     }
 
-    guild.member(user.id)?.roles.add(reactionRole.role_id);
+    guild.members.cache.get(user.id)?.roles.add(reactionRole.role_id);
   },
 );

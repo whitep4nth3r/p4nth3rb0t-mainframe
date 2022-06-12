@@ -1,6 +1,6 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { MessageEmbed } from "discord.js";
+import Discord, { Intents, MessageEmbed } from "discord.js";
 import type { TextChannel } from "discord.js";
 import { config } from "./config";
 import {
@@ -11,6 +11,10 @@ import type { StreamInfo } from "./data/types";
 
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
+  intents: [
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+  ],
 });
 
 let announcementsChannel: TextChannel;
@@ -69,14 +73,14 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
           content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
             user.display_name,
           )} is now live on Twitch! https://twitch.tv/${user.login}`,
-          embed,
+          embeds: [embed],
         });
       } else {
         message = await announcementsChannel.send({
           content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
             user.display_name,
           )} is now live on Twitch! https://twitch.tv/${user.login}`,
-          embed,
+          embeds: [embed],
         });
       }
 
@@ -130,7 +134,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
     await message.edit({
       content: `${user.display_name} was online!`,
-      embed,
+      embeds: [embed],
     });
 
     await DiscordAnnouncementModel.deleteOne({ memberId: member_id });
@@ -150,7 +154,11 @@ const buildDiscordEmbed = (
 ) => {
   const embed = new MessageEmbed();
 
-  embed.setAuthor(userDisplayName, userLogo);
+  embed.setAuthor({
+    name: userDisplayName,
+    iconURL: userLogo,
+  });
+
   embed.setTitle(streamTitle);
   embed.setThumbnail(userLogo);
 
@@ -175,7 +183,9 @@ const buildDiscordEmbed = (
       : config.discord.liveAnnouncementColorOffline,
   );
 
-  embed.setFooter(footer);
+  embed.setFooter({
+    text: footer,
+  });
 
   if (category.length) {
     embed.setDescription(category);
