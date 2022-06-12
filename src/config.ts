@@ -1,5 +1,6 @@
 import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
 import { channels } from "./maps/discord/channels";
+import Discord from "discord.js";
 
 interface Config {
   FREEZE_MODE: boolean;
@@ -31,8 +32,8 @@ interface Config {
     techHelpChannelId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
-    liveAnnouncementColorOnline: string;
-    liveAnnouncementColorOffline: string;
+    liveAnnouncementColorOnline: Discord.ColorResolvable;
+    liveAnnouncementColorOffline: Discord.ColorResolvable;
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
     excludedChannels: string[]

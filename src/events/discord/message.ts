@@ -86,12 +86,9 @@ discord.on("message", async (message: Message) => {
           "Accept": "application/vnd.github.v3+json",
         },
       }).then(response => {
-        const new_message = [
-          `Thanks <@${message.author.id}>! I've created a Gist on GitHub for you.`,
-          `(If you would prefer no gist, simply include \`!nogist\` somewhere in a message with a code block. Contact Sketch to have a gist removed if it has already been created).\n`,
-          `Code is available in this gist:`,
-          `<${response.data.html_url}>`,
-        ];
+        const new_message = `Thanks <@${message.author.id}>! I've created a Gist on GitHub for you.\n
+        (If you would prefer no gist, simply include \`!nogist\` somewhere in a message with a code block. Contact Sketch to have a gist removed if it has already been created).\n\n
+        Code is available in this gist:\n <${response.data.html_url}>`;
 
         techHelpChannel.send({
           content: new_message,
