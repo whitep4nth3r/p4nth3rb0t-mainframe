@@ -12,6 +12,8 @@ import type { StreamInfo } from "./data/types";
 export const discord = new Discord.Client({
   partials: ["USER", "REACTION", "MESSAGE"],
   intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   ],
