@@ -40,14 +40,6 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
         tmi.say(config.channel, `!so ${user.login}`);
         sendShoutoutEvent(user.id, `!so ${user.login}`);
       }, 7000);
-
-      // setTimeout(() => {
-      //   tmi.say(
-      //     config.channel,
-      //     "p4nth3rPEWPEW Engaging followers only chat! p4nth3rPEWPEW ",
-      //   );
-      //   tmi.say(config.channel, "/followers 0");
-      // }, 300000);
     } catch (error) {
       console.log(error);
     }
@@ -58,10 +50,5 @@ tmi.on("raided", (channel: string, username: string, viewers: number) => {
   if (!config.FREEZE_MODE) {
     tmi.say(config.channel, getRaidShoutout(username, viewers));
     sendRaidEvent(viewers, username);
-    // tmi.say(
-    //   config.channel,
-    //   "p4nth3rPEWPEW Disengaging followers only chat! Welcome in everyone! p4nth3rPEWPEW ",
-    // );
-    // tmi.say(config.channel, "/followersoff");
   }
 });

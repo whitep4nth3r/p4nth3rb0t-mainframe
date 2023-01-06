@@ -92,3 +92,27 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
 
   return response.data.data[0];
 };
+
+export const announce = async (): Promise<any> => {
+  // get user access token for p4nth3rb0t ID
+  // scope moderator:manage:announcements
+  // moderator_id passed in should be p4nth3rb0t ID
+
+  // docs https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#authorization-code-grant-flow
+  
+  // generate RANDOM_GENERATED_STRING
+
+  // go to web browser
+  // log in as p4nth3rb0t to twitch
+  // go to:  https://id.twitch.tv/oauth2/authorize?client_id={CLIENT_ID}&response_type=code&scope=moderator:manage:announcements&state={RANDOM_GENERATED_STRING}
+
+  // then check for random generated string in response before proceeding
+
+  // if string matches, we are authorized and good to proceed to next steps:
+
+  // https://api.twitch.tv/helix/chat/announcements?broadcaster_id={whitep4nth3r}&moderator_id={p4nth3rb0t} POST
+  // send in body
+  // message string
+  // color string
+  /** blue green orange purple primary (default) */
+};

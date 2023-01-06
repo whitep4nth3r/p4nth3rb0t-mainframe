@@ -12,9 +12,9 @@ export const sendSubEvent = async (
   messageId: string,
   message: string,
   subTier: string,
-  isGift: boolean = false,
-  months: number = 0,
-) => {
+  isGift = false,
+  months = 0,
+): Promise<void> => {
   try {
     const user = await UserManager.getUserById(userId as string);
     const giftRecipient = isGift
@@ -44,6 +44,10 @@ export const sendSubEvent = async (
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
+        tmi.say(
+          config.channel,
+          `/announce p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
+        );
       }, 3500);
     }
   } catch (error) {
@@ -108,7 +112,7 @@ tmi.on(
     username: string,
     streakMonths: number,
     recipient: string,
-    methods: {},
+    methods: Record<string, unknown>,
     userstate: Userstate,
   ) => {
     if (!config.FREEZE_MODE) {
@@ -131,7 +135,7 @@ tmi.on(
   (
     channel: string,
     username: string,
-    methods: {},
+    methods: Record<string, unknown>,
     message: string,
     userstate: Userstate,
   ) => {
@@ -157,7 +161,7 @@ tmi.on(
     months: number,
     message: string,
     userstate: Userstate,
-    methods: {},
+    methods: Record<string, unknown>,
   ) => {
     if (!config.FREEZE_MODE) {
       sendSubEvent(

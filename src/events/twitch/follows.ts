@@ -57,7 +57,7 @@ export const sendBroadcasterFollowEvent = async (
               // Announce with p4nth3rb0t
               tmi.say(
                 config.channel,
-                `/announce p4nth3rPEWPEW Thanks for the follow @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
+                `/announce p4nth3rPEWPEW Welcome to p4nth3rworld, @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
               );
             }, 3500);
           }
