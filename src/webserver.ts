@@ -8,7 +8,6 @@ import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/twitch/follows";
 import { TeamMembers } from "./data/types";
 import { config } from "./config";
-import { deploySite } from "./utils/netlifyUtils";
 import Team from "./users/Team";
 
 const app = express();
@@ -61,17 +60,9 @@ app.post(
     } else if (subType === "stream.offline") {
       console.log("🔔 Stream Offline notification received");
       await sendOfflineAnnouncement(req.params.member_id);
-
-      if (req.params.member_id === config.broadcaster.user_id) {
-        await deploySite();
-      }
     } else if (subType === "stream.online") {
       console.log("🔔 Stream Online notification received");
       await sendLiveAnnouncement(req.body.event);
-
-      if (req.body.event.broadcaster_user_id === config.broadcaster.user_id) {
-        await deploySite();
-      }
     }
 
     return res.status(200).send();
