@@ -46,7 +46,7 @@ export const sendSubEvent = async (
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
         tmi.say(
           config.channel,
-          `/announce p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
+          `p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
         );
       }, 3500);
     }

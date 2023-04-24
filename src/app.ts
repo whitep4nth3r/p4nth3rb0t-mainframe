@@ -46,7 +46,7 @@ async function run() {
     // Bot is online 🔥
     tmi.say(
       config.channel,
-      "/announce p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
+      "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
     );
   } catch (error) {
     console.log(error);

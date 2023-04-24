@@ -50,7 +50,7 @@ export const ExclusiveCommands: Commands = {
 
 export const BroadcasterCommands: Commands = {
   "!freeze": async (tags, message) => {
-    tmi.say(config.channel, "/announce p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
+    tmi.say(config.channel, "p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = true;
     // clear chat
@@ -61,10 +61,7 @@ export const BroadcasterCommands: Commands = {
     sendFreezeEvent();
   },
   "!unfreeze": async (tags, message) => {
-    tmi.say(
-      config.channel,
-      "/announce p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC",
-    );
+    tmi.say(config.channel, "p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = false;
     // deactivate sub only
@@ -277,7 +274,7 @@ export const ChatCommands: Commands = {
     if (!config.FREEZE_MODE) {
       tmi.say(
         config.channel,
-        "/announce p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
+        "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
       );
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
