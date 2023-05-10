@@ -21,7 +21,6 @@ export const discord = new Discord.Client({
 
 let announcementsChannel: TextChannel;
 
-import "./events/discord/message";
 import "./events/discord/messageReactionAdd";
 import "./events/discord/messageReactionRemove";
 

@@ -26,17 +26,12 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
-    linesBeforeGisting: number;
-    whitep4nth3rId: string;
-    p4nth3rb0tId: string;
-    techHelpChannelId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
     liveAnnouncementColorOnline: Discord.ColorResolvable;
     liveAnnouncementColorOffline: Discord.ColorResolvable;
     liveAnnouncementImageSize: string;
     reactionRole: DiscordReactionRole[];
-    excludedChannels: string[]
   };
   moodRedemptions: {
     [key: string]: string;
@@ -96,10 +91,6 @@ const config: Config = {
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
-    linesBeforeGisting: 15,
-    whitep4nth3rId: "722393276438544404",
-    p4nth3rb0tId: "769179005315973171",
-    techHelpChannelId: channels.techHelp,
     liveAnnouncementsChannelId: channels.announcements,
     liveAnnouncementsRoleId: "756956508234842145",
     liveAnnouncementColorOnline: "#84AE39",
@@ -112,10 +103,6 @@ const config: Config = {
         message_id: "841608870001508372",
       },
     ],
-    excludedChannels: [
-      channels.introductions,
-      channels.mods,
-    ]
   },
   moodRedemptions: {
     "40496421-bf68-4854-a417-cf03390062f2": "coffee",
