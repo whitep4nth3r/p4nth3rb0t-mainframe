@@ -63,6 +63,9 @@ export default class UserManager {
   static async getUserById(
     userId: string,
   ): Promise<FullTwitchUser | undefined> {
+    if (userId === undefined) {
+      return undefined;
+    }
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
       const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);

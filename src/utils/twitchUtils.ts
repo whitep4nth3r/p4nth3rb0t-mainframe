@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import AccessToken from "../classes/AccessToken";
 import type {
   GameByIdResponse,
@@ -6,6 +6,7 @@ import type {
   VideoByUserIdResponse,
 } from "../data/types";
 import { config } from "../config";
+import { UserAccessTokenData } from "../data/models/UserAccessToken";
 
 const accessTokenUtil = new AccessToken();
 
@@ -20,17 +21,71 @@ export const getCurrentMods = async (): Promise<any> => {
 
   return moderators;
 };
+interface Chatter {
+  user_id: string
+  user_login: string
+  user_name: string
+}
 
-export const getCurrentChatters = async (): Promise<any> => {
-  const response = await axios.get(
-    `https://tmi.twitch.tv/group/user/${config.broadcaster.user_name}/chatters`,
-  );
+interface CallResult {
+  response: AxiosResponse<any> | undefined
+  status: number
+}
 
-  const { data } = response;
-  const { chatters } = data;
-  const { vips, moderators, staff, viewers } = chatters;
+const attemptDoGet = async (url: string, token: UserAccessTokenData): Promise<CallResult> => {
+  let status = 200;
+  const response = await axios.get(url, clientAuthConfig(token)
+  ).catch(function (error) {
+    if (error.response) {
+      status = error.response.status as number;
+    } else {
+      status = 400;
+    }
+    return undefined;
+  });
+  return { response: response, status: status }
+}
 
-  return [...vips, ...moderators, ...moderators, ...staff, ...viewers];
+const doGet = async (url: string): Promise<(AxiosResponse<any> | undefined)> => {
+  let accessTokenData = await accessTokenUtil.getUserAccessToken();
+  if (!accessTokenData) {
+    console.error("Failed to acquire User Access Token");
+    return;
+  }
+  let result = await attemptDoGet(url, accessTokenData);
+  if (result.status == 401) {
+    const ok = await accessTokenUtil.refreshUserAccessToken(accessTokenData);
+    if (ok) {
+      accessTokenData = await accessTokenUtil.getUserAccessToken();
+      if (!accessTokenData) {
+        console.error("Failed to acquire User Access Token");
+        return;
+      }
+      result = await attemptDoGet(url, accessTokenData);
+    }
+  }
+  return result.response;
+};
+
+function clientAuthConfig(token: UserAccessTokenData) {
+  return {
+    headers: {
+      "client-id": process.env.CLIENT_ID,
+      authorization: `Bearer ${token.accessToken}`,
+    },
+  };
+}
+
+export const getCurrentChatters = async (): Promise<string[]> => {
+  const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const response = await doGet(url);
+  if (response) {
+    const chatters = response.data.data;
+    return (chatters as Chatter[]).map(d => {
+      return d.user_name.toLowerCase()
+    });
+  }
+  return [];
 };
 
 export const fetchGameById = async (
@@ -99,7 +154,7 @@ export const announce = async (): Promise<any> => {
   // moderator_id passed in should be p4nth3rb0t ID
 
   // docs https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#authorization-code-grant-flow
-  
+
   // generate RANDOM_GENERATED_STRING
 
   // go to web browser

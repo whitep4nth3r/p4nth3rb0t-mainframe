@@ -24,7 +24,7 @@ export const sendClearBackSeatEvent = async () => {
 export const sendBackseatEvent = async (username: string) => {
   const currentChatters = await getCurrentChatters();
 
-  if (currentChatters.includes(username)) {
+  if (currentChatters && currentChatters.includes(username)) {
     try {
       const user = await UserManager.getUserByLogin(username);
 
@@ -43,6 +43,7 @@ export const sendBackseatEvent = async (username: string) => {
       console.log(error);
     }
   } else {
+    console.log("Known chatters: " + currentChatters)
     sendClearBackSeatEvent();
     tmi.say(
       config.channel,
