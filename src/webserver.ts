@@ -6,9 +6,17 @@ import crypto from "crypto";
 import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/twitch/follows";
+import AuthCodeModel, {
+  AuthCodeDoc,
+  AuthCodeData,
+} from "./data/models/AuthCode";
 import { TeamMembers } from "./data/types";
 import { config } from "./config";
 import Team from "./users/Team";
+import AuthCode from "./data/models/AuthCode";
+import AccessToken from "./classes/AccessToken";
+
+const accessTokenUtil = new AccessToken();
 
 const app = express();
 app.use(bodyParser.json());
@@ -32,6 +40,20 @@ function verifySignature(req: Request) {
   const actualSignature = req.header("Twitch-Eventsub-Message-Signature");
   return signature === actualSignature;
 }
+app.get(
+  "/authcode",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const code = req.query.code;
+    const scope = req.query.scope;
+    const state = req.query.state;
+    // TODO Verify state matches the expected (stored in mongo, with expiry?)
+    if (code) {
+      await accessTokenUtil.setAuthCode({ code: code as string, scope: scope as string });
+      console.log("Auth Code saved!");
+    }
+    return res.status(200).send();
+  })
+);
 
 app.post(
   "/webhooks/subscribe/team/:member_id",

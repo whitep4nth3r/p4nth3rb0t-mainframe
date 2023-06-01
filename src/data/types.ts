@@ -34,10 +34,23 @@ export interface TeamResponse {
   ];
 }
 
+export interface AuthCodeResponse {
+  code: string;
+  scope: string;
+}
+
 export interface AccessTokenResponse {
   access_token: string;
   expires_in: number;
   scope: [];
+  token_type: string;
+}
+
+export interface UserAccessTokenResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string[];
   token_type: string;
 }
 
