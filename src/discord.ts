@@ -1,6 +1,6 @@
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { Intents, MessageEmbed } from "discord.js";
+import Discord, { EmbedBuilder, escapeMarkdown, GatewayIntentBits, Partials } from "discord.js";
 import type { TextChannel } from "discord.js";
 import { config } from "./config";
 import {
@@ -10,12 +10,16 @@ import {
 import type { StreamInfo } from "./data/types";
 
 export const discord = new Discord.Client({
-  partials: ["USER", "REACTION", "MESSAGE"],
+  partials: [
+    Partials.User,
+    Partials.Reaction,
+    Partials.Message,
+  ],
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
   ],
 });
 
@@ -71,14 +75,14 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
           `${existing.messageId}`,
         );
         await message.edit({
-          content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
+          content: `${onlineAnnouncementPrefix}${escapeMarkdown(
             user.display_name,
           )} is now live on Twitch! https://twitch.tv/${user.login}`,
           embeds: [embed],
         });
       } else {
         message = await announcementsChannel.send({
-          content: `${onlineAnnouncementPrefix}${Discord.Util.escapeMarkdown(
+          content: `${onlineAnnouncementPrefix}${escapeMarkdown(
             user.display_name,
           )} is now live on Twitch! https://twitch.tv/${user.login}`,
           embeds: [embed],
@@ -153,7 +157,7 @@ const buildDiscordEmbed = (
   category: string,
   videoId?: string,
 ) => {
-  const embed = new MessageEmbed();
+  const embed = new EmbedBuilder();
 
   embed.setAuthor({
     name: userDisplayName,
