@@ -54,8 +54,10 @@ const doGet = async (url: string): Promise<(AxiosResponse<any> | undefined)> => 
   }
   let result = await attemptDoGet(url, accessTokenData);
   if (result.status == 401) {
+    console.info("Token was not accepted. Trying to refresh it.");
     const ok = await accessTokenUtil.refreshUserAccessToken(accessTokenData);
     if (ok) {
+      console.info("Refresh was successful. Loading the new token from storage.");
       accessTokenData = await accessTokenUtil.getUserAccessToken();
       if (!accessTokenData) {
         console.error("Failed to acquire User Access Token");
