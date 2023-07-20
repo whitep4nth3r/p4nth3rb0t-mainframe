@@ -22,25 +22,29 @@ export default class AccessToken {
     }
     const authCode = await AuthCodeModel.findOne();
     if (!authCode) {
-      // @ts-ignore
-      const params = new URLSearchParams({
-        response_type: "code",
-        client_id: process.env.CLIENT_ID,
-        redirect_uri: process.env.AUTH_REDIRECT_URL,
-        scope: "moderator:read:chatters",
-        // TODO: Generate a random UUID and store in mongodb
-        state: "random-uuid"
-      });
-      await tmi.say(config.channel, `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`);
-      console.log(`Please visit: https://id.twitch.tv/oauth2/authorize?${params}`);
+      await this.announceMissingAuthCode();
     } else {
       const token = await this.fetchUserAccessToken(authCode.code);
       if (token) {
         await this.setUserAccessToken(token);
         return await UserAccessTokenModel.findOne() || undefined;
+      } else {
+        await this.announceMissingAuthCode();
       }
     }
+  }
 
+  async announceMissingAuthCode(): Promise<void> {
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: process.env.CLIENT_ID || "",
+      redirect_uri: process.env.AUTH_REDIRECT_URL || "",
+      scope: "moderator:read:chatters",
+      // TODO: Generate a random UUID and store in mongodb
+      state: "random-uuid"
+    });
+    await tmi.say(config.channel, `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`);
+    console.log(`Please visit: https://id.twitch.tv/oauth2/authorize?${params}`);
   }
 
   async refreshUserAccessToken(accessTokenData: UserAccessTokenData): Promise<boolean> {
@@ -115,6 +119,7 @@ export default class AccessToken {
       {},
       {
         accessToken: data.access_token,
+        refreshToken: data.refresh_token,
         tokenType: data.token_type,
         expiresIn: data.expires_in,
         updatedAt: Math.floor(Date.now() / 1000),
@@ -145,10 +150,9 @@ export default class AccessToken {
 
   async fetch(): Promise<AccessTokenResponse | undefined> {
     try {
-      // @ts-ignore
       const params = new URLSearchParams({
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
+        client_id: process.env.CLIENT_ID || "",
+        client_secret: process.env.CLIENT_SECRET || "",
         grant_type: "client_credentials",
         scope: "user:edit",
       });
@@ -164,25 +168,12 @@ export default class AccessToken {
     return undefined;
   }
   async fetchUserAccessToken(code: string): Promise<UserAccessTokenResponse | undefined> {
-    try {
-      // @ts-ignore
-      const params = new URLSearchParams({
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
-        code: code,
-        grant_type: "authorization_code",
-        redirect_uri: process.env.AUTH_REDIRECT_URL,
-      });
-      const response = await axios.post<UserAccessTokenResponse>(
-        `https://id.twitch.tv/oauth2/token?${params}`,
-      );
-
-      return response.data;
-    } catch (error: any) {
-      console.log(error);
-    }
-
-    return undefined;
+    const params = {
+      code: code,
+      grant_type: "authorization_code",
+      redirect_uri: process.env.AUTH_REDIRECT_URL,
+    };
+    return this.invokeTokenEndpoint(params);
   }
 
   async invokeTokenEndpoint(params: any): Promise<UserAccessTokenResponse | undefined> {
