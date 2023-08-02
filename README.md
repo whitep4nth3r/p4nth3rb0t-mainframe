@@ -9,8 +9,6 @@ The P4nth3rb0t mainframe provides Twitch chat and Discord server functionality a
 - [Setting up your stream team]('./docs/stream-team.md)
 - [Testing Twitch events with fdgt](./docs/testing-with-fdgt.md)
 
----
-
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
