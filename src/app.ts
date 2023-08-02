@@ -15,7 +15,6 @@ import "./events/twitch/subscriptions";
 import "./events/twitch/messages";
 import "./events/twitch/raids";
 import "./events/twitch/cheers";
-import "./events/twitch/joins";
 import "./events/twitch/follows";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";

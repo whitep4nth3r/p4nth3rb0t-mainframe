@@ -13,7 +13,6 @@ interface Config {
     baseUrl: string;
     sizes: string[];
   };
-  specialUsers: string[];
   ignoredUsers: string[];
   ignoredCharacters: string[];
   ignoredWords: string[];
@@ -56,17 +55,6 @@ const config: Config = {
     baseUrl: "https://static-cdn.jtvnw.net/emoticons/v1/",
     sizes: ["1.0", "2.0", "3.0"],
   },
-  specialUsers: [
-    "thatn00b__",
-    "baldbeardedbuilder",
-    "lucecarter",
-    "sociablesteve",
-    "rawwwrs",
-    "toefrog",
-    "dr_dinomight",
-    "matty_twoshoes",
-    "imolalola",
-  ],
   ignoredUsers: ["nightbot", "pretzelrocks", "p4nth3rb0t"],
   ignoredCharacters: ["a̞", "s̾", "ȯ", "a̹", "u͖"],
   ignoredWords: ["bigfollows"],
