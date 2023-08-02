@@ -1,6 +1,6 @@
-# Welcome to the p4nth3rb0t MAINFRAME
+# Welcome to the Mainframe
 
-The P4nth3rb0t mainframe provides Twitch chat and Discord server functionality and is aimed at helping Science and Technology streamers and their communities.
+This repository provides Twitch and Discord server functionality for whitep4nth3r.
 
 - [Getting started with development](./docs/getting-started.md)
 - [Twitch events](./docs/twitch-events.md)
