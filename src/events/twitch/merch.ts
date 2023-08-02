@@ -1,6 +1,3 @@
-import { tmi } from "../../tmi";
-import { ChatUserstate } from "tmi.js";
-import { config } from "../../config";
 import WebSocketServer from "../../WebSocketServer";
 import { MerchPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 

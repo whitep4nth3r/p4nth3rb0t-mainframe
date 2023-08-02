@@ -6,14 +6,8 @@ import crypto from "crypto";
 import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
 import { sendBroadcasterFollowEvent } from "./events/twitch/follows";
-import AuthCodeModel, {
-  AuthCodeDoc,
-  AuthCodeData,
-} from "./data/models/AuthCode";
 import { TeamMembers } from "./data/types";
-import { config } from "./config";
 import Team from "./users/Team";
-import AuthCode from "./data/models/AuthCode";
 import AccessToken from "./classes/AccessToken";
 
 const accessTokenUtil = new AccessToken();
@@ -48,11 +42,14 @@ app.get(
     const state = req.query.state;
     // TODO Verify state matches the expected (stored in mongo, with expiry?)
     if (code) {
-      await accessTokenUtil.setAuthCode({ code: code as string, scope: scope as string });
+      await accessTokenUtil.setAuthCode({
+        code: code as string,
+        scope: scope as string,
+      });
       console.log("Auth Code saved!");
     }
     return res.status(200).send();
-  })
+  }),
 );
 
 app.post(
