@@ -37,15 +37,6 @@ export const ExclusiveCommands: Commands = {
   "!megatimeout": async (tags, message) => {
     await megaTimeOut();
   },
-  "!job": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      tmi.say(
-        config.channel,
-        "Salma is on the DX team at Netlify. Find out more about Netlify at https://www.netlify.com/",
-      );
-      sendImageDropEvent(ImageDrops.Netlify, tags["id"] as string);
-    }
-  },
 };
 
 export const BroadcasterCommands: Commands = {
@@ -277,11 +268,6 @@ export const ChatCommands: Commands = {
         "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
       );
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
-    }
-  },
-  "!battlesnake": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendImageDropEvent(ImageDrops.Battlesnake, tags["id"] as string);
     }
   },
 };
