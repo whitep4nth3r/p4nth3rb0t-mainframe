@@ -34,6 +34,7 @@ function verifySignature(req: Request) {
   const actualSignature = req.header("Twitch-Eventsub-Message-Signature");
   return signature === actualSignature;
 }
+
 app.get(
   "/authcode",
   asyncWrapper(async (req: Request, res: Response) => {

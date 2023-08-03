@@ -38,6 +38,7 @@ export default class WebsocketServer {
       });
 
       //send feedback to the incoming connection
+      //eg: chat overlay
       ws.send(
         JSON.stringify({
           status: 200,

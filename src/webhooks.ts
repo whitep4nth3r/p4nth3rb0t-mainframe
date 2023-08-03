@@ -74,7 +74,6 @@ async function registerEventSub(definition: EventSubDefinition) {
         });
         console.log(`Registered: ${definition.userId} ${definition.eventType} ${definition.callbackUrl}`)
       } catch (err) {
-        // console.error(err);
         console.error("FAILED>>>>");
         console.dir(definition);
       }  
@@ -97,6 +96,7 @@ function createStreamerOfflineDefinition(userId: string) {
 function createStreamerOnlineDefinition(userId: string) {
   return createDefinition(EventSubType.StreamOnline, `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`, userId);
 }
+
 function callbackUrlAllowed(url: string):boolean {
   const allowedUrls = (process.env.ALLOWED_CALLBACK_URLS ?? "").split(",").map((s) => s.trim()).filter((s) => s !== "");
   return allowedUrls.find((value) => url.startsWith(value)) !== undefined;
