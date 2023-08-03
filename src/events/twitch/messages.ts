@@ -26,6 +26,7 @@ import {
   MainframeEvent,
   TeamMemberJoinPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
+import { isSillyQuestion } from "../../utils/sillyQuestions";
 
 let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
@@ -271,6 +272,13 @@ tmi.on(
     }
 
     if (!config.FREEZE_MODE) {
+      if (isSillyQuestion(message)) {
+        tmi.say(
+          config.channel,
+          `p4nth3rPEWPEW Hi there ${tags.username}! You can use the following commands in chat to find out more: !project, !today, !who`,
+        );
+      }
+
       const possibleCommand: string =
         getCommandFromMessage(message).toLowerCase();
       const foundHandler = ChatCommands[possibleCommand];

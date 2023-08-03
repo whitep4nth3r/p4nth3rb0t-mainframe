@@ -17,7 +17,6 @@ interface Config {
   ignoredCharacters: string[];
   ignoredWords: string[];
   ignoredMessages: string[];
-  botResponses: Record<string, unknown>;
   teamShoutoutEnabled: boolean;
   team: {
     name: string;
@@ -62,11 +61,6 @@ const config: Config = {
     "Twitch Themer is ready to go. Listening for commands beginning with !theme",
     "Twitch Highlighter in the house!",
   ],
-  botResponses: {
-    SillyQuestion: (username: string) => {
-      return `Hi there ${username}! You can use the following commands in chat to find out more: !project, !today, !who`;
-    },
-  },
   teamShoutoutEnabled: true,
   team: {
     name: "theclaw",
