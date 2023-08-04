@@ -1,6 +1,6 @@
 import { tmi } from "../tmi";
 import { config } from "../config";
-import { getCurrentChatters } from "../utils/twitchUtils";
+import { getCurrentChatterUserNames } from "../utils/twitchUtils";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
 import {
@@ -166,7 +166,7 @@ export default class Giveaway {
     const usernamesArray: string[] = Array.from(Giveaway.entrants);
     const winner =
       usernamesArray[Math.floor(Math.random() * usernamesArray.length)];
-    const currentChatters = await getCurrentChatters();
+    const currentChatters = await getCurrentChatterUserNames();
 
     if (winner !== null && winner !== undefined) {
       if (!currentChatters.includes(winner)) {
