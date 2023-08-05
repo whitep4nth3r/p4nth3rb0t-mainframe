@@ -5,6 +5,7 @@ import Discord from "discord.js";
 interface Config {
   FREEZE_MODE: boolean;
   broadcaster: TwitchUser;
+  bot: TwitchUser;
   channel: string;
   drop: {
     minAccountAge: number;
@@ -45,6 +46,11 @@ const config: Config = {
     user_login: "whitep4nth3r",
     user_name: "whitep4nth3r",
     user_id: "469006291",
+  },
+  bot: {
+    user_login: "p4nth3rb0t",
+    user_name: "p4nth3rb0t",
+    user_id: "568670781",
   },
   channel: "#whitep4nth3r",
   drop: {
