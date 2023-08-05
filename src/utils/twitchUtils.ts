@@ -10,6 +10,7 @@ import { config } from "../config";
 import { UserAccessTokenData } from "../data/models/UserAccessToken";
 
 const accessTokenUtil = new AccessToken();
+const twitchChatApiUrl = "https://api.twitch.tv/helix/chat";
 
 export const getCurrentMods = async (): Promise<any> => {
   const response = await axios.get(
@@ -156,7 +157,7 @@ export const announce = async (message: string, color?: TwitchAnnouncementColor)
   if (!accessTokenData) return null;
 
   await axios.post(
-    `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`,
+    `${twitchChatApiUrl}/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`,
     {
       message,
       color,
@@ -175,7 +176,7 @@ export const ShoutOut = async (toBroadcaster: string): Promise<any> => {
   if (!accessTokenData) return null;
 
   await axios.post(
-    `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcaster}&moderator_id=${config.bot.user_id}`,
+    `${twitchChatApiUrl}/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcaster}&moderator_id=${config.bot.user_id}`,
     {
       headers: {
         "client-id": process.env.CLIENT_ID,
