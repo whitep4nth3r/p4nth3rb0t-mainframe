@@ -169,3 +169,18 @@ export const announce = async (message: string, color?: TwitchAnnouncementColor)
     }
   );
 };
+
+export const ShoutOut = async (toBroadcaster: string): Promise<any> => {
+  const accessTokenData = await accessTokenUtil.getUserAccessToken();
+  if (!accessTokenData) return null;
+
+  await axios.post(
+    `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcaster}&moderator_id=${config.bot.user_id}`,
+    {
+      headers: {
+        "client-id": process.env.CLIENT_ID,
+        authorization: `Bearer ${accessTokenData.accessToken}`,
+      },
+    }
+  );
+};
