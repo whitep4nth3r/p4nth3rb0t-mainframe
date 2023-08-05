@@ -39,7 +39,7 @@ export default class AccessToken {
       response_type: "code",
       client_id: process.env.CLIENT_ID || "",
       redirect_uri: process.env.AUTH_REDIRECT_URL || "",
-      scope: "moderator:read:chatters",
+      scope: "moderator:read:chatters moderator:manage:announcements moderator:manage:shoutouts",
       // TODO: Generate a random UUID and store in mongodb
       state: "random-uuid"
     });
