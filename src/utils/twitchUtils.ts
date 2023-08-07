@@ -3,6 +3,7 @@ import AccessToken from "../classes/AccessToken";
 import type {
   GameByIdResponse,
   StreamByBroadcasterIdResponse,
+  TwitchUser,
   VideoByUserIdResponse,
 } from "../data/types";
 import { config } from "../config";
@@ -10,45 +11,37 @@ import { UserAccessTokenData } from "../data/models/UserAccessToken";
 
 const accessTokenUtil = new AccessToken();
 
-export interface Chatter {
-  user_id: string
-  user_login: string
-  user_name: string
-}
-
 interface CallResult {
   response: AxiosResponse<any> | undefined
   status: number
 }
 
-export const getCurrentMods = async (): Promise<Chatter[]> => {
+export const getCurrentMods = async (): Promise<TwitchUser[]> => {
   const url = `https://api.twitch.tv/helix/moderation/moderators?first=100&broadcaster_id=${config.broadcaster.user_id}`;
   const response = await doGet(url);
   if (response) {
     const moderators = response.data.data;
-    return moderators as Chatter[];
+    return moderators as TwitchUser[];
   }
   return [];
 };
 
-export const getCurrentChatters = async (): Promise<Chatter[]> => {
+export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
   const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const response = await doGet(url);
   if (response) {
     const chatters = response.data.data;
-    return chatters as Chatter[];
+    return chatters as TwitchUser[];
   }
   return [];
 };
 
 export const getCurrentChatterUserNames = async (): Promise<string[]> => {
   const chatters = await getCurrentChatters();
-  return chatters.map(d => {
-    return d.user_name.toLowerCase()
-  });
+  return chatters.map(d => d.user_name.toLowerCase());
 };
 
-export const banUser = async (userId: string): Promise<void> => {
+export const timeoutUserFor60Seconds = async (userId: string): Promise<void> => {
   const url = `https://api.twitch.tv/helix/moderation/bans?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const body = {
     data: {
@@ -144,19 +137,19 @@ export const announce = async (): Promise<any> => {
 };
 
 const doGet = async (url: string): Promise<(AxiosResponse<any> | undefined)> => {
-  let callable = async (token: UserAccessTokenData) => {
+  const callable = async (token: UserAccessTokenData) => {
     return await attemptDoGet(url, token);
   }
-  let result = await callWithUserAccessToken(callable);
+  const result = await callWithUserAccessToken(callable);
   return result;
 };
 
 const doPost = async (url: string, body: any): Promise<(AxiosResponse<any> | undefined)> => {
-  let callable = async (token: UserAccessTokenData) => {
+  const callable = async (token: UserAccessTokenData) => {
     return await attemptDoPost(url, body, token);
   }
-  let result = await callWithUserAccessToken(callable);
-  return undefined;
+  const result = await callWithUserAccessToken(callable);
+  return result;
 };
 
 const callWithUserAccessToken = async (callable: (token: UserAccessTokenData) => Promise<CallResult>) => {
@@ -193,7 +186,7 @@ const attemptDoGet = async (url: string, token: UserAccessTokenData): Promise<Ca
     }
     return undefined;
   });
-  return { response: response, status: status }
+  return { response, status }
 }
 
 const attemptDoPost = async (url: string, body: any, token: UserAccessTokenData): Promise<CallResult> => {
@@ -207,7 +200,7 @@ const attemptDoPost = async (url: string, body: any, token: UserAccessTokenData)
     }
     return undefined;
   });
-  return { response: response, status: status }
+  return { response, status }
 }
 
 const clientAuthConfig = (token: UserAccessTokenData) => {
