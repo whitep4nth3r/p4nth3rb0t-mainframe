@@ -39,8 +39,7 @@ export default class AccessToken {
       response_type: "code",
       client_id: process.env.CLIENT_ID || "",
       redirect_uri: process.env.AUTH_REDIRECT_URL || "",
-      scope: "moderator:read:chatters",
-      // TODO: Generate a random UUID and store in mongodb
+      scope: "moderator:read:chatters moderation:read moderator:manage:banned_users",
       state: "random-uuid"
     });
     await tmi.say(config.channel, `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`);
