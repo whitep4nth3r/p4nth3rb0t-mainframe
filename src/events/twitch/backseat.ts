@@ -3,7 +3,7 @@ import { config } from "../../config";
 import { BackseatPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
 import UserManager from "../../users/UserManager";
-import { getCurrentChatters } from "../../utils/twitchUtils";
+import { getCurrentChatterUserNames } from "../../utils/twitchUtils";
 
 export const sendClearBackSeatEvent = async () => {
   try {
@@ -22,7 +22,7 @@ export const sendClearBackSeatEvent = async () => {
 };
 
 export const sendBackseatEvent = async (username: string) => {
-  const currentChatters = await getCurrentChatters();
+  const currentChatters = await getCurrentChatterUserNames();
 
   if (currentChatters && currentChatters.includes(username)) {
     try {
