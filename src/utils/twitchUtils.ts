@@ -11,7 +11,6 @@ import { config } from "../config";
 import { UserAccessTokenData } from "../data/models/UserAccessToken";
 
 const accessTokenUtil = new AccessToken();
-const twitchChatApiUrl = "https://api.twitch.tv/helix/chat";
 
 interface CallResult {
   response: AxiosResponse<any> | undefined
@@ -119,26 +118,11 @@ export const announce = async (message: string, color?: TwitchAnnouncementColor)
   if (!accessTokenData) return null;
 
   await axios.post(
-    `${twitchChatApiUrl}/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`,
+    `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`,
     {
       message,
       color,
     },
-    {
-      headers: {
-        "client-id": process.env.CLIENT_ID,
-        authorization: `Bearer ${accessTokenData.accessToken}`,
-      },
-    }
-  );
-};
-
-export const ShoutOut = async (toBroadcaster: string): Promise<any> => {
-  const accessTokenData = await accessTokenUtil.getUserAccessToken();
-  if (!accessTokenData) return null;
-
-  await axios.post(
-    `${twitchChatApiUrl}/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcaster}&moderator_id=${config.bot.user_id}`,
     {
       headers: {
         "client-id": process.env.CLIENT_ID,
