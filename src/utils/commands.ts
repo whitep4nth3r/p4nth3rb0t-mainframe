@@ -264,7 +264,7 @@ export const ChatCommands: Commands = {
   },
   "!theclaw": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",);
+      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH");
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
