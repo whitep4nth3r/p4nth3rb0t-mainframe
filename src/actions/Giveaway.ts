@@ -1,6 +1,4 @@
-import { tmi } from "../tmi";
-import { config } from "../config";
-import { getCurrentChatterUserNames } from "../utils/twitchUtils";
+import { announce, getCurrentChatterUserNames } from "../utils/twitchUtils";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
 import {
@@ -90,7 +88,7 @@ const sendGiveawayDrawEvent = async (winner: string) => {
       };
 
       WebSocketServer.sendData(drawGiveawayEvent);
-      tmi.say(config.channel, Giveaway.getDrawMessage(winner));
+      announce(`p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`);
     } catch (error) {
       console.log(error);
     }
@@ -110,18 +108,6 @@ export default class Giveaway {
 
   static getAnnounceMessage = (): string => {
     return "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW";
-  };
-
-  static getOpenMessage = (): string => {
-    return "p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW";
-  };
-
-  static getCloseMessage = (): string => {
-    return "p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW";
-  };
-
-  static getDrawMessage = (winner: string): string => {
-    return `p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`;
   };
 
   static getInactiveMessage = (): string => {

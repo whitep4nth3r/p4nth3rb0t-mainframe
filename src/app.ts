@@ -7,7 +7,7 @@ import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
 import { testConfig } from "./../testConfig";
-import { config } from "./config";
+import { announce } from "./utils/twitchUtils";
 
 import "./webhooks";
 
@@ -43,10 +43,7 @@ async function run() {
     }
 
     // Bot is online 🔥
-    tmi.say(
-      config.channel,
-      "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
-    );
+    announce("p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW");
   } catch (error) {
     console.log(error);
   }
