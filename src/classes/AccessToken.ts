@@ -13,23 +13,36 @@ import { tmi } from "../tmi";
 import { config } from "../config";
 import { URLSearchParams } from "url";
 
+export const USER_SCOPES: string[] = [
+  "moderator:read:chatters",
+  "moderation:read",
+  "moderator:manage:banned_users",
+  "moderator:manage:announcements",
+];
+
 export default class AccessToken {
   async getUserAccessToken(): Promise<UserAccessTokenData | undefined> {
-    // TODO: Add parameter for 'scope' and verify cached auth code has same?
     const cachedToken = await UserAccessTokenModel.findOne();
     if (cachedToken) {
-      return cachedToken;
-    }
-    const authCode = await AuthCodeModel.findOne();
-    if (!authCode) {
-      await this.announceMissingAuthCode();
-    } else {
-      const token = await this.fetchUserAccessToken(authCode.code);
-      if (token) {
-        await this.setUserAccessToken(token);
-        return await UserAccessTokenModel.findOne() || undefined;
+      if (JSON.stringify(cachedToken.scope.sort()) === JSON.stringify(USER_SCOPES.sort())) {
+        return cachedToken;
       } else {
+        // Since the cached token has incorrect scope we need to clear it
+        await UserAccessTokenModel.deleteOne();
         await this.announceMissingAuthCode();
+      }
+    } else {
+      const authCode = await AuthCodeModel.findOne();
+      if (!authCode) {
+        await this.announceMissingAuthCode();
+      } else {
+        const token = await this.fetchUserAccessToken(authCode.code);
+        if (token) {
+          await this.setUserAccessToken(token);
+          return await UserAccessTokenModel.findOne() || undefined;
+        } else {
+          await this.announceMissingAuthCode();
+        }
       }
     }
   }
@@ -39,7 +52,7 @@ export default class AccessToken {
       response_type: "code",
       client_id: process.env.CLIENT_ID || "",
       redirect_uri: process.env.AUTH_REDIRECT_URL || "",
-      scope: "moderator:read:chatters moderation:read moderator:manage:banned_users moderator:manage:announcements",
+      scope: USER_SCOPES.join(" "),
       state: "random-uuid"
     });
     await tmi.say(config.channel, `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`);
@@ -121,6 +134,7 @@ export default class AccessToken {
         refreshToken: data.refresh_token,
         tokenType: data.token_type,
         expiresIn: data.expires_in,
+        scope: data.scope,
         updatedAt: Math.floor(Date.now() / 1000),
       },
       { upsert: true },

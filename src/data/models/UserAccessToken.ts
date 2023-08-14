@@ -6,6 +6,7 @@ export interface UserAccessTokenData {
   tokenType: string;
   expiresIn: number;
   updatedAt: number;
+  scope: string[];
 }
 
 export interface UserAccessTokenDoc extends Document, UserAccessTokenData {}
@@ -16,6 +17,7 @@ export const UserAccessTokenSchema: Schema = new mongoose.Schema({
   tokenType: { type: String, required: true },
   expiresIn: { type: Number, required: true },
   updatedAt: { type: Number, required: true },
+  scope: { type: [String], required: true },
 });
 
 export default mongoose.model<UserAccessTokenDoc>("UserAccessToken", UserAccessTokenSchema);
