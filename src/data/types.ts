@@ -164,4 +164,12 @@ export interface DiscordReactionRole {
   message_id: string;
 }
 
+export enum TwitchAnnouncementColor {
+  Blue = 'blue',
+  Green = 'green',
+  Orange = 'orange',
+  Purple = 'purple',
+  Primary = 'primary',
+}
+
 export type MoodEmotes = { [key: string]: string };
