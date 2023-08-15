@@ -3,6 +3,9 @@ import { TwitchUser } from "../../data/types";
 
 export const megaTimeOut = async (): Promise<void> => {
   const currentChatters = await getCurrentChatters();
+  if (currentChatters.length === 0) {
+    return;
+  }
   const currentMods = await getCurrentMods();
   const currentModIds = currentMods.map(c => c.user_id);
   currentChatters.forEach(async (chatter: TwitchUser) => {
