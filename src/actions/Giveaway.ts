@@ -1,6 +1,4 @@
-import { tmi } from "../tmi";
-import { config } from "../config";
-import { getCurrentChatterUserNames } from "../utils/twitchUtils";
+import { announce, getCurrentChatterUserNames } from "../utils/twitchUtils";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
 import {
@@ -11,6 +9,9 @@ import {
   MainframeEvent,
   StartGiveawayPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
+import { TwitchAnnouncementColor } from "../data/types";
+import { config } from "../config";
+import { tmi } from "../tmi";
 
 const sendGiveawayAnnounceEvent = async () => {
   try {
@@ -90,7 +91,10 @@ const sendGiveawayDrawEvent = async (winner: string) => {
       };
 
       WebSocketServer.sendData(drawGiveawayEvent);
-      tmi.say(config.channel, Giveaway.getDrawMessage(winner));
+      announce(
+        `p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`,
+        TwitchAnnouncementColor.Green,
+      );
     } catch (error) {
       console.log(error);
     }
@@ -112,18 +116,6 @@ export default class Giveaway {
     return "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW";
   };
 
-  static getOpenMessage = (): string => {
-    return "p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW";
-  };
-
-  static getCloseMessage = (): string => {
-    return "p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW";
-  };
-
-  static getDrawMessage = (winner: string): string => {
-    return `p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`;
-  };
-
   static getInactiveMessage = (): string => {
     return "p4nth3rTROLL Access denied! There is no giveaway in progress! p4nth3rTROLL";
   };
@@ -135,7 +127,7 @@ export default class Giveaway {
   static getNoEntrantsPresentMessage = (): string => {
     return "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL";
   };
-  
+
   static announce = (): void => {
     sendGiveawayAnnounceEvent();
   };
@@ -169,7 +161,9 @@ export default class Giveaway {
   static draw = async (): Promise<string | null> => {
     const allEntrants: string[] = Array.from(Giveaway.entrants);
     const currentChatters = await getCurrentChatterUserNames();
-    const presentEntrants: string[] = allEntrants.filter((e) => currentChatters.includes(e));
+    const presentEntrants: string[] = allEntrants.filter((e) =>
+      currentChatters.includes(e),
+    );
     if (presentEntrants.length === 0) {
       tmi.say(config.channel, Giveaway.getNoEntrantsPresentMessage());
       return null;

@@ -1,8 +1,6 @@
-import { tmi } from "../../tmi";
-import { config } from "../../config";
 import { getRestOfMessage } from "../../utils/commands";
 import UserManager from "../../users/UserManager";
-import { TwitchChannel } from "../../data/types";
+import { TwitchAnnouncementColor, TwitchChannel } from "../../data/types";
 import {
   MainframeEvent,
   ShoutOutPacket,
@@ -10,6 +8,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
 import Team from "../../users/Team";
+import { announce } from "../../utils/twitchUtils";
 
 export const sendShoutoutEvent = async (
   messageId: string,
@@ -26,9 +25,8 @@ export const sendShoutoutEvent = async (
       );
 
       if (channel) {
-        tmi.say(
-          config.channel,
-          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`,
+        announce(
+          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`, TwitchAnnouncementColor.Purple
         );
 
         const dataToSend: ShoutOutData = {

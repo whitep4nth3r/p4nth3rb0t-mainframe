@@ -123,3 +123,5 @@ NOTES.md
 
 # IntelliJ project files.
 /.idea
+
+.sentryclirc

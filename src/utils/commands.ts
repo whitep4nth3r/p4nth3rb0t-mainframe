@@ -12,7 +12,7 @@ import { ChatUserstate } from "tmi.js";
 import { sendMoodChangeEvent } from "../events/twitch/moods";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
 import Giveaway from "../actions/Giveaway";
-import { ImageDrops } from "../data/types";
+import { ImageDrops, TwitchAnnouncementColor } from "../data/types";
 import { sendMerchEvent } from "../events/twitch/merch";
 import {
   sendBackseatEvent,
@@ -21,6 +21,7 @@ import {
 import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { megaTimeOut } from "./../events/twitch/megatimeout";
+import { announce } from "./twitchUtils";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -41,7 +42,7 @@ export const ExclusiveCommands: Commands = {
 
 export const BroadcasterCommands: Commands = {
   "!freeze": async (tags, message) => {
-    tmi.say(config.channel, "p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
+    announce("p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = true;
     // clear chat
@@ -52,7 +53,7 @@ export const BroadcasterCommands: Commands = {
     sendFreezeEvent();
   },
   "!unfreeze": async (tags, message) => {
-    tmi.say(config.channel, "p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
+    announce("p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = false;
     // deactivate sub only
@@ -263,10 +264,7 @@ export const ChatCommands: Commands = {
   },
   "!theclaw": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      tmi.say(
-        config.channel,
-        "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
-      );
+      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH", TwitchAnnouncementColor.Purple);
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },

@@ -1,11 +1,11 @@
-import { tmi } from "../../tmi";
 import WebsocketServer from "../../WebSocketServer";
 import { config } from "../../config";
 import UserManager from "../../users/UserManager";
 import TwitchFollowerModel from "../../data/models/TwitchFollower";
-import { getActiveBroadcasterStreamByBroadcasterId } from "../../utils/twitchUtils";
+import { announce, getActiveBroadcasterStreamByBroadcasterId } from "../../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
+import { TwitchAnnouncementColor } from "../../data/types";
 
 export const sendBroadcasterFollowEvent = async (
   followerName: string,
@@ -55,10 +55,7 @@ export const sendBroadcasterFollowEvent = async (
               );
 
               // Announce with p4nth3rb0t
-              tmi.say(
-                config.channel,
-                `p4nth3rPEWPEW Welcome to p4nth3rworld, @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
-              );
+              announce(`p4nth3rPEWPEW Welcome to p4nth3rworld, @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`, TwitchAnnouncementColor.Purple);
             }, 3500);
           }
 

@@ -7,7 +7,7 @@ import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
 import { testConfig } from "./../testConfig";
-import { config } from "./config";
+import { announce } from "./utils/twitchUtils";
 
 import "./webhooks";
 
@@ -18,6 +18,7 @@ import "./events/twitch/raids";
 import "./events/twitch/cheers";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";
+import { TwitchAnnouncementColor } from "./data/types";
 
 Database.connect();
 
@@ -43,9 +44,9 @@ async function run() {
     }
 
     // Bot is online 🔥
-    tmi.say(
-      config.channel,
+    announce(
       "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
+      TwitchAnnouncementColor.Primary,
     );
   } catch (error) {
     console.log(error);

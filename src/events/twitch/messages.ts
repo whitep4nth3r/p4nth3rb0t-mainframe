@@ -13,6 +13,7 @@ import {
   TeamMembers,
   TwitchUser,
   MyBadges,
+  TwitchAnnouncementColor,
 } from "../../data/types";
 import UserManager from "../../users/UserManager";
 import Team from "../../users/Team";
@@ -27,6 +28,7 @@ import {
   TeamMemberJoinPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { isSillyQuestion } from "../../utils/sillyQuestions";
+import { announce } from "../../utils/twitchUtils";
 
 let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
@@ -224,14 +226,13 @@ tmi.on(
           tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
         } else {
           Giveaway.open();
-          tmi.say(config.channel, Giveaway.getOpenMessage());
+          announce("p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
         }
       }
 
       if (message === Giveaway.commands.close && !config.FREEZE_MODE) {
         Giveaway.close();
-
-        tmi.say(config.channel, Giveaway.getCloseMessage());
+        announce("p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
       }
 
       if (message === Giveaway.commands.draw && !config.FREEZE_MODE) {
