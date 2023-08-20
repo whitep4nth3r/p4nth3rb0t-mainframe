@@ -116,28 +116,17 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
 };
 
 export const announce = async (
-  message: string,
+  message: string, 
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
-  const accessTokenData = await accessTokenUtil.getUserAccessToken();
-  if (!accessTokenData) return null;
-
-  try {
-    await axios.post(
-      `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`,
-      {
-        message,
-        color,
-      },
-      {
-        headers: {
-          "client-id": process.env.CLIENT_ID,
-          authorization: `Bearer ${accessTokenData.accessToken}`,
-        },
-      },
-    );
-  } catch (error) {
-    console.log(error);
+  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const body = {
+    message,
+    color,
+  }
+  const response = await doPost(url, body);
+  if (response) {
+    console.log(`Successfully announced: ${message}`)
   }
 };
 
