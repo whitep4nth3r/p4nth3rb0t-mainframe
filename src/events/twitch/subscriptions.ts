@@ -6,6 +6,7 @@ import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../../config";
 import { announce } from "../../utils/twitchUtils";
+import { TwitchAnnouncementColor } from "../../data/types";
 
 export const sendSubEvent = async (
   userId: string,
@@ -45,7 +46,7 @@ export const sendSubEvent = async (
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-        announce(`p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`);
+        announce(`p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`, TwitchAnnouncementColor.Primary);
       }, 3500);
     }
   } catch (error) {

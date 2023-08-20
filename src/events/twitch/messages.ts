@@ -13,6 +13,7 @@ import {
   TeamMembers,
   TwitchUser,
   MyBadges,
+  TwitchAnnouncementColor,
 } from "../../data/types";
 import UserManager from "../../users/UserManager";
 import Team from "../../users/Team";
@@ -225,13 +226,13 @@ tmi.on(
           tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
         } else {
           Giveaway.open();
-          announce("p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW");
+          announce("p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
         }
       }
 
       if (message === Giveaway.commands.close && !config.FREEZE_MODE) {
         Giveaway.close();
-        announce("p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW");
+        announce("p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
       }
 
       if (message === Giveaway.commands.draw && !config.FREEZE_MODE) {

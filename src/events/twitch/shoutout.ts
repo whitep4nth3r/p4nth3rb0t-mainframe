@@ -1,6 +1,6 @@
 import { getRestOfMessage } from "../../utils/commands";
 import UserManager from "../../users/UserManager";
-import { TwitchChannel } from "../../data/types";
+import { TwitchAnnouncementColor, TwitchChannel } from "../../data/types";
 import {
   MainframeEvent,
   ShoutOutPacket,
@@ -26,7 +26,7 @@ export const sendShoutoutEvent = async (
 
       if (channel) {
         announce(
-          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`
+          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`, TwitchAnnouncementColor.Purple
         );
 
         const dataToSend: ShoutOutData = {

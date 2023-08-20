@@ -43,11 +43,15 @@ app.get(
     const state = req.query.state;
     // TODO Verify state matches the expected (stored in mongo, with expiry?)
     if (code) {
-      await accessTokenUtil.setAuthCode({
-        code: code as string,
-        scope: scope as string,
-      });
-      console.log("Auth Code saved!");
+      try {
+        await accessTokenUtil.setAuthCode({
+          code: code as string,
+          scope: scope as string,
+        });
+        console.log("Auth Code saved!");
+      } catch (error) {
+        console.log(error);
+      }
     }
     return res.status(200).send();
   }),

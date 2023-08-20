@@ -18,6 +18,7 @@ import "./events/twitch/raids";
 import "./events/twitch/cheers";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";
+import { TwitchAnnouncementColor } from "./data/types";
 
 Database.connect();
 
@@ -43,7 +44,10 @@ async function run() {
     }
 
     // Bot is online 🔥
-    announce("p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW");
+    announce(
+      "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
+      TwitchAnnouncementColor.Primary,
+    );
   } catch (error) {
     console.log(error);
   }

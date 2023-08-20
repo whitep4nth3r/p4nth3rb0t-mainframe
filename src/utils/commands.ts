@@ -12,7 +12,7 @@ import { ChatUserstate } from "tmi.js";
 import { sendMoodChangeEvent } from "../events/twitch/moods";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
 import Giveaway from "../actions/Giveaway";
-import { ImageDrops } from "../data/types";
+import { ImageDrops, TwitchAnnouncementColor } from "../data/types";
 import { sendMerchEvent } from "../events/twitch/merch";
 import {
   sendBackseatEvent,
@@ -264,7 +264,7 @@ export const ChatCommands: Commands = {
   },
   "!theclaw": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH");
+      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH", TwitchAnnouncementColor.Purple);
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
