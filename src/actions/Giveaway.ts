@@ -118,6 +118,10 @@ export default class Giveaway {
     return "p4nth3rTROLL @whitep4nth3r pressed the wrong button. Giveaway is already open! p4nth3rTROLL";
   };
 
+  static getNoEntrantsPresentMessage = (): string => {
+    return "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL";
+  };
+  
   static announce = (): void => {
     sendGiveawayAnnounceEvent();
   };
@@ -149,21 +153,21 @@ export default class Giveaway {
   };
 
   static draw = async (): Promise<string | null> => {
-    const usernamesArray: string[] = Array.from(Giveaway.entrants);
-    const winner =
-      usernamesArray[Math.floor(Math.random() * usernamesArray.length)];
+    const allEntrants: string[] = Array.from(Giveaway.entrants);
     const currentChatters = await getCurrentChatterUserNames();
+    const presentEntrants: string[] = allEntrants.filter((e) => currentChatters.includes(e));
+    if (presentEntrants.length === 0) {
+      tmi.say(config.channel, Giveaway.getNoEntrantsPresentMessage());
+      return null;
+    }
+    const winner =
+      presentEntrants[Math.floor(Math.random() * presentEntrants.length)];
 
     if (winner !== null && winner !== undefined) {
-      if (!currentChatters.includes(winner)) {
-        // if winner is not in current chatters, go around again
-        Giveaway.draw();
-      } else {
-        // return the winner if it is in current chatters
-        sendGiveawayDrawEvent(winner);
-        Giveaway.entrants.delete(winner);
-        return winner;
-      }
+      // return the winner if it is in current chatters
+      sendGiveawayDrawEvent(winner);
+      Giveaway.entrants.delete(winner);
+      return winner;
     }
 
     return null;
