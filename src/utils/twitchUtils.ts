@@ -131,7 +131,7 @@ export const announce = async (
 };
 
 export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcasterId}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcasterId}&moderator_id=${config.broadcaster.user_id}`;
   const response = await doPost(url, null);
 
   if (response) {
