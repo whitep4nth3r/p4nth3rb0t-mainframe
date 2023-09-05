@@ -116,17 +116,17 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
 };
 
 export const announce = async (
-  message: string, 
+  message: string,
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
   const body = {
     message,
     color,
-  }
+  };
   const response = await doPost(url, body);
   if (response) {
-    console.log(`Successfully announced: ${message}`)
+    console.log(`Successfully announced: ${message}`);
   }
 };
 
