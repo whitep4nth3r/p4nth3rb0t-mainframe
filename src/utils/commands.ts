@@ -170,10 +170,10 @@ export const ChatCommands: Commands = {
   },
   "!bs": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      const username = getRestOfMessage(message)[0]
-        .replace("@", "")
-        .toLowerCase();
-      sendBackseatEvent(username);
+      const username = getRestOfMessage(message)[0];
+      if (username !== undefined) {
+        sendBackseatEvent(username.replace("@", "").toLowerCase());
+      }
     }
   },
   "!win": async (tags, message) => {
@@ -264,7 +264,10 @@ export const ChatCommands: Commands = {
   },
   "!theclaw": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      announce("p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH", TwitchAnnouncementColor.Purple);
+      announce(
+        "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
+        TwitchAnnouncementColor.Purple,
+      );
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
