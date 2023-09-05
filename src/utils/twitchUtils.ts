@@ -119,7 +119,7 @@ export const announce = async (
   message: string,
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const body = {
     message,
     color,
