@@ -124,4 +124,5 @@ NOTES.md
 # IntelliJ project files.
 /.idea
 
+# Sentry Auth Token
 .sentryclirc

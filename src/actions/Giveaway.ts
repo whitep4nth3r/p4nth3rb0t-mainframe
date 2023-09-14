@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { announce, getCurrentChatterUserNames } from "../utils/twitchUtils";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
@@ -23,7 +24,7 @@ const sendGiveawayAnnounceEvent = async () => {
 
     WebSocketServer.sendData(giveawayAnnounceEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -37,7 +38,7 @@ const sendGiveawayStartEvent = async () => {
 
     WebSocketServer.sendData(giveawayStartEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -51,7 +52,7 @@ const sendGiveawayEndEvent = async () => {
 
     WebSocketServer.sendData(giveawayEndEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -71,7 +72,7 @@ const sendGiveawayEnterEvent = async (username: string) => {
 
       WebSocketServer.sendData(enterGiveawayEvent);
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   }
 };
@@ -96,7 +97,7 @@ const sendGiveawayDrawEvent = async (winner: string) => {
         TwitchAnnouncementColor.Green,
       );
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   }
 };

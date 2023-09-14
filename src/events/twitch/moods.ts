@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import {
   MoodChangePacket,
   MainframeEvent,
@@ -25,7 +26,7 @@ export const sendMoodChangeEvent = async (mood: string, id: string) => {
     WebSocketServer.sendData(moodChangeEvent);
     Moods.setCurrentMood(mood);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 

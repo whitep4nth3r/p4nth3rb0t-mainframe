@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import axios from "axios";
 import AccessTokenModel, {
   AccessTokenDoc,
@@ -8,7 +9,11 @@ import UserAccessTokenModel, {
   UserAccessTokenDoc,
   UserAccessTokenData,
 } from "../data/models/UserAccessToken";
-import { AccessTokenResponse, AuthCodeResponse, UserAccessTokenResponse } from "../data/types";
+import {
+  AccessTokenResponse,
+  AuthCodeResponse,
+  UserAccessTokenResponse,
+} from "../data/types";
 import { tmi } from "../tmi";
 import { config } from "../config";
 import { URLSearchParams } from "url";
@@ -24,7 +29,10 @@ export default class AccessToken {
   async getUserAccessToken(): Promise<UserAccessTokenData | undefined> {
     const cachedToken = await UserAccessTokenModel.findOne();
     if (cachedToken) {
-      if (JSON.stringify(cachedToken.scope.sort()) === JSON.stringify(USER_SCOPES.sort())) {
+      if (
+        JSON.stringify(cachedToken.scope.sort()) ===
+        JSON.stringify(USER_SCOPES.sort())
+      ) {
         return cachedToken;
       } else {
         // Since the cached token has incorrect scope we need to clear it
@@ -39,7 +47,7 @@ export default class AccessToken {
         const token = await this.fetchUserAccessToken(authCode.code);
         if (token) {
           await this.setUserAccessToken(token);
-          return await UserAccessTokenModel.findOne() || undefined;
+          return (await UserAccessTokenModel.findOne()) || undefined;
         } else {
           await this.announceMissingAuthCode();
         }
@@ -53,29 +61,38 @@ export default class AccessToken {
       client_id: process.env.CLIENT_ID || "",
       redirect_uri: process.env.AUTH_REDIRECT_URL || "",
       scope: USER_SCOPES.join(" "),
-      state: "random-uuid"
+      state: "random-uuid",
     });
-    await tmi.say(config.channel, `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`);
-    console.log(`Please visit: https://id.twitch.tv/oauth2/authorize?${params}`);
+    await tmi.say(
+      config.channel,
+      `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`,
+    );
+    console.log(
+      `Please visit: https://id.twitch.tv/oauth2/authorize?${params}`,
+    );
   }
 
-  async refreshUserAccessToken(accessTokenData: UserAccessTokenData): Promise<boolean> {
+  async refreshUserAccessToken(
+    accessTokenData: UserAccessTokenData,
+  ): Promise<boolean> {
     try {
       const params = {
         grant_type: "refresh_token",
         refresh_token: accessTokenData.refreshToken,
       };
-      const token = await this.invokeTokenEndpoint(params)
+      const token = await this.invokeTokenEndpoint(params);
       if (token) {
         await this.setUserAccessToken(token);
         return true;
       } else {
         // Most likely, Twitch did not accept the refresh token so should clear it
         const deleteResult = await UserAccessTokenModel.deleteOne();
-        console.log(`Failed to refresh token. Cleared token from db: ${deleteResult}`)
+        console.log(
+          `Failed to refresh token. Cleared token from db: ${deleteResult}`,
+        );
       }
     } catch (error: any) {
-      console.log(error);
+      Sentry.captureException(error);
     }
     return false;
   }
@@ -126,7 +143,9 @@ export default class AccessToken {
 
     return setAccessToken;
   }
-  async setUserAccessToken(data: UserAccessTokenResponse): Promise<UserAccessTokenDoc | null> {
+  async setUserAccessToken(
+    data: UserAccessTokenResponse,
+  ): Promise<UserAccessTokenDoc | null> {
     await UserAccessTokenModel.updateOne(
       {},
       {
@@ -175,12 +194,14 @@ export default class AccessToken {
 
       return response.data;
     } catch (error: any) {
-      console.log(error);
+      Sentry.captureException(error);
     }
 
     return undefined;
   }
-  async fetchUserAccessToken(code: string): Promise<UserAccessTokenResponse | undefined> {
+  async fetchUserAccessToken(
+    code: string,
+  ): Promise<UserAccessTokenResponse | undefined> {
     const params = {
       code: code,
       grant_type: "authorization_code",
@@ -189,12 +210,14 @@ export default class AccessToken {
     return this.invokeTokenEndpoint(params);
   }
 
-  async invokeTokenEndpoint(params: any): Promise<UserAccessTokenResponse | undefined> {
+  async invokeTokenEndpoint(
+    params: any,
+  ): Promise<UserAccessTokenResponse | undefined> {
     try {
       const urlParams = new URLSearchParams({
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
-        ...params
+        ...params,
       });
       const response = await axios.post<UserAccessTokenResponse>(
         `https://id.twitch.tv/oauth2/token?${urlParams}`,
@@ -202,7 +225,7 @@ export default class AccessToken {
 
       return response.data;
     } catch (error: any) {
-      console.log(error);
+      Sentry.captureException(error);
     }
 
     return undefined;

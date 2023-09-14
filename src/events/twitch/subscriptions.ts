@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import WebSocketServer from "../../WebSocketServer";
 import { tmi } from "../../tmi";
 import { Userstate } from "tmi.js";
@@ -46,11 +47,14 @@ export const sendSubEvent = async (
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-        announce(`p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`, TwitchAnnouncementColor.Primary);
+        announce(
+          `p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
+          TwitchAnnouncementColor.Primary,
+        );
       }, 3500);
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 

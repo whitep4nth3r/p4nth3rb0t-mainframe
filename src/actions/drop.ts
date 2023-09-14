@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { config } from "../config";
 import WebSocketServer from "../WebSocketServer";
 import UserManager from "../users/UserManager";
@@ -23,7 +24,7 @@ export const sendWeatherTrailEvent = async (trailing: boolean) => {
 
     WebSocketServer.sendData(weatherTrailEvent);
   } catch (error) {
-    console.log(Error);
+    Sentry.captureException(error);
   }
 };
 
@@ -43,7 +44,7 @@ export const sendDropUserEvent = async (userId: string, messageId: string) => {
       WebSocketServer.sendData(dropUserEvent);
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -70,7 +71,7 @@ export const sendDropEmotesEvent = (
 
     WebSocketServer.sendData(emotesEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -86,7 +87,7 @@ export const sendWeatherEvent = (weatherType: string, messageId: string) => {
 
     WebSocketServer.sendData(weatherEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -106,7 +107,7 @@ export const sendYeetEvent = async (userName: string, messageId: string) => {
       WebSocketServer.sendData(yeetUserEvent);
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -122,6 +123,6 @@ export const sendImageDropEvent = async (type: string, messageId: string) => {
 
     WebSocketServer.sendData(imageDropEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };

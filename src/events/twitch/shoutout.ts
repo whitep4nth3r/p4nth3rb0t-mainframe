@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { getRestOfMessage } from "../../utils/commands";
 import UserManager from "../../users/UserManager";
 import { TwitchAnnouncementColor, TwitchChannel } from "../../data/types";
@@ -26,7 +27,8 @@ export const sendShoutoutEvent = async (
 
       if (channel) {
         announce(
-          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`, TwitchAnnouncementColor.Purple
+          `p4nth3rPEWPEW Go check out ${user.display_name} at https://www.twitch.tv/${user.login} and give them some panther PEW PEWS! They were last seen streaming: ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`,
+          TwitchAnnouncementColor.Purple,
         );
 
         const dataToSend: ShoutOutData = {
@@ -48,6 +50,6 @@ export const sendShoutoutEvent = async (
       }
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };

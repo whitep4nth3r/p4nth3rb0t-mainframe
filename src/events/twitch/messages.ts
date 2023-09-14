@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import WebSocketServer from "../../WebSocketServer";
 import { ChatUserstate } from "tmi.js";
@@ -45,7 +46,7 @@ const sendTimeoutUserEvent = async (userId: string) => {
 
     WebSocketServer.sendData(timeoutUserEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -61,7 +62,7 @@ const sendBanUserEvent = async (userId: string) => {
 
     WebSocketServer.sendData(bannedUserEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -77,7 +78,7 @@ const sendDeletedMessageEvent = async (messageId: string) => {
 
     WebSocketServer.sendData(deletedChatMessageEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -91,7 +92,7 @@ const sendChatMessageEvent = async (data: ChatMessageData) => {
 
     WebSocketServer.sendData(chatMessageEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -111,7 +112,7 @@ const sendteamMemberJoinEvent = async (teamMember: TwitchUser) => {
       WebSocketServer.sendData(teamMemberJoin);
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -226,13 +227,19 @@ tmi.on(
           tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
         } else {
           Giveaway.open();
-          announce("p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
+          announce(
+            "p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW",
+            TwitchAnnouncementColor.Primary,
+          );
         }
       }
 
       if (message === Giveaway.commands.close && !config.FREEZE_MODE) {
         Giveaway.close();
-        announce("p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW", TwitchAnnouncementColor.Primary);
+        announce(
+          "p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW",
+          TwitchAnnouncementColor.Primary,
+        );
       }
 
       if (message === Giveaway.commands.draw && !config.FREEZE_MODE) {

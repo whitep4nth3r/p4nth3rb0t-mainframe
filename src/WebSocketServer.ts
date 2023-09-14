@@ -12,7 +12,7 @@ interface ExtWebSocket extends WebSocket {
 export default class WebsocketServer {
   static wsServer: WebSocket.Server;
 
-  static create() {
+  static create(): void {
     this.wsServer = new WebSocket.Server({ server: webServer });
 
     this.wsServer.on("connection", (ws: ExtWebSocket) => {
@@ -52,7 +52,7 @@ export default class WebsocketServer {
     return this.wsServer;
   }
 
-  static sendData(data: Packet) {
+  static sendData(data: Packet): void {
     this.wsServer.clients.forEach((client) => {
       client.send(JSON.stringify(data));
     });

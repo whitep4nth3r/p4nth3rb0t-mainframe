@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import { config } from "../../config";
 import { BackseatPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
@@ -17,7 +18,7 @@ export const sendClearBackSeatEvent = async () => {
 
     WebSocketServer.sendData(backseatEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -40,10 +41,10 @@ export const sendBackseatEvent = async (username: string) => {
         WebSocketServer.sendData(backseatEvent);
       }
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   } else {
-    console.log("Known chatters: " + currentChatters)
+    console.log("Known chatters: " + currentChatters);
     sendClearBackSeatEvent();
     tmi.say(
       config.channel,
