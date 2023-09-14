@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import axios from "axios";
 import AccessToken from "../classes/AccessToken";
 import { TwitchChannel, TeamResponse, TeamMembers } from "../data/types";
@@ -31,7 +32,7 @@ export default class Team {
 
         return response.data.data[0];
       } catch (error) {
-        console.log(error);
+        Sentry.captureException(error);
       }
     }
 
@@ -61,7 +62,7 @@ export default class Team {
 
         return response.data.data[0].users;
       } catch (error) {
-        console.log(error);
+        Sentry.captureException(error);
       }
     }
 

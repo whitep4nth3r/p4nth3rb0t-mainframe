@@ -1,7 +1,14 @@
+import * as Sentry from "@sentry/node";
 import axios from "axios";
 import AccessToken from "./classes/AccessToken";
 import { config } from "./config";
-import { TeamMembers, TwitchUser, EventSubscriptionResponse, EventSubDefinition, EventSubType } from "./data/types";
+import {
+  TeamMembers,
+  TwitchUser,
+  EventSubscriptionResponse,
+  EventSubDefinition,
+  EventSubType,
+} from "./data/types";
 import Team from "./users/Team";
 
 const accessTokenUtil = new AccessToken();
@@ -10,7 +17,9 @@ const accessTokenUtil = new AccessToken();
 
 const eventSubApiUrl = "https://api.twitch.tv/helix/eventsub/subscriptions";
 
-async function getAllSubscriptions(): Promise<EventSubscriptionResponse | undefined> {
+async function getAllSubscriptions(): Promise<
+  EventSubscriptionResponse | undefined
+> {
   const accessTokenData = await accessTokenUtil.get();
   if (accessTokenData) {
     try {
@@ -23,8 +32,8 @@ async function getAllSubscriptions(): Promise<EventSubscriptionResponse | undefi
       });
       return response.data;
     } catch (err) {
-      console.error(err);
-    } 
+      Sentry.captureException(err);
+    }
   }
   return;
 }
@@ -41,8 +50,8 @@ async function deleteSubscription(id: string) {
         },
       });
     } catch (err) {
-      console.error(err);
-    } 
+      Sentry.captureException(err);
+    }
   }
 }
 
@@ -52,18 +61,18 @@ async function registerEventSub(definition: EventSubDefinition) {
 
     if (accessTokenData) {
       const data = {
-        "type": definition.eventType,
-        "version": "1",
-        "condition": {
-          "broadcaster_user_id": definition.userId
+        type: definition.eventType,
+        version: "1",
+        condition: {
+          broadcaster_user_id: definition.userId,
         },
-        "transport": {
-          "method": "webhook",
-          "callback": definition.callbackUrl,
-          "secret": "sup3rs3cr3t"
+        transport: {
+          method: "webhook",
+          callback: definition.callbackUrl,
+          secret: "sup3rs3cr3t",
         },
       };
-  
+
       try {
         const response = await axios.post(eventSubApiUrl, data, {
           headers: {
@@ -72,33 +81,49 @@ async function registerEventSub(definition: EventSubDefinition) {
             "Content-Type": "application/json",
           },
         });
-        console.log(`Registered: ${definition.userId} ${definition.eventType} ${definition.callbackUrl}`)
+        console.log(
+          `Registered: ${definition.userId} ${definition.eventType} ${definition.callbackUrl}`,
+        );
       } catch (err) {
-        console.error("FAILED>>>>");
-        console.dir(definition);
-      }  
+        Sentry.captureException(err);
+      }
     }
   }
 }
 
-function createDefinition(type: EventSubType, callbackUrl: string, userId: string): EventSubDefinition {
+function createDefinition(
+  type: EventSubType,
+  callbackUrl: string,
+  userId: string,
+): EventSubDefinition {
   return {
     eventType: type,
     userId: userId,
-    callbackUrl: callbackUrl
-  }
+    callbackUrl: callbackUrl,
+  };
 }
 
 function createStreamerOfflineDefinition(userId: string) {
-  return createDefinition(EventSubType.StreamOffline, `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`, userId);
+  return createDefinition(
+    EventSubType.StreamOffline,
+    `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`,
+    userId,
+  );
 }
 
 function createStreamerOnlineDefinition(userId: string) {
-  return createDefinition(EventSubType.StreamOnline, `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`, userId);
+  return createDefinition(
+    EventSubType.StreamOnline,
+    `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`,
+    userId,
+  );
 }
 
-function callbackUrlAllowed(url: string):boolean {
-  const allowedUrls = (process.env.ALLOWED_CALLBACK_URLS ?? "").split(",").map((s) => s.trim()).filter((s) => s !== "");
+function callbackUrlAllowed(url: string): boolean {
+  const allowedUrls = (process.env.ALLOWED_CALLBACK_URLS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s !== "");
   return allowedUrls.find((value) => url.startsWith(value)) !== undefined;
 }
 
@@ -115,7 +140,7 @@ function callbackUrlAllowed(url: string):boolean {
       const def: EventSubDefinition = {
         eventType: eventSub.type as EventSubType,
         userId: eventSub.condition.broadcaster_user_id,
-        callbackUrl: eventSub.transport.callback
+        callbackUrl: eventSub.transport.callback,
       };
       if (eventSub.transport.callback.startsWith(myCallbackUrl)) {
         existingSubs.add(JSON.stringify(def));
@@ -126,7 +151,7 @@ function callbackUrlAllowed(url: string):boolean {
       }
     });
   }
-  console.log("My existing subscriptions:")
+  console.log("My existing subscriptions:");
   console.dir(existingSubs);
   console.log("Deletable: ");
   console.dir(deletableSubIds);
@@ -135,31 +160,35 @@ function callbackUrlAllowed(url: string):boolean {
 
   // Delete all subscriptions with callback urls not explicitly allowed
   deletableSubIds.forEach(async (id) => await deleteSubscription(id));
-  
+
   // Register for new follower events
   const followDefinition: EventSubDefinition = {
     eventType: EventSubType.ChannelFollow,
     userId: config.broadcaster.user_id,
-    callbackUrl: `${myCallbackUrl}/broadcaster/follow`
+    callbackUrl: `${myCallbackUrl}/broadcaster/follow`,
   };
   if (existingSubs.has(JSON.stringify(followDefinition))) {
     console.log("Already subscribed to follow events");
   } else {
     await registerEventSub(followDefinition);
   }
-  
+
   // Register any team member stream listeners that are not already registered
   const teamMembers: TeamMembers = await Team.getMembers();
   teamMembers.forEach(async (member: TwitchUser) => {
     const offlineDefinition = createStreamerOfflineDefinition(member.user_id);
     if (existingSubs.has(JSON.stringify(offlineDefinition))) {
-      console.log("Already subscribed to streamer offline for " + member.user_name);
+      console.log(
+        "Already subscribed to streamer offline for " + member.user_name,
+      );
     } else {
       await registerEventSub(offlineDefinition);
     }
     const onlineDefinition = createStreamerOnlineDefinition(member.user_id);
     if (existingSubs.has(JSON.stringify(onlineDefinition))) {
-      console.log("Already subscribed to streamer online for " + member.user_name);
+      console.log(
+        "Already subscribed to streamer online for " + member.user_name,
+      );
     } else {
       await registerEventSub(onlineDefinition);
     }

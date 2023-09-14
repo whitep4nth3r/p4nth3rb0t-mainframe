@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import WebSocketServer from "../../WebSocketServer";
 import { config } from "../../config";
@@ -38,7 +39,7 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
         sendShoutoutEvent(user.id, `!so ${user.login}`);
       }, 7000);
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   }
 };

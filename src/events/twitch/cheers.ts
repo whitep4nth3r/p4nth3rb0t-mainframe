@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import WebSocketServer from "../../WebSocketServer";
 import { ChatUserstate } from "tmi.js";
@@ -32,7 +33,7 @@ const sendCheerEvent = async (
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
       }, 3500);
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   }
 };
