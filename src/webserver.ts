@@ -22,7 +22,7 @@ Sentry.init({
   enabled: true, // might toggle this conditionally at some point
   dsn: process.env.SENTRY_DSN,
   debug: process.env.NODE_ENV !== "production" ? true : false,
-  release: "add-sentry", //todo automate this??
+  release: "p4nth3rb0t@" + process.env.npm_package_version,
   environment: process.env.NODE_ENV,
   sampleRate: 1.0,
   maxBreadcrumbs: 100,
