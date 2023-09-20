@@ -1,4 +1,7 @@
+import * as Sentry from "@sentry/node";
+import { ProfilingIntegration } from "@sentry/profiling-node";
 import express, { Request, Response } from "express";
+
 import cors from "cors";
 import http from "http";
 import bodyParser from "body-parser";
@@ -14,6 +17,30 @@ const accessTokenUtil = new AccessToken();
 
 const app = express();
 app.use(bodyParser.json());
+
+Sentry.init({
+  enabled: true, // might toggle this conditionally at some point
+  dsn: process.env.SENTRY_DSN,
+  debug: process.env.NODE_ENV !== "production" ? true : false,
+  release: process.env.npm_package_version,
+  environment: process.env.NODE_ENV,
+  sampleRate: 1.0,
+  maxBreadcrumbs: 100,
+  sendClientReports: true,
+  integrations: [
+    new Sentry.Integrations.LocalVariables({
+      captureAllExceptions: true, // https://docs.sentry.io/platforms/node/configuration/integrations/default-integrations/
+    }),
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Sentry.Integrations.Express({ app }),
+    new ProfilingIntegration(),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 0.5,
+  profilesSampleRate: 0.5,
+});
 
 if (process.env.NODE_ENV !== "production") {
   app.use(
@@ -35,6 +62,12 @@ function verifySignature(req: Request) {
   return signature === actualSignature;
 }
 
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
+
 app.get(
   "/authcode",
   asyncWrapper(async (req: Request, res: Response) => {
@@ -50,7 +83,7 @@ app.get(
         });
         console.log("Auth Code saved!");
       } catch (error) {
-        console.log(error);
+        Sentry.captureException(error);
       }
     }
     return res.status(200).send();
@@ -118,5 +151,8 @@ app.post(
 app.use("/", (req: Request, res: Response) => {
   res.send("🔥 Welcome to the p4nth3rb0t mainframe");
 });
+
+// The error handler must be registered before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 export const webServer = http.createServer(app);

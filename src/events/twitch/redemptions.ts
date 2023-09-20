@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../../config";
@@ -21,7 +22,7 @@ export const sendNumeronymEvent = async (isActive: boolean) => {
 
     WebSocketServer.sendData(numeronymEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 

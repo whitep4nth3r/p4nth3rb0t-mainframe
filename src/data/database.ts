@@ -6,9 +6,6 @@ const connect = () => {
   if (conn_string) {
     mongoose.connect(conn_string, {
       authSource: "admin",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
     });
     const db = mongoose.connection;
     db.on("error", console.error.bind(console, "connection error:"));

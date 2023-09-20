@@ -1,5 +1,5 @@
 import "./env";
-
+import * as Sentry from "@sentry/node";
 import Database from "./data/database";
 
 import { webServer } from "./webserver";
@@ -49,7 +49,7 @@ async function run() {
       TwitchAnnouncementColor.Primary,
     );
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 }
 

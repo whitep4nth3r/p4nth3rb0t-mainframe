@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import axios, { AxiosResponse } from "axios";
 import AccessToken from "../classes/AccessToken";
 import type {
@@ -13,7 +14,7 @@ import { UserAccessTokenData } from "../data/models/UserAccessToken";
 const accessTokenUtil = new AccessToken();
 
 interface CallResult {
-  response: AxiosResponse<any> | undefined;
+  response: AxiosResponse<unknown> | undefined;
   status: number;
 }
 
@@ -116,17 +117,17 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
 };
 
 export const announce = async (
-  message: string, 
+  message: string,
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
   const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
   const body = {
     message,
     color,
-  }
+  };
   const response = await doPost(url, body);
   if (response) {
-    console.log(`Successfully announced: ${message}`)
+    console.log(`Successfully announced: ${message}`);
   }
 };
 
@@ -149,8 +150,8 @@ const doGet = async (url: string): Promise<AxiosResponse<any> | undefined> => {
 
 const doPost = async (
   url: string,
-  body: any,
-): Promise<AxiosResponse<any> | undefined> => {
+  body: unknown,
+): Promise<AxiosResponse<unknown> | undefined> => {
   const callable = async (token: UserAccessTokenData) => {
     return await attemptDoPost(url, body, token);
   };
@@ -163,7 +164,7 @@ const callWithUserAccessToken = async (
 ) => {
   let accessTokenData = await accessTokenUtil.getUserAccessToken();
   if (!accessTokenData) {
-    console.error("Failed to acquire User Access Token");
+    Sentry.captureMessage("Failed to acquire User Access Token");
     return;
   }
   let result = await callable(accessTokenData);
@@ -176,7 +177,7 @@ const callWithUserAccessToken = async (
       );
       accessTokenData = await accessTokenUtil.getUserAccessToken();
       if (!accessTokenData) {
-        console.error("Failed to acquire User Access Token");
+        Sentry.captureMessage("Failed to acquire User Access Token");
         return;
       }
       result = await callable(accessTokenData);

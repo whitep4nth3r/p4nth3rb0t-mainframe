@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { TwitchUser } from "../../data/types";
 import {
   TheClawPacket,
@@ -38,6 +39,6 @@ export const sendTheClawEvent = async () => {
 
     WebSocketServer.sendData(clawEvent);
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };

@@ -1,12 +1,25 @@
+import * as Sentry from "@sentry/node";
 import WebSocketServer from "../../WebSocketServer";
 import { tmi } from "../../tmi";
-import { Userstate } from "tmi.js";
+import { SubGiftUserstate, SubUserstate } from "tmi.js";
 import UserManager from "../../users/UserManager";
 import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../../config";
 import { announce } from "../../utils/twitchUtils";
 import { TwitchAnnouncementColor } from "../../data/types";
+
+const getSubPlan = (subPlan: string | undefined): string => {
+  if (subPlan === "Prime") {
+    return "Prime";
+  }
+
+  if (subPlan) {
+    return (parseInt(subPlan) / 1000).toString();
+  }
+
+  return "Unknown";
+};
 
 export const sendSubEvent = async (
   userId: string,
@@ -46,11 +59,14 @@ export const sendSubEvent = async (
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-        announce(`p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`, TwitchAnnouncementColor.Primary);
+        announce(
+          `p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
+          TwitchAnnouncementColor.Primary,
+        );
       }, 3500);
     }
   } catch (error) {
-    console.log(error);
+    Sentry.captureException(error);
   }
 };
 
@@ -112,19 +128,21 @@ tmi.on(
     streakMonths: number,
     recipient: string,
     methods: Record<string, unknown>,
-    userstate: Userstate,
+    userstate: SubGiftUserstate,
   ) => {
+    const recipientUserName = userstate["msg-param-recipient-user-name"];
+
     if (!config.FREEZE_MODE) {
-      sendSubEvent(
-        userstate["user-id"] as string,
-        userstate["msg-param-recipient-user-name"],
-        userstate["id"] as string,
-        "",
-        userstate["msg-param-sub-plan"] === "Prime"
-          ? "Prime"
-          : (userstate["msg-param-sub-plan"] / 1000).toString(),
-        true,
-      );
+      if (typeof recipientUserName === "string") {
+        sendSubEvent(
+          userstate["user-id"] as string,
+          recipientUserName,
+          userstate["id"] as string,
+          "",
+          getSubPlan(userstate["msg-param-sub-plan"]),
+          true,
+        );
+      }
     }
   },
 );
@@ -136,7 +154,7 @@ tmi.on(
     username: string,
     methods: Record<string, unknown>,
     message: string,
-    userstate: Userstate,
+    userstate: SubUserstate,
   ) => {
     if (!config.FREEZE_MODE) {
       sendSubEvent(
@@ -144,9 +162,7 @@ tmi.on(
         userstate["display-name"] as string,
         userstate["id"] as string,
         message,
-        userstate["msg-param-sub-plan"] === "Prime"
-          ? "Prime"
-          : (userstate["msg-param-sub-plan"] / 1000).toString(),
+        getSubPlan(userstate["msg-param-sub-plan"]),
       );
     }
   },
@@ -159,7 +175,7 @@ tmi.on(
     username: string,
     months: number,
     message: string,
-    userstate: Userstate,
+    userstate: SubUserstate,
     methods: Record<string, unknown>,
   ) => {
     if (!config.FREEZE_MODE) {
@@ -168,9 +184,7 @@ tmi.on(
         userstate["display-name"] as string,
         userstate["id"] as string,
         message,
-        userstate["msg-param-sub-plan"] === "Prime"
-          ? "Prime"
-          : (userstate["msg-param-sub-plan"] / 1000).toString(),
+        getSubPlan(userstate["msg-param-sub-plan"]),
         false,
         months,
       );
