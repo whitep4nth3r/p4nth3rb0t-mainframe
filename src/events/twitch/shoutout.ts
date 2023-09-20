@@ -9,7 +9,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
 import Team from "../../users/Team";
-import { announce } from "../../utils/twitchUtils";
+import { announce, shoutOut } from "../../utils/twitchUtils";
 
 export const sendShoutoutEvent = async (
   messageId: string,
@@ -47,6 +47,8 @@ export const sendShoutoutEvent = async (
         };
 
         WebSocketServer.sendData(shoutOutEvent);
+
+        shoutOut(user.id);
       }
     }
   } catch (error) {

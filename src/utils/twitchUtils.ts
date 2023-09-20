@@ -29,7 +29,7 @@ export const getCurrentMods = async (): Promise<TwitchUser[]> => {
 };
 
 export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
-  const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
   const response = await doGet(url);
   if (response) {
     const chatters = response.data.data;
@@ -46,7 +46,7 @@ export const getCurrentChatterUserNames = async (): Promise<string[]> => {
 export const timeoutUserFor60Seconds = async (
   userId: string,
 ): Promise<void> => {
-  const url = `https://api.twitch.tv/helix/moderation/bans?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const url = `https://api.twitch.tv/helix/moderation/bans?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
   const body = {
     data: {
       user_id: userId,
@@ -120,7 +120,7 @@ export const announce = async (
   message: string,
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
   const body = {
     message,
     color,
@@ -128,6 +128,19 @@ export const announce = async (
   const response = await doPost(url, body);
   if (response) {
     console.log(`Successfully announced: ${message}`);
+  } else {
+    Sentry.captureException(`Failed to announce ${message}`);
+  }
+};
+
+export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
+  const url = `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcasterId}&moderator_id=${config.bot.user_id}`;
+  const response = await doPost(url, null);
+
+  if (response) {
+    console.log(`Shoutout to ${toBroadcasterId}`);
+  } else {
+    Sentry.captureException(`Failed to shoutout ${toBroadcasterId}`);
   }
 };
 
