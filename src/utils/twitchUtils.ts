@@ -128,6 +128,8 @@ export const announce = async (
   const response = await doPost(url, body);
   if (response) {
     console.log(`Successfully announced: ${message}`);
+  } else {
+    Sentry.captureException(`Failed to announce ${message}`);
   }
 };
 
@@ -137,6 +139,8 @@ export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
 
   if (response) {
     console.log(`Shoutout to ${toBroadcasterId}`);
+  } else {
+    Sentry.captureException(`Failed to shoutout ${toBroadcasterId}`);
   }
 };
 
