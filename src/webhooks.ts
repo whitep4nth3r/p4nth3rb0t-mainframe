@@ -117,11 +117,13 @@ function createDefinition(
   type: EventSubType,
   callbackUrl: string,
   userId: string,
+  version: string,
 ): EventSubDefinition {
   return {
     eventType: type,
     userId: userId,
     callbackUrl: callbackUrl,
+    version: version,
   };
 }
 
@@ -130,6 +132,7 @@ function createStreamerOfflineDefinition(userId: string) {
     EventSubType.StreamOffline,
     `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`,
     userId,
+    "1",
   );
 }
 
@@ -138,6 +141,7 @@ function createStreamerOnlineDefinition(userId: string) {
     EventSubType.StreamOnline,
     `${process.env.TWITCH_API_CALLBACK_URL}/team/${userId}`,
     userId,
+    "1",
   );
 }
 
@@ -163,6 +167,7 @@ function callbackUrlAllowed(url: string): boolean {
         eventType: eventSub.type as EventSubType,
         userId: eventSub.condition.broadcaster_user_id,
         callbackUrl: eventSub.transport.callback,
+        version: eventSub.version,
       };
       if (eventSub.transport.callback.startsWith(myCallbackUrl)) {
         existingSubs.add(JSON.stringify(def));
@@ -188,9 +193,10 @@ function callbackUrlAllowed(url: string): boolean {
     eventType: EventSubType.ChannelFollow,
     userId: config.broadcaster.user_id,
     callbackUrl: `${myCallbackUrl}/broadcaster/follow`,
+    version: "2",
   };
   if (existingSubs.has(JSON.stringify(followDefinition))) {
-    console.log("Already subscribed to follow events");
+    console.log("Already subscribed to follow events version 2");
   } else {
     await registerEventSub(followDefinition);
   }
