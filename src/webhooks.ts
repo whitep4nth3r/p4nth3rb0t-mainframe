@@ -55,12 +55,24 @@ async function deleteSubscription(id: string) {
   }
 }
 
-async function registerEventSub(definition: EventSubDefinition) {
-  if (process.env.TWITCH_API_CALLBACK_URL) {
-    const accessTokenData = await accessTokenUtil.get();
-
-    if (accessTokenData) {
-      const data = {
+function generateEventData(definition: EventSubDefinition) {
+  switch (definition.eventType) {
+    case EventSubType.ChannelFollow:
+      return {
+        type: definition.eventType,
+        version: "2",
+        condition: {
+          broadcaster_user_id: definition.userId,
+          moderator_user_id: definition.userId,
+        },
+        transport: {
+          method: "webhook",
+          callback: definition.callbackUrl,
+          secret: "sup3rs3cr3t",
+        },
+      };
+    default:
+      return {
         type: definition.eventType,
         version: "1",
         condition: {
@@ -72,6 +84,15 @@ async function registerEventSub(definition: EventSubDefinition) {
           secret: "sup3rs3cr3t",
         },
       };
+  }
+}
+
+async function registerEventSub(definition: EventSubDefinition) {
+  if (process.env.TWITCH_API_CALLBACK_URL) {
+    const accessTokenData = await accessTokenUtil.get();
+
+    if (accessTokenData) {
+      const data = generateEventData(definition);
 
       try {
         const response = await axios.post(eventSubApiUrl, data, {
@@ -81,6 +102,7 @@ async function registerEventSub(definition: EventSubDefinition) {
             "Content-Type": "application/json",
           },
         });
+
         console.log(
           `Registered: ${definition.userId} ${definition.eventType} ${definition.callbackUrl}`,
         );

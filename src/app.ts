@@ -43,9 +43,11 @@ async function run() {
       }, 5000);
     }
 
+    const announceMessage = process.env.NODE_ENV === "development" ? "I AM IN DEV MODE" : "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW";
+
     // Bot is online 🔥
     announce(
-      "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW",
+      announceMessage,
       TwitchAnnouncementColor.Primary,
     );
   } catch (error) {
