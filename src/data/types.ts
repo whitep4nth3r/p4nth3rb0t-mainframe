@@ -72,6 +72,7 @@ export interface EventSubDefinition {
   userId: string;
   eventType: EventSubType;
   callbackUrl: string;
+  version: string;
 }
 
 export interface EventSubscription {
@@ -165,11 +166,11 @@ export interface DiscordReactionRole {
 }
 
 export enum TwitchAnnouncementColor {
-  Blue = 'blue',
-  Green = 'green',
-  Orange = 'orange',
-  Purple = 'purple',
-  Primary = 'primary',
+  Blue = "blue",
+  Green = "green",
+  Orange = "orange",
+  Purple = "purple",
+  Primary = "primary",
 }
 
 export type MoodEmotes = { [key: string]: string };
