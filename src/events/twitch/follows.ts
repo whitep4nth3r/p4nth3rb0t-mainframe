@@ -20,7 +20,9 @@ export const sendBroadcasterFollowEvent = async (
   });
 
   if (existingFollower) {
-    console.log("🚨 EXISTING FOLLOWER DETECTED! 🚨");
+    console.log(
+      `🚨 EXISTING FOLLOWER ${existingFollower.userDisplayName} DETECTED! 🚨`,
+    );
   }
 
   if (!existingFollower) {
