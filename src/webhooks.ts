@@ -95,6 +95,7 @@ async function registerEventSub(definition: EventSubDefinition) {
       const data = generateEventData(definition);
 
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const response = await axios.post(eventSubApiUrl, data, {
           headers: {
             Authorization: `Bearer ${accessTokenData.accessToken}`,
