@@ -29,7 +29,7 @@ export const getCurrentMods = async (): Promise<TwitchUser[]> => {
 };
 
 export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
-  const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/chatters?first=1000&broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const response = await doGet(url);
   if (response) {
     const chatters = response.data.data;
@@ -46,7 +46,7 @@ export const getCurrentChatterUserNames = async (): Promise<string[]> => {
 export const timeoutUserFor60Seconds = async (
   userId: string,
 ): Promise<void> => {
-  const url = `https://api.twitch.tv/helix/moderation/bans?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/moderation/bans?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const body = {
     data: {
       user_id: userId,
@@ -120,11 +120,12 @@ export const announce = async (
   message: string,
   color?: TwitchAnnouncementColor,
 ): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${config.broadcaster.user_id}&moderator_id=${config.broadcaster.user_id}`;
   const body = {
     message,
     color,
   };
+
   const response = await doPost(url, body);
   if (response) {
     console.log(`Successfully announced: ${message}`);
@@ -134,7 +135,7 @@ export const announce = async (
 };
 
 export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
-  const url = `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcasterId}&moderator_id=${config.bot.user_id}`;
+  const url = `https://api.twitch.tv/helix/chat/shoutouts?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${toBroadcasterId}&moderator_id=${config.broadcaster.user_id}`;
   const response = await doPost(url, null);
 
   if (response) {
@@ -167,11 +168,14 @@ const callWithUserAccessToken = async (
   callable: (token: UserAccessTokenData) => Promise<CallResult>,
 ) => {
   let accessTokenData = await accessTokenUtil.getUserAccessToken();
+
   if (!accessTokenData) {
     Sentry.captureMessage("Failed to acquire User Access Token");
     return;
   }
+
   let result = await callable(accessTokenData);
+
   if (result.status == 401) {
     console.info("Token was not accepted. Trying to refresh it.");
     const ok = await accessTokenUtil.refreshUserAccessToken(accessTokenData);
@@ -180,10 +184,12 @@ const callWithUserAccessToken = async (
         "Refresh was successful. Loading the new token from storage.",
       );
       accessTokenData = await accessTokenUtil.getUserAccessToken();
+
       if (!accessTokenData) {
         Sentry.captureMessage("Failed to acquire User Access Token");
         return;
       }
+
       result = await callable(accessTokenData);
     }
   }

@@ -21,6 +21,7 @@ import { URLSearchParams } from "url";
 export const USER_SCOPES: string[] = [
   "moderator:read:chatters",
   "moderation:read",
+  "moderator:read:followers",
   "moderator:manage:banned_users",
   "moderator:manage:announcements",
   "moderator:manage:shoutouts",
