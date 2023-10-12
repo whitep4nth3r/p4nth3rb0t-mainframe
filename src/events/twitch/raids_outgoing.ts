@@ -33,8 +33,6 @@ export const sendRaidEvent = async (
           data: dataToSend,
         };
 
-        console.log(outgoingRaidEvent);
-
         WebSocketServer.sendData(outgoingRaidEvent);
       }
     }
