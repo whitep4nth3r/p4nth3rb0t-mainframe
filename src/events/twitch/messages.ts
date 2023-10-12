@@ -150,12 +150,7 @@ tmi.on(
 
 tmi.on(
   "chat",
-  async (
-    channel: string,
-    tags: ChatUserstate,
-    message: string,
-    self: boolean,
-  ) => {
+  async (channel: string, tags: ChatUserstate, message: string) => {
     if (config.ignoredUsers.includes(tags.username as string)) {
       return;
     }

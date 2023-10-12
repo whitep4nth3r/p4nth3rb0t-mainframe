@@ -5,6 +5,7 @@ import type {
   TwitchAnnouncementColor,
   GameByIdResponse,
   StreamByBroadcasterIdResponse,
+  TwitchRaidResponse,
   TwitchUser,
   VideoByUserIdResponse,
 } from "../data/types";
@@ -17,6 +18,33 @@ interface CallResult {
   response: AxiosResponse<unknown> | undefined;
   status: number;
 }
+
+interface StartRaidResponse {
+  status: number;
+  data: [];
+}
+
+export const startRaid = async (
+  to_broadcaster_id: string,
+): Promise<StartRaidResponse> => {
+  const url = `https://api.twitch.tv/helix/raids?from_broadcaster_id=${config.broadcaster.user_id}&to_broadcaster_id=${to_broadcaster_id}`;
+
+  const response = await doPost(url, null);
+
+  if (response) {
+    const twitchData = response.data as TwitchRaidResponse;
+
+    return {
+      status: response.status,
+      data: twitchData.data,
+    };
+  }
+
+  return {
+    status: 500,
+    data: [],
+  };
+};
 
 export const getCurrentMods = async (): Promise<TwitchUser[]> => {
   const url = `https://api.twitch.tv/helix/moderation/moderators?first=100&broadcaster_id=${config.broadcaster.user_id}`;
@@ -53,6 +81,7 @@ export const timeoutUserFor60Seconds = async (
       duration: "60",
     },
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const response = await doPost(url, body);
 };
 
