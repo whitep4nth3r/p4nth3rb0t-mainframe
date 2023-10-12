@@ -112,6 +112,10 @@ export interface TwitchUserResponse {
   data: FullTwitchUser[];
 }
 
+export interface TwitchRaidResponse {
+  data: [];
+}
+
 export interface MyBadges extends Badges {
   founder?: string;
 }

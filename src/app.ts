@@ -14,7 +14,7 @@ import "./webhooks";
 import "./events/twitch/messages";
 import "./events/twitch/follows";
 import "./events/twitch/subscriptions";
-import "./events/twitch/raids";
+import "./events/twitch/raids_incoming";
 import "./events/twitch/cheers";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";
@@ -43,13 +43,15 @@ async function run() {
       }, 5000);
     }
 
-    const announceMessage = process.env.NODE_ENV === "development" ? "I AM IN DEV MODE" : "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW";
+    const announceMessage =
+      process.env.NODE_ENV === "development"
+        ? "I AM IN DEV MODE"
+        : "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW";
 
     // Bot is online 🔥
-    announce(
-      announceMessage,
-      TwitchAnnouncementColor.Primary,
-    );
+    if (process.env.NODE_ENV !== "development") {
+      announce(announceMessage, TwitchAnnouncementColor.Primary);
+    }
   } catch (error) {
     Sentry.captureException(error);
   }

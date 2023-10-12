@@ -20,6 +20,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
     "import/no-unresolved": "error",
     "import/extensions": [1, "never", { ".js": "never", ".ts": "never" }]
   },

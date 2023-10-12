@@ -11,6 +11,7 @@ import {
 import { ChatUserstate } from "tmi.js";
 import { sendMoodChangeEvent } from "../events/twitch/moods";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
+import { sendRaidEvent } from "../events/twitch/raids_outgoing";
 import Giveaway from "../actions/Giveaway";
 import { ImageDrops, TwitchAnnouncementColor } from "../data/types";
 import { sendMerchEvent } from "../events/twitch/merch";
@@ -37,6 +38,9 @@ type Commands = {
 export const ExclusiveCommands: Commands = {
   "!megatimeout": async (tags, message) => {
     await megaTimeOut();
+  },
+  "!raid": async (tags, message) => {
+    sendRaidEvent(tags["id"] as string, message);
   },
 };
 

@@ -25,6 +25,7 @@ export const USER_SCOPES: string[] = [
   "moderator:manage:banned_users",
   "moderator:manage:announcements",
   "moderator:manage:shoutouts",
+  "channel:manage:raids",
 ];
 
 export default class AccessToken {
