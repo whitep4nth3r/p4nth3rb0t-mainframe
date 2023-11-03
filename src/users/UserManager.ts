@@ -1,6 +1,8 @@
 import axios from "axios";
 import AccessToken from "../classes/AccessToken";
 import { FullTwitchUser } from "../data/types";
+import { tmi } from "../tmi";
+import { config } from "../config";
 
 const accessTokenUtil = new AccessToken();
 
@@ -43,6 +45,11 @@ export default class UserManager {
           },
         },
       );
+
+      if (response.data.data.length === 0) {
+        tmi.say(config.channel, "User not found, @whitep4nth3r made a typo");
+        return undefined;
+      }
 
       this.cache.set(login, response.data.data[0]);
 
