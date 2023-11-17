@@ -3,14 +3,16 @@ import { tmi } from "../../tmi";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../../config";
 import { sendMoodChangeEvent } from "./moods";
+import UserManager from "../../users/UserManager";
 import {
   NumeronymPacket,
   MainframeEvent,
+  FirstPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
 import { MoodEmotes } from "../../data/types";
 
-export const sendNumeronymEvent = async (isActive: boolean) => {
+const sendNumeronymEvent = async (isActive: boolean) => {
   try {
     const numeronymEvent: NumeronymPacket = {
       event: MainframeEvent.numeronym,
@@ -21,6 +23,30 @@ export const sendNumeronymEvent = async (isActive: boolean) => {
     };
 
     WebSocketServer.sendData(numeronymEvent);
+  } catch (error) {
+    Sentry.captureException(error);
+  }
+};
+
+const sendFirstEvent = async (username: string, message: string) => {
+  try {
+    const user = await UserManager.getUserByLogin(username);
+
+    if (user) {
+      const firstEvent: FirstPacket = {
+        event: MainframeEvent.first,
+        id: Math.random().toString(),
+        data: {
+          username,
+          logoUrl: user.profile_image_url,
+          message,
+        },
+      };
+
+      console.log(firstEvent);
+
+      WebSocketServer.sendData(firstEvent);
+    }
   } catch (error) {
     Sentry.captureException(error);
   }
@@ -62,6 +88,9 @@ tmi.on(
             setTimeout(async () => {
               sendNumeronymEvent(false);
             }, 300000);
+            break;
+          case "first":
+            sendFirstEvent(tags["username"] as string, message);
             break;
           default:
             return null;

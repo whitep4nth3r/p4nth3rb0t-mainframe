@@ -110,6 +110,7 @@ const config: Config = {
   },
   channelRedemptions: {
     "a5ac6965-dd33-4d09-8787-a177debc6e14": "numeronym",
+    "e1f0c758-e1d3-447a-a050-b87b9aae70da": "first",
   },
 };
 
