@@ -28,7 +28,7 @@ import {
   MainframeEvent,
   TeamMemberJoinPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import { isSillyQuestion } from "../../utils/sillyQuestions";
+// import { isSillyQuestion } from "../../utils/sillyQuestions";
 import { announce } from "../../utils/twitchUtils";
 
 let possibleTeamMember: TwitchUser | undefined;
@@ -275,12 +275,12 @@ tmi.on(
     }
 
     if (!config.FREEZE_MODE) {
-      if (isSillyQuestion(message)) {
-        tmi.say(
-          config.channel,
-          `p4nth3rPEWPEW Hi there ${tags.username}! You can use the following commands in chat to find out more: !project, !today, !who`,
-        );
-      }
+      // if (isSillyQuestion(message)) {
+      //   tmi.say(
+      //     config.channel,
+      //     `p4nth3rPEWPEW Hi there ${tags.username}! You can use the following commands in chat to find out more: !project, !today, !who`,
+      //   );
+      // }
 
       const possibleCommand: string =
         getCommandFromMessage(message).toLowerCase();
