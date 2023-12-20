@@ -124,7 +124,7 @@ export interface GameByIdResponse {
   name: string;
 }
 
-export interface VideoByUserIdResponse {
+export interface TwitchVideo {
   id: string;
   thumbnail_url: string;
   duration: string;

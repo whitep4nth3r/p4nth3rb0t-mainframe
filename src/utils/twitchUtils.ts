@@ -7,7 +7,7 @@ import type {
   StreamByBroadcasterIdResponse,
   TwitchRaidResponse,
   TwitchUser,
-  VideoByUserIdResponse,
+  TwitchVideo,
 } from "../data/types";
 import { config } from "../config";
 import { UserAccessTokenData } from "../data/models/UserAccessToken";
@@ -107,7 +107,7 @@ export const fetchGameById = async (
 
 export const fetchVideoByUserId = async (
   user_id: string,
-): Promise<VideoByUserIdResponse | null> => {
+): Promise<TwitchVideo | null> => {
   const accessTokenData = await accessTokenUtil.get();
   if (!accessTokenData) return null;
 

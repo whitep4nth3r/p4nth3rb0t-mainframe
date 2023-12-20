@@ -16,6 +16,18 @@ import {
 } from "./utils/twitchUtils";
 import type { StreamInfo } from "./data/types";
 
+const getTwitchVodTimestampInSeconds = (
+  date_now: Date,
+  date_started: Date,
+): string => {
+  const date_now_s = date_now.getTime() / 1000;
+  const date_started_s = date_started.getTime() / 1000;
+
+  const seconds_ago = Math.round(date_now_s - date_started_s);
+
+  return `${seconds_ago}s`;
+};
+
 export const discord = new Discord.Client({
   partials: [Partials.User, Partials.Reaction, Partials.Message],
   intents: [
@@ -51,19 +63,35 @@ export const createTechHelpThread = async (
   message: string,
 ) => {
   try {
-    const newHelpPost = await helpChannel.threads.create({
-      name: `${twitchUsername} asked a question on Twitch!`,
-      message: {
-        content: message,
-      },
-      appliedTags: [TWITCH_TTS_TAG_ID],
-      reason: "TTS redemption on whitep4nth3r's stream",
-    });
-
-    tmi.say(
-      config.channel,
-      `Thanks @${twitchUsername}! Your question has been posted to The Claw Discord for discussion. View it here: https://discord.com/channels/${newHelpPost.guildId}/${newHelpPost.id}`,
+    const liveStream = await getActiveBroadcasterStreamByBroadcasterId(
+      config.broadcaster.user_id,
     );
+
+    if (liveStream !== null) {
+      const vod = await fetchVideoByUserId(config.broadcaster.user_id);
+      if (vod !== null) {
+        const streamStartTime = new Date(liveStream.started_at);
+        const now = new Date();
+
+        const vodLink = `https://www.twitch.tv/videos/${
+          vod.id
+        }?t=${getTwitchVodTimestampInSeconds(now, streamStartTime)}`;
+
+        const newHelpPost = await helpChannel.threads.create({
+          name: `${twitchUsername} asked a question on Twitch!`,
+          message: {
+            content: `${message} \n\n [👀 View the VOD timestamp](${vodLink})`,
+          },
+          appliedTags: [TWITCH_TTS_TAG_ID],
+          reason: "TTS redemption on whitep4nth3r's stream",
+        });
+
+        tmi.say(
+          config.channel,
+          `Thanks @${twitchUsername}! Your question has been posted to The Claw Discord for discussion. View it here: https://discord.com/channels/${newHelpPost.guildId}/${newHelpPost.id}`,
+        );
+      }
+    }
   } catch (error) {
     Sentry.captureException(error);
   }
