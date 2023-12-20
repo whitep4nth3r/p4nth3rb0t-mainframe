@@ -80,7 +80,7 @@ export const createTechHelpThread = async (
         const newHelpPost = await helpChannel.threads.create({
           name: `${twitchUsername} asked a question on Twitch!`,
           message: {
-            content: `${message} \n\n [👀 View the VOD timestamp](${vodLink})`,
+            content: `${message} \n\n 👀 [View the VOD timestamp](${vodLink})`,
           },
           appliedTags: [TWITCH_TTS_TAG_ID],
           reason: "TTS redemption on whitep4nth3r's stream",
