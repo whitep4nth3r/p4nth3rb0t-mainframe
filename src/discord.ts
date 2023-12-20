@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import UserManager from "./users/UserManager";
+import { tmi } from "./tmi";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, {
   EmbedBuilder,
@@ -50,7 +51,7 @@ export const createTechHelpThread = async (
   message: string,
 ) => {
   try {
-    const createThread = await helpChannel.threads.create({
+    const newHelpPost = await helpChannel.threads.create({
       name: `${twitchUsername} asked a question on Twitch!`,
       message: {
         content: message,
@@ -58,6 +59,13 @@ export const createTechHelpThread = async (
       appliedTags: [TWITCH_TTS_TAG_ID],
       reason: "TTS redemption on whitep4nth3r's stream",
     });
+
+    console.log(newHelpPost);
+
+    tmi.say(
+      config.channel,
+      `Thanks @${twitchUsername}! Your question has been posted to The Claw Discord for discussion. View it here: https://discord.com/channels/${newHelpPost.guildId}/${newHelpPost.id}`,
+    );
   } catch (error) {
     Sentry.captureException(error);
   }
