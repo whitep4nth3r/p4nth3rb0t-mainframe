@@ -1,7 +1,13 @@
+import * as Sentry from "@sentry/node";
 import UserManager from "./users/UserManager";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
-import Discord, { EmbedBuilder, escapeMarkdown, GatewayIntentBits, Partials } from "discord.js";
-import type { TextChannel } from "discord.js";
+import Discord, {
+  EmbedBuilder,
+  escapeMarkdown,
+  GatewayIntentBits,
+  Partials,
+} from "discord.js";
+import type { TextChannel, ForumChannel } from "discord.js";
 import { config } from "./config";
 import {
   fetchVideoByUserId,
@@ -10,11 +16,7 @@ import {
 import type { StreamInfo } from "./data/types";
 
 export const discord = new Discord.Client({
-  partials: [
-    Partials.User,
-    Partials.Reaction,
-    Partials.Message,
-  ],
+  partials: [Partials.User, Partials.Reaction, Partials.Message],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
@@ -23,7 +25,10 @@ export const discord = new Discord.Client({
   ],
 });
 
+const TWITCH_TTS_TAG_ID = "1186989607770923129";
+
 let announcementsChannel: TextChannel;
+let helpChannel: ForumChannel;
 
 import "./events/discord/messageReactionAdd";
 import "./events/discord/messageReactionRemove";
@@ -34,7 +39,29 @@ discord.on("ready", async () => {
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId,
   )) as TextChannel;
+
+  helpChannel = (await discord.channels.fetch(
+    config.discord.techHelpChannelId,
+  )) as ForumChannel;
 });
+
+export const createTechHelpThread = async (
+  twitchUsername: string,
+  message: string,
+) => {
+  try {
+    const createThread = await helpChannel.threads.create({
+      name: `${twitchUsername} asked a question on Twitch!`,
+      message: {
+        content: message,
+      },
+      appliedTags: [TWITCH_TTS_TAG_ID],
+      reason: "TTS redemption on whitep4nth3r's stream",
+    });
+  } catch (error) {
+    Sentry.captureException(error);
+  }
+};
 
 export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
   if (announcementsChannel) {

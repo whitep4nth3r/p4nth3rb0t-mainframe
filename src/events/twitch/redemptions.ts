@@ -1,9 +1,11 @@
+import { discord } from "./../../discord";
 import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../../config";
 import { sendMoodChangeEvent } from "./moods";
 import UserManager from "../../users/UserManager";
+import { createTechHelpThread } from "../../discord";
 import {
   NumeronymPacket,
   MainframeEvent,
@@ -90,8 +92,10 @@ tmi.on(
             }, 300000);
             break;
           case "first":
-            sendFirstEvent(tags["username"] as string, message);
+            await sendFirstEvent(tags["username"] as string, message);
             break;
+          case "tts-to-discord":
+            await createTechHelpThread(tags["username"] as string, message);
           default:
             return null;
         }
