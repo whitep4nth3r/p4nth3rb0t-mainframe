@@ -30,6 +30,7 @@ interface Config {
     liveAnnouncementColorOnline: Discord.ColorResolvable;
     liveAnnouncementColorOffline: Discord.ColorResolvable;
     liveAnnouncementImageSize: string;
+    techHelpChannelId: string;
     reactionRole: DiscordReactionRole[];
   };
   moodRedemptions: {
@@ -84,6 +85,7 @@ const config: Config = {
     liveAnnouncementColorOnline: "#84AE39",
     liveAnnouncementColorOffline: "#AE8439",
     liveAnnouncementImageSize: "1280x720",
+    techHelpChannelId: "1006450043089326201",
     reactionRole: [
       {
         role_id: "756956508234842145",
@@ -111,6 +113,7 @@ const config: Config = {
   channelRedemptions: {
     "a5ac6965-dd33-4d09-8787-a177debc6e14": "numeronym",
     "e1f0c758-e1d3-447a-a050-b87b9aae70da": "first",
+    "eae4c969-1ff0-424f-84c8-7585e7ed86f1": "tts-to-discord",
   },
 };
 
