@@ -58,6 +58,8 @@ discord.on("ready", async () => {
   )) as ForumChannel;
 });
 
+const POST_TITLE_CHAR_LIMIT = 100;
+
 export const createTechHelpThread = async (
   twitchUsername: string,
   message: string,
@@ -77,10 +79,22 @@ export const createTechHelpThread = async (
           vod.id
         }?t=${getTwitchVodTimestampInSeconds(now, streamStartTime)}`;
 
+        const postTitle =
+          message.length > POST_TITLE_CHAR_LIMIT
+            ? message.slice(0, POST_TITLE_CHAR_LIMIT - 3) + "..."
+            : message;
+
+        const contentMeta = `Question asked by ${twitchUsername} on Twitch. \n\n👀 [View the VOD timestamp](${vodLink})`;
+
+        const messageContent =
+          message.length > POST_TITLE_CHAR_LIMIT
+            ? `Full question: ${message} \n\n ${contentMeta}`
+            : contentMeta;
+
         const newHelpPost = await helpChannel.threads.create({
-          name: `${twitchUsername} asked a question on Twitch!`,
+          name: postTitle,
           message: {
-            content: `${message} \n\n 👀 [View the VOD timestamp](${vodLink})`,
+            content: messageContent,
           },
           appliedTags: [TWITCH_TTS_TAG_ID],
           reason: "TTS redemption on whitep4nth3r's stream",

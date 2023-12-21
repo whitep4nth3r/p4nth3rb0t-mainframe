@@ -111,18 +111,23 @@ export const fetchVideoByUserId = async (
   const accessTokenData = await accessTokenUtil.get();
   if (!accessTokenData) return null;
 
-  const response = await axios.get(
-    `https://api.twitch.tv/helix/videos?user_id=${user_id}&first=1`,
-    {
-      headers: {
-        accept: "application/vnd.twitchtv.v5+json",
-        "client-id": process.env.CLIENT_ID,
-        authorization: `Bearer ${accessTokenData.accessToken}`,
+  try {
+    const response = await axios.get(
+      `https://api.twitch.tv/helix/videos?user_id=${user_id}&first=1`,
+      {
+        headers: {
+          accept: "application/vnd.twitchtv.v5+json",
+          "client-id": process.env.CLIENT_ID,
+          authorization: `Bearer ${accessTokenData.accessToken}`,
+        },
       },
-    },
-  );
+    );
+    return response.data.data[0];
+  } catch (error) {
+    console.log(error);
+  }
 
-  return response.data.data[0];
+  return null;
 };
 
 export const getActiveBroadcasterStreamByBroadcasterId = async (
@@ -131,18 +136,23 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
   const accessTokenData = await accessTokenUtil.get();
   if (!accessTokenData) return null;
 
-  const response = await axios.get(
-    `https://api.twitch.tv/helix/streams?user_id=${user_id}`,
-    {
-      headers: {
-        accept: "application/vnd.twitchtv.v5+json",
-        "client-id": process.env.CLIENT_ID,
-        authorization: `Bearer ${accessTokenData.accessToken}`,
+  try {
+    const response = await axios.get(
+      `https://api.twitch.tv/helix/streams?user_id=${user_id}`,
+      {
+        headers: {
+          accept: "application/vnd.twitchtv.v5+json",
+          "client-id": process.env.CLIENT_ID,
+          authorization: `Bearer ${accessTokenData.accessToken}`,
+        },
       },
-    },
-  );
+    );
 
-  return response.data.data[0];
+    return response.data.data[0];
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
 };
 
 export const announce = async (
