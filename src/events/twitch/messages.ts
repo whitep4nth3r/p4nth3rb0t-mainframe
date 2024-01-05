@@ -27,12 +27,55 @@ import {
   DeletedChatMessagePacket,
   MainframeEvent,
   TeamMemberJoinPacket,
+  TimeToTailwindPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 // import { isSillyQuestion } from "../../utils/sillyQuestions";
-import { announce } from "../../utils/twitchUtils";
+import {
+  announce,
+  getActiveBroadcasterStreamByBroadcasterId,
+} from "../../utils/twitchUtils";
 
 let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
+let tailwind_found = false;
+
+const sendTailwindEvent = async (user_id: string) => {
+  try {
+    const liveStream = await getActiveBroadcasterStreamByBroadcasterId(
+      config.broadcaster.user_id,
+    );
+    if (liveStream !== null) {
+      const streamStartTime = new Date(liveStream.started_at).valueOf();
+      const now = new Date().valueOf();
+
+      const timeInMs = now - streamStartTime;
+
+      const tailwindTime = new Date(timeInMs);
+
+      const timeToSend = `${tailwindTime.getUTCHours()}h ${tailwindTime.getUTCMinutes()}m ${tailwindTime.getUTCSeconds()}s`;
+
+      const user = await UserManager.getUserById(user_id as string);
+
+      if (user !== undefined) {
+        const tailwindEvent: TimeToTailwindPacket = {
+          event: MainframeEvent.timeToTailwind,
+          id: user_id,
+          data: {
+            time: timeToSend,
+            user: {
+              logoUrl: user.profile_image_url,
+              name: user.login,
+            },
+          },
+        };
+
+        WebSocketServer.sendData(tailwindEvent);
+      }
+    }
+  } catch (error) {
+    Sentry.captureException(error);
+  }
+};
 
 const sendTimeoutUserEvent = async (userId: string) => {
   try {
@@ -302,6 +345,11 @@ tmi.on(
           : false;
 
         const user = await UserManager.getUserById(tags["user-id"] as string);
+
+        if (!tailwind_found && message.toLowerCase().includes("tailwind")) {
+          tailwind_found = true;
+          sendTailwindEvent(tags["user-id"] as string);
+        }
 
         if (user) {
           const chatMessageData: ChatMessageData = {
