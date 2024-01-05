@@ -248,9 +248,10 @@ tmi.on(
 
       if (message === "!reset") {
         teamMembersGreeted.splice(0, teamMembersGreeted.length);
+        tailwind_found = false;
         tmi.say(
           config.channel,
-          `${config.team.displayName} greetings cache has been reset. Current length of cache is ${teamMembersGreeted.length}.`,
+          `${config.team.displayName} greetings cache and time to tailwind boolean has been reset. Current length of cache is ${teamMembersGreeted.length}.`,
         );
       }
 
