@@ -69,6 +69,11 @@ const sendTailwindEvent = async (user_id: string) => {
           },
         };
 
+        announce(
+          `It took ${timeToSend} for @${user.login} to say tailwind Kappa`,
+          TwitchAnnouncementColor.Blue,
+        );
+
         WebSocketServer.sendData(tailwindEvent);
       }
     }
