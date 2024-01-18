@@ -59,10 +59,6 @@ export const sendSubEvent = async (
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
-        announce(
-          `p4nth3rPEWPEW Thank you for your subscription to p4nth3rworld, @${username}! p4nth3rPEWPEW`,
-          TwitchAnnouncementColor.Primary,
-        );
       }, 3500);
     }
   } catch (error) {
