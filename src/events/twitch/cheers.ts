@@ -6,6 +6,7 @@ import UserManager from "../../users/UserManager";
 import { CheerPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../../config";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const sendCheerEvent = async (
   bitCount: string,
@@ -38,15 +39,17 @@ const sendCheerEvent = async (
   }
 };
 
-tmi.on(
-  "cheer",
-  (channel: string, userstate: ChatUserstate, message: string) => {
-    if (!config.FREEZE_MODE) {
-      sendCheerEvent(
-        userstate["bits"] as string,
-        userstate["id"] as string,
-        userstate["username"] as string,
-      );
-    }
-  },
-);
+tmi.on("cheer", (channel: string, userstate: ChatUserstate) => {
+  if (!config.FREEZE_MODE) {
+    spawn({
+      type: SpawnEventType.Cheer,
+      data: { bits: Number(userstate["bits"]) },
+    });
+
+    sendCheerEvent(
+      userstate["bits"] as string,
+      userstate["id"] as string,
+      userstate["username"] as string,
+    );
+  }
+});

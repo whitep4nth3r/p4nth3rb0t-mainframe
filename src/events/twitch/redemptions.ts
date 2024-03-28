@@ -1,11 +1,10 @@
-import { discord } from "./../../discord";
+import { createTechHelpThread } from "./../../discord";
 import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../../config";
 import { sendMoodChangeEvent } from "./moods";
 import UserManager from "../../users/UserManager";
-import { createTechHelpThread } from "../../discord";
 import {
   NumeronymPacket,
   MainframeEvent,
@@ -13,6 +12,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
 import { MoodEmotes } from "../../data/types";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const sendNumeronymEvent = async (isActive: boolean) => {
   try {
@@ -73,17 +73,18 @@ const MoodEmotesForChatResponse: MoodEmotes = {
 
 tmi.on(
   "message",
-  async (
-    channel: string,
-    tags: ChatUserstate,
-    message: string,
-    self: boolean,
-  ) => {
+  async (channel: string, tags: ChatUserstate, message: string) => {
     const rewardId: string = tags["custom-reward-id"];
 
     if (!config.FREEZE_MODE) {
       if (Object.keys(config.channelRedemptions).includes(rewardId)) {
-        switch (config.channelRedemptions[rewardId]) {
+        const rewardName = config.channelRedemptions[rewardId];
+        spawn({
+          type: SpawnEventType.Redeem,
+          data: { reward: rewardName },
+        });
+
+        switch (rewardName) {
           case "numeronym":
             sendNumeronymEvent(true);
 
@@ -96,6 +97,7 @@ tmi.on(
             break;
           case "tts-to-discord":
             await createTechHelpThread(tags["username"] as string, message);
+            break;
           default:
             return null;
         }

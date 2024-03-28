@@ -10,6 +10,7 @@ import {
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { TwitchAnnouncementColor } from "../../data/types";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 export const sendBroadcasterFollowEvent = async (
   followerName: string,
@@ -32,6 +33,8 @@ export const sendBroadcasterFollowEvent = async (
     const broadcasterStream = await getActiveBroadcasterStreamByBroadcasterId(
       config.broadcaster.user_id,
     );
+
+    spawn({ type: SpawnEventType.Follow, data: { username: followerName } });
 
     if (broadcasterStream) {
       const user = await UserManager.getUserById(followerUserId as string);
