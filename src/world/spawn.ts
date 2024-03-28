@@ -76,16 +76,14 @@ export function spawn(event: EventData): void {
     } 🌍`,
   );
 
-  switch (event.type) {
-    case SpawnEventType.Follow:
-      console.log(`Follow from ${event.data.username}`);
+  // todo - add a !claim function for users
+  // save what they have claimed in DB
 
-      break;
-    case SpawnEventType.Cheer:
-      console.log(`${event.data.bits} bits received`);
+  // add a !move function for users to move around zones
+  // save user's zone positions
+  // users can only claim when they are in that zone
 
-      break;
-    default:
-      console.log("Unknown event");
-  }
+  // add a !check function for users to check what's in their inventory
+
+  // add a !leaderboard function to see who's got the most?
 }
