@@ -6,8 +6,7 @@ import UserManager from "../../users/UserManager";
 import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../../config";
-import { announce } from "../../utils/twitchUtils";
-import { TwitchAnnouncementColor } from "../../data/types";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const getSubPlan = (subPlan: string | undefined): string => {
   if (subPlan === "Prime") {
@@ -130,6 +129,10 @@ tmi.on(
 
     if (!config.FREEZE_MODE) {
       if (typeof recipientUserName === "string") {
+        spawn({
+          type: SpawnEventType.Sub,
+          data: { username: recipientUserName },
+        });
         sendSubEvent(
           userstate["user-id"] as string,
           recipientUserName,
@@ -153,6 +156,11 @@ tmi.on(
     userstate: SubUserstate,
   ) => {
     if (!config.FREEZE_MODE) {
+      spawn({
+        type: SpawnEventType.Sub,
+        data: { username: userstate["display-name"] as string },
+      });
+
       sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,
