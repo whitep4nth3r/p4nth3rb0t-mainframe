@@ -1,18 +1,28 @@
-export default [
+export const PantherworldZones = [
   {
     id: 1,
-    name: "City Zone",
+    name: "city",
   },
   {
     id: 2,
-    name: "Forest Zone",
+    name: "forest",
   },
   {
     id: 3,
-    name: "Mountain Zone",
+    name: "mountain",
   },
   {
     id: 4,
-    name: "Desert Zone",
+    name: "desert",
   },
 ];
+
+export function isValidPantherworldZone(input: string): boolean {
+  let isValid = false;
+  PantherworldZones.forEach((zone) => {
+    if (input === zone.name) {
+      isValid = true;
+    }
+  });
+  return isValid;
+}
