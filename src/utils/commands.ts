@@ -23,6 +23,8 @@ import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { megaTimeOut } from "./../events/twitch/megatimeout";
 import { announce } from "./twitchUtils";
+import { isValidPantherworldZone } from "../world/zones";
+import { movePlayer, locatePlayer } from "../world/playerActions";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -273,6 +275,22 @@ export const ChatCommands: Commands = {
         TwitchAnnouncementColor.Purple,
       );
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
+    }
+  },
+  "!move": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      const zone = getRestOfMessage(message)[0];
+      const isValid = isValidPantherworldZone(zone);
+      if (isValid) {
+        await movePlayer(tags["user-id"] as string, zone);
+      } else {
+        tmi.say(config.channel, `❌ Move failed: zone is void`);
+      }
+    }
+  },
+  "!locate": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      await locatePlayer(tags["user-id"] as string);
     }
   },
 };
