@@ -3,25 +3,23 @@ import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 
-export async function locatePlayer(userId: string): Promise<void> {
-  const user = await UserManager.getUserById(userId as string);
-
-  if (user) {
-    const entry = await PantherworldPlayerModel.findOne({
-      userId: userId,
-    });
-    console.log(entry);
-    if (entry) {
-      tmi.say(
-        config.channel,
-        `📍 @${user.display_name}: you are in the ${entry.zone} zone`,
-      );
-    } else {
-      tmi.say(
-        config.channel,
-        `❌ @${user.display_name}: you are not in p4ntherw0rld... yet`,
-      );
-    }
+export async function locatePlayer(
+  userId: string,
+  displayName: string,
+): Promise<void> {
+  const entry = await PantherworldPlayerModel.findOne({
+    userId: userId,
+  });
+  if (entry) {
+    tmi.say(
+      config.channel,
+      `📍 @${entry.userDisplayName}: you are in the ${entry.zone} zone`,
+    );
+  } else {
+    tmi.say(
+      config.channel,
+      `❌ @${displayName}: you are not in p4ntherw0rld... yet`,
+    );
   }
 }
 

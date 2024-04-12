@@ -290,7 +290,10 @@ export const ChatCommands: Commands = {
   },
   "!locate": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      await locatePlayer(tags["user-id"] as string);
+      await locatePlayer(
+        tags["user-id"] as string,
+        tags["display-name"] as string,
+      );
     }
   },
 };
