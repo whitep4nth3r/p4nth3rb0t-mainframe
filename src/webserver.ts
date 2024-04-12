@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 Sentry.init({
   enabled: true, // might toggle this conditionally at some point
-  dsn: process.env.SENTRY_DSN,
+  dsn: process.env.NODE_ENV === "production" ? process.env.SENTRY_DSN : "",
   debug: process.env.NODE_ENV !== "production" ? true : false,
   release: process.env.npm_package_version,
   environment: process.env.NODE_ENV,
@@ -75,7 +75,7 @@ app.get(
   asyncWrapper(async (req: Request, res: Response) => {
     const code = req.query.code;
     const scope = req.query.scope;
-    const state = req.query.state;
+
     // TODO Verify state matches the expected (stored in mongo, with expiry?)
     if (code) {
       try {
