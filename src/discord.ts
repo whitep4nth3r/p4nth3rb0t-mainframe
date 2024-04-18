@@ -165,7 +165,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       }
 
       await DiscordAnnouncementModel.updateOne(
-        { memberId: streamInfo.broadcaster_user_id },
+      { memberId: streamInfo.broadcaster_user_id }
         {
           memberId: streamInfo.broadcaster_user_id,
           messageId: message.id,

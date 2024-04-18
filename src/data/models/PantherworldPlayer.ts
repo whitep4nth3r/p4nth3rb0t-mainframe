@@ -6,7 +6,9 @@ export interface PantherworldPlayerData {
   zone: string;
 }
 
-export interface PantherworldPlayerDoc extends Document, PantherworldPlayerData {}
+export interface PantherworldPlayerDoc
+  extends Document,
+    PantherworldPlayerData {}
 
 export const PantherworldPlayerSchema: Schema = new mongoose.Schema({
   userId: { type: String, required: true, unique: true },
