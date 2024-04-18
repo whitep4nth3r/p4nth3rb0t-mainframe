@@ -1,8 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { PantherworldZoneNames } from "../../world/zones";
 
 export interface PantherworldItemData {
   name: string;
-  zone: string;
+  zone: keyof typeof PantherworldZoneNames; //?????
   userId: string;
 }
 

@@ -70,7 +70,7 @@ export async function spawn(event: EventData): Promise<void> {
   //todo rare items should spawn in zones where they are fewer people
   const spawnZone = getRandomEntry(PantherworldZones);
 
-  await saveItem(itemToSpawn, spawnZone.name);
+  await saveItem(itemToSpawn.name, spawnZone.name);
 
   /**
    * when users type !move {zone}
