@@ -24,7 +24,13 @@ import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { megaTimeOut } from "./../events/twitch/megatimeout";
 import { announce } from "./twitchUtils";
 import { isValidPantherworldZone } from "../world/zones";
-import { movePlayer, locatePlayer } from "../world/playerActions";
+import {
+  movePlayer,
+  locatePlayer,
+  claimItem,
+  getInventory,
+} from "../world/playerActions";
+import { saveItem } from "../world/itemActions";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -47,6 +53,12 @@ export const ExclusiveCommands: Commands = {
 };
 
 export const BroadcasterCommands: Commands = {
+  // "!test": async () => {
+  //   await saveItem("anotherItem", "forest"); // DO NOT COMMIT
+  // },
+  // "!testclaim": async () => {
+  //   await claimItem("anotherItem", "469006291", "whitep4nth3r"); // DO NOT COMMIT
+  // },
   "!freeze": async (tags, message) => {
     announce("p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
     // toggle FREEZE_MODE
@@ -291,6 +303,24 @@ export const ChatCommands: Commands = {
   "!locate": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       await locatePlayer(
+        tags["user-id"] as string,
+        tags["display-name"] as string,
+      );
+    }
+  },
+  "!claim": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      const item = getRestOfMessage(message)[0];
+      await claimItem(
+        item,
+        tags["user-id"] as string,
+        tags["display-name"] as string,
+      );
+    }
+  },
+  "!inventory": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      await getInventory(
         tags["user-id"] as string,
         tags["display-name"] as string,
       );

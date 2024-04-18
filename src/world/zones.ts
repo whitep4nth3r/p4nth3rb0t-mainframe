@@ -1,19 +1,22 @@
+export enum PantherworldZoneNames {
+  City = "city",
+  Forest = "forest",
+  Mountain = "mountain",
+  Desert = "desert",
+}
+
 export const PantherworldZones = [
   {
-    id: 1,
-    name: "city",
+    name: PantherworldZoneNames.City,
   },
   {
-    id: 2,
-    name: "forest",
+    name: PantherworldZoneNames.Forest,
   },
   {
-    id: 3,
-    name: "mountain",
+    name: PantherworldZoneNames.Mountain,
   },
   {
-    id: 4,
-    name: "desert",
+    name: PantherworldZoneNames.Desert,
   },
 ];
 

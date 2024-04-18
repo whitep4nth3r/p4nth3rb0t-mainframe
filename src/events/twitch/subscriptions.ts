@@ -183,6 +183,10 @@ tmi.on(
     methods: Record<string, unknown>,
   ) => {
     if (!config.FREEZE_MODE) {
+      spawn({
+        type: SpawnEventType.Sub,
+        data: { username: userstate["display-name"] as string },
+      });
       sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,

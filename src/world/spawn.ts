@@ -1,5 +1,6 @@
 import { config } from "../config";
 import { getRandomEntry } from "../utils/getRandomEntry";
+import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 
 export enum SpawnEventType {
@@ -62,24 +63,14 @@ function calculateEligibleItems(rarity: number): any[] {
   return otherRarityItems;
 }
 
-export function spawn(event: EventData): void {
+export async function spawn(event: EventData): Promise<void> {
   const rarity = calculateEventRarity(event);
   const eligibleItems = calculateEligibleItems(rarity);
   const itemToSpawn = getRandomEntry(eligibleItems);
   //todo rare items should spawn in zones where they are fewer people
   const spawnZone = getRandomEntry(PantherworldZones);
 
-  // store item in DB
-
-  /**
-   * items:
-   *
-   * id
-   * date_created
-   * zone
-   * name
-   * username null || string
-   */
+  await saveItem(itemToSpawn, spawnZone);
 
   /**
    * time limit for claiming is 30 seconds
@@ -93,14 +84,7 @@ export function spawn(event: EventData): void {
    */
 
   /**
-   * when users type !claim {item}
-   * look up most recent item
-   * if item name matches
-   * else: NOTHING TO CLAIM
-   * if user is in the same zone
-   * and if date_created < now - 30 seconds
-   * add username to record
-   * else message: you're in the wrong zone!
+   * mini overlay to show players moving and claiming and stuff
    */
 
   tmi.say(
@@ -120,6 +104,10 @@ export function spawn(event: EventData): void {
   /**
    * when users type !locate ✅
    * gets their current zone and sends message ✅
+   */
+
+  /**
+   * add a command to find out how many people are in each zone
    */
 
   // add a !check function for users to check what's in their inventory
