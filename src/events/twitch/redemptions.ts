@@ -79,6 +79,7 @@ tmi.on(
     if (!config.FREEZE_MODE) {
       if (Object.keys(config.channelRedemptions).includes(rewardId)) {
         const rewardName = config.channelRedemptions[rewardId];
+        // console.log(rewardName, "has been redeemed");
 
         await spawn({
           type: SpawnEventType.Redeem,

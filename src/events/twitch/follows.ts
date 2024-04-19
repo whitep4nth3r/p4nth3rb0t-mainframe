@@ -34,7 +34,10 @@ export const sendBroadcasterFollowEvent = async (
       config.broadcaster.user_id,
     );
 
-    await { type: SpawnEventType.Follow, data: { username: followerName } });
+    await spawn({
+      type: SpawnEventType.Follow,
+      data: { username: followerName },
+    });
 
     if (broadcasterStream) {
       const user = await UserManager.getUserById(followerUserId as string);
