@@ -1,7 +1,7 @@
 {
   "name": "p4nth3rb0t-mainframe",
   "private": true,
-  "version": "1.0.32",
+  "version": "1.0.33",
   "scripts": {
     "test": "jest",
     "start": "node build/src/app.js",
