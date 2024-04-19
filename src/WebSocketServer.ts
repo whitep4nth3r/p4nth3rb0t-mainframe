@@ -44,7 +44,7 @@ export default class WebsocketServer {
           status: 200,
           msg: "🔥 Welcome to the p4nth3rb0t mainframe",
         }),
-      );
+);
     });
   }
 

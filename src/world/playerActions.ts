@@ -56,6 +56,7 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
       const playerMoveEvent: PlayerMovePacket = {
         event: MainframeEvent.playerMove,
         id: userId + "-" + Date.now(),
+        type: "move",
         data: {
           username: user.display_name,
           toZone: zone,
@@ -78,6 +79,14 @@ export async function claimItem(
     name: name,
     createdAt: { $gt: new Date(Date.now() - 1000 * 60) },
   });
+
+  // where BUGS are actually features
+
+  // currently items are stealable within the 1 minute time frame
+  // technically, a claimable item should be where userID = null
+
+  // in the future, when the item is being passed around, we could
+  // announce that SOMEONE stole THING from SOMEONE
 
   const claimableItems = recentItems.filter((item) => name === item.name);
 
@@ -123,6 +132,7 @@ export async function claimItem(
           const playerClaimEvent: PlayerClaimPacket = {
             event: MainframeEvent.playerClaim,
             id: userId + "-" + Date.now(),
+            type: "claim",
             data: {
               username: username,
               zone: player.zone,

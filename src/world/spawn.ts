@@ -119,6 +119,7 @@ export async function spawn(event: EventData): Promise<void> {
   const spawnEvent: ItemSpawnPacket = {
     event: MainframeEvent.itemSpawn,
     id: spawnZone.name + "-" + itemToSpawn.name + "-" + Date.now(),
+    type: "spawn",
     data: {
       zone: spawnZone.name,
       item: itemToSpawn,
