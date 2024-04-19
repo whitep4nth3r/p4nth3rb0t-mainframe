@@ -79,7 +79,6 @@ tmi.on(
     if (!config.FREEZE_MODE) {
       if (Object.keys(config.channelRedemptions).includes(rewardId)) {
         const rewardName = config.channelRedemptions[rewardId];
-        // console.log(rewardName, "has been redeemed");
 
         await spawn({
           type: SpawnEventType.Redeem,
@@ -110,6 +109,11 @@ tmi.on(
         const username: string = tags["username"] as string;
 
         await sendMoodChangeEvent(mood, rewardId);
+
+        await spawn({
+          type: SpawnEventType.Redeem,
+          data: { reward: mood },
+        });
 
         tmi.say(
           config.channel,
