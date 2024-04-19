@@ -310,7 +310,7 @@ export const ChatCommands: Commands = {
   },
   "!claim": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      const item = getRestOfMessage(message)[0];
+      const item = getRestOfMessage(message).join(" ");
       await claimItem(
         item,
         tags["user-id"] as string,

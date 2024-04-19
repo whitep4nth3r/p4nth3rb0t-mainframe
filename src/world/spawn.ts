@@ -90,23 +90,18 @@ export async function spawn(event: EventData): Promise<void> {
     } zone 🌍`,
   );
 
-  // todo - add a !claim function for users ✅
-  // save what they have claimed in DB
-
-  // add a !move function for users to move around zones ✅
-  // save user's zone positions ✅
-  // users can only claim when they are in that zone
-
   /**
-   * when users type !locate ✅
-   * gets their current zone and sends message ✅
+    todo - add a !claim function for users ✅
+    save what they have claimed in DB ✅
+
+    add a !move function for users to move around zones ✅
+    save user's zone positions ✅
+    users can only claim when they are in that zone ✅
+    add a !inventory function for users to check what's in their inventory ✅
+
+    when users type !locate gets their current zone and sends message ✅
+
+    add a command to find out how many people are in each zone
+    add a !leaderboard function to see who's got the most?
    */
-
-  /**
-   * add a command to find out how many people are in each zone
-   */
-
-  // add a !check function for users to check what's in their inventory
-
-  // add a !leaderboard function to see who's got the most?
 }
