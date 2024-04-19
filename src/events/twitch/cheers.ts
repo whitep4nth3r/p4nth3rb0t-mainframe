@@ -39,9 +39,9 @@ const sendCheerEvent = async (
   }
 };
 
-tmi.on("cheer", (channel: string, userstate: ChatUserstate) => {
+tmi.on("cheer", async (channel: string, userstate: ChatUserstate) => {
   if (!config.FREEZE_MODE) {
-    spawn({
+    await spawn({
       type: SpawnEventType.Cheer,
       data: { bits: Number(userstate["bits"]) },
     });

@@ -29,7 +29,7 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       WebSocketServer.sendData(raidEvent);
 
-      spawn({
+      await spawn({
         type: SpawnEventType.Raid,
         data: { raiders: raiderCount },
       });

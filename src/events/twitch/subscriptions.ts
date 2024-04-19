@@ -117,7 +117,7 @@ export const sendSubEvent = async (
 
 tmi.on(
   "subgift",
-  (
+  async (
     channel: string,
     username: string,
     streakMonths: number,
@@ -129,7 +129,7 @@ tmi.on(
 
     if (!config.FREEZE_MODE) {
       if (typeof recipientUserName === "string") {
-        spawn({
+        await spawn({
           type: SpawnEventType.Sub,
           data: { username: recipientUserName },
         });
@@ -148,7 +148,7 @@ tmi.on(
 
 tmi.on(
   "subscription",
-  (
+  async (
     channel: string,
     username: string,
     methods: Record<string, unknown>,
@@ -156,7 +156,7 @@ tmi.on(
     userstate: SubUserstate,
   ) => {
     if (!config.FREEZE_MODE) {
-      spawn({
+      await spawn({
         type: SpawnEventType.Sub,
         data: { username: userstate["display-name"] as string },
       });
@@ -174,16 +174,16 @@ tmi.on(
 
 tmi.on(
   "resub",
-  (
+  async (
     channel: string,
     username: string,
     months: number,
     message: string,
     userstate: SubUserstate,
-    methods: Record<string, unknown>,
+    // methods: Record<string, unknown>,
   ) => {
     if (!config.FREEZE_MODE) {
-      spawn({
+      await spawn({
         type: SpawnEventType.Sub,
         data: { username: userstate["display-name"] as string },
       });

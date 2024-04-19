@@ -79,7 +79,8 @@ tmi.on(
     if (!config.FREEZE_MODE) {
       if (Object.keys(config.channelRedemptions).includes(rewardId)) {
         const rewardName = config.channelRedemptions[rewardId];
-        spawn({
+
+        await spawn({
           type: SpawnEventType.Redeem,
           data: { reward: rewardName },
         });
