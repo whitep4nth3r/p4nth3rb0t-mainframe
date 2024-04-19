@@ -3,11 +3,31 @@ import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 
+/**
+    todo - add a !claim function for users ✅
+    save what they have claimed in DB ✅
+
+    add a !move function for users to move around zones ✅
+    save user's zone positions ✅
+    users can only claim when they are in that zone ✅
+    add a !inventory function for users to check what's in their inventory ✅
+
+    when users type !locate gets their current zone and sends message ✅
+
+    add a command to find out how many people are in each zone
+    add a !leaderboard function to see who's got the most?
+
+    unclaimed item party — where all unclaimed items are released for grabs
+
+    users can combine items to create new items
+   */
+
 export enum SpawnEventType {
   Follow = "Follow",
   Cheer = "Cheer",
   Redeem = "Redeem",
   Sub = "Sub",
+  Raid = "raid",
 }
 
 import Items from "./items";
@@ -17,7 +37,8 @@ type EventData =
   | { type: SpawnEventType.Cheer; data: { bits: number } }
   | { type: SpawnEventType.Follow; data: { username: string } }
   | { type: SpawnEventType.Redeem; data: { reward: string } }
-  | { type: SpawnEventType.Sub; data: { username: string } };
+  | { type: SpawnEventType.Sub; data: { username: string } }
+  | { type: SpawnEventType.Raid; data: { raiders: number } };
 
 function getArticle(name: string): string {
   const startsWithVowel =
@@ -40,6 +61,8 @@ function calculateEventRarity(event: EventData): number {
       return event.data.bits;
     case SpawnEventType.Sub:
       return event.data.username.length;
+    case SpawnEventType.Raid:
+      return event.data.raiders;
     default:
       return 1;
   }
@@ -90,18 +113,15 @@ export async function spawn(event: EventData): Promise<void> {
     } zone 🌍`,
   );
 
-  /**
-    todo - add a !claim function for users ✅
-    save what they have claimed in DB ✅
+  // const spawnEvent: ItemSpawnPacket = {
+  //   event: MainframeEvent.itemSpawn,
+  //   id: spawnZone.name + "-" + itemToSpawn.name + "-" + Date.now(),
+  //   data: {
+  //     followerName,
+  //     followerUserId,
+  //     logoUrl: user.profile_image_url,
+  //   },
+  // };
 
-    add a !move function for users to move around zones ✅
-    save user's zone positions ✅
-    users can only claim when they are in that zone ✅
-    add a !inventory function for users to check what's in their inventory ✅
-
-    when users type !locate gets their current zone and sends message ✅
-
-    add a command to find out how many people are in each zone
-    add a !leaderboard function to see who's got the most?
-   */
+  // WebsocketServer.sendData(broadcasterFollowEvent);
 }

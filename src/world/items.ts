@@ -1,6 +1,10 @@
 export default [
   {
     rarity: 1,
+    name: "banana",
+  },
+  {
+    rarity: 1,
     name: "carrot",
   },
   {
@@ -12,8 +16,32 @@ export default [
     name: "artichoke",
   },
   {
+    rarity: 2,
+    name: "lemon",
+  },
+  {
+    rarity: 3,
+    name: "cabbage",
+  },
+  {
+    rarity: 3,
+    name: "lime",
+  },
+  {
+    rarity: 3,
+    name: "rocket salad",
+  },
+  {
+    rarity: 4,
+    name: "pineapple",
+  },
+  {
     rarity: 10,
     name: "aubergine",
+  },
+  {
+    rarity: 20,
+    name: "",
   },
   {
     rarity: 50,

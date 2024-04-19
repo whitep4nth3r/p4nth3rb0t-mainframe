@@ -136,10 +136,15 @@ export async function getInventory(
     listStringArray.push(`${value} ${key}`);
   }
 
+  const itemString =
+    listStringArray.length === 0 || listStringArray.length > 1
+      ? "items"
+      : "item";
+
   tmi.say(
     config.channel,
-    `${botPrefix}🎒 @${username}: you have ${
-      items.length
-    } items: ${listStringArray.join(", ")}`,
+    `${botPrefix}🎒 @${username}: you have ${items.length} ${itemString}${
+      listStringArray.length > 0 ? ": " : ""
+    } ${listStringArray.join(", ")}`,
   );
 }

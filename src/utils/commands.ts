@@ -54,7 +54,7 @@ export const ExclusiveCommands: Commands = {
 
 export const BroadcasterCommands: Commands = {
   // "!test": async () => {
-  //   await saveItem("anotherItem", "forest"); // DO NOT COMMIT
+  //   await saveItem("empty plant pot", "forest"); // DO NOT COMMIT
   // },
   // "!testclaim": async () => {
   //   await claimItem("anotherItem", "469006291", "whitep4nth3r"); // DO NOT COMMIT
