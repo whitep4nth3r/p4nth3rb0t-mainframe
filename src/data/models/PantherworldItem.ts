@@ -3,7 +3,7 @@ import { PantherworldZoneNames } from "../../world/zones";
 
 export interface PantherworldItemData {
   name: string;
-  zone: keyof typeof PantherworldZoneNames; //?????
+  zone: keyof typeof PantherworldZoneNames;
   userId: string;
 }
 

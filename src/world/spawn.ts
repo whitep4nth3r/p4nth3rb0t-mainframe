@@ -90,7 +90,7 @@ export async function spawn(event: EventData): Promise<void> {
     } zone 🌍`,
   );
 
-  // todo - add a !claim function for users
+  // todo - add a !claim function for users ✅
   // save what they have claimed in DB
 
   // add a !move function for users to move around zones ✅

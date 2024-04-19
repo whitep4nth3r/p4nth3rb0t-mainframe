@@ -65,9 +65,17 @@ export async function claimItem(
   const claimableItems = recentItems.filter((item) => name === item.name);
 
   if (claimableItems.length === 0) {
-    tmi.say(config.channel, `❌ @${username}: Nothing to claim`);
+    tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
   } else {
     const player = await PantherworldPlayerModel.findOne({ userId: userId });
+
+    if (!player) {
+      tmi.say(
+        config.channel,
+        `${botPrefix}❌ @${username}: you are not in p4ntherw0rld... yet`,
+      );
+      return;
+    }
 
     if (player) {
       const firstClaimableItem = claimableItems.find(
@@ -77,7 +85,7 @@ export async function claimItem(
       if (firstClaimableItem === undefined) {
         tmi.say(
           config.channel,
-          `❌ @${username}: You are in the wrong zone. Move to try and claim it!`,
+          `${botPrefix}❌ @${username}: You are in the wrong zone. Move to try and claim it!`,
         );
       } else {
         const updatedItem = await PantherworldItemModel.updateOne(
@@ -92,10 +100,13 @@ export async function claimItem(
         if (updatedItem.modifiedCount === 1) {
           tmi.say(
             config.channel,
-            `🎒 @${username} claimed ${name} in the ${player.zone} zone`,
+            `${botPrefix}🎒 @${username} claimed ${name} in the ${player.zone} zone`,
           );
         } else {
-          tmi.say(config.channel, `❌ @${username}: Nothing has been claimed`);
+          tmi.say(
+            config.channel,
+            `${botPrefix}❌ @${username}: Nothing has been claimed`,
+          );
         }
       }
     }
@@ -107,11 +118,28 @@ export async function getInventory(
   username: string,
 ): Promise<void> {
   const items = await PantherworldItemModel.find({ userId: userId }).exec();
+  const list: { [key: string]: number } = {};
 
-  //todo - group items and count
+  items.forEach((item) => {
+    // if list doesn't have a key of item.name
+    // add key to list with value 1
+    if (!Object.keys(list).includes(item.name)) {
+      list[item.name] = 1;
+    } else {
+      list[item.name] += 1;
+    }
+  });
+
+  const listStringArray = [];
+
+  for (const [key, value] of Object.entries(list)) {
+    listStringArray.push(`${value} ${key}`);
+  }
 
   tmi.say(
     config.channel,
-    `🎒 @${username}: you have ${items.length} items. You'll find out what next time.`,
+    `${botPrefix}🎒 @${username}: you have ${
+      items.length
+    } items: ${listStringArray.join(", ")}`,
   );
 }
