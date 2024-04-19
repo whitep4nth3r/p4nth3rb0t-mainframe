@@ -2,7 +2,13 @@ import { config } from "../config";
 import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
-
+import Items from "./items";
+import { PantherworldZones } from "./zones";
+import {
+  MainframeEvent,
+  ItemSpawnPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
+import WebsocketServer from "../WebSocketServer";
 /**
     todo - add a !claim function for users ✅
     save what they have claimed in DB ✅
@@ -29,9 +35,6 @@ export enum SpawnEventType {
   Sub = "Sub",
   Raid = "raid",
 }
-
-import Items from "./items";
-import { PantherworldZones } from "./zones";
 
 type EventData =
   | { type: SpawnEventType.Cheer; data: { bits: number } }
@@ -113,15 +116,14 @@ export async function spawn(event: EventData): Promise<void> {
     } zone 🌍`,
   );
 
-  // const spawnEvent: ItemSpawnPacket = {
-  //   event: MainframeEvent.itemSpawn,
-  //   id: spawnZone.name + "-" + itemToSpawn.name + "-" + Date.now(),
-  //   data: {
-  //     followerName,
-  //     followerUserId,
-  //     logoUrl: user.profile_image_url,
-  //   },
-  // };
+  const spawnEvent: ItemSpawnPacket = {
+    event: MainframeEvent.itemSpawn,
+    id: spawnZone.name + "-" + itemToSpawn.name + "-" + Date.now(),
+    data: {
+      zone: spawnZone.name,
+      item: itemToSpawn,
+    },
+  };
 
-  // WebsocketServer.sendData(broadcasterFollowEvent);
+  WebsocketServer.sendData(spawnEvent);
 }

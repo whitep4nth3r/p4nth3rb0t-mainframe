@@ -37,6 +37,10 @@ export default [
   },
   {
     rarity: 10,
+    name: "croissant",
+  },
+  {
+    rarity: 10,
     name: "aubergine",
   },
   {
@@ -48,8 +52,24 @@ export default [
     name: "ancient book",
   },
   {
+    rarity: 60,
+    name: "stick of butter",
+  },
+  {
+    rarity: 100,
+    name: "crystal ball",
+  },
+  {
+    rarity: 100,
+    name: "coal",
+  },
+  {
     rarity: 150,
     name: "empty plant pot",
   },
   { rarity: 500, name: "veryrareobject" },
+  { rarity: 1000, name: "diamond" },
+  { rarity: 1000, name: "emerald" },
+  { rarity: 1000, name: "ruby" },
+  { rarity: 1000, name: "sapphire" },
 ];

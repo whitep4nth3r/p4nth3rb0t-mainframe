@@ -4,6 +4,12 @@ import PantherworldItemModel from "../data/models/PantherworldItem";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 import * as Sentry from "@sentry/node";
+import WebsocketServer from "../WebSocketServer";
+import {
+  MainframeEvent,
+  PlayerMovePacket,
+  PlayerClaimPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -46,6 +52,17 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
         config.channel,
         `${botPrefix}➡️ ${user.display_name} moved to ${zone} zone`,
       );
+
+      const playerMoveEvent: PlayerMovePacket = {
+        event: MainframeEvent.playerMove,
+        id: userId + "-" + Date.now(),
+        data: {
+          username: user.display_name,
+          toZone: zone,
+        },
+      };
+
+      WebsocketServer.sendData(playerMoveEvent);
     } catch (error) {
       Sentry.captureException(error);
     }
@@ -102,6 +119,18 @@ export async function claimItem(
             config.channel,
             `${botPrefix}🎒 @${username} claimed ${name} in the ${player.zone} zone`,
           );
+
+          const playerClaimEvent: PlayerClaimPacket = {
+            event: MainframeEvent.playerClaim,
+            id: userId + "-" + Date.now(),
+            data: {
+              username: username,
+              zone: player.zone,
+              item: name,
+            },
+          };
+
+          WebsocketServer.sendData(playerClaimEvent);
         } else {
           tmi.say(
             config.channel,
