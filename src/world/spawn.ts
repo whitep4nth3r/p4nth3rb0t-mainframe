@@ -9,6 +9,8 @@ import {
   ItemSpawnPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebsocketServer from "../WebSocketServer";
+import { sendPantherworldEvent } from "../discord";
+
 /**
     todo - add a !claim function for users ✅
     save what they have claimed in DB ✅
@@ -109,12 +111,13 @@ export async function spawn(event: EventData): Promise<void> {
    * mini overlay to show players moving and claiming and stuff
    */
 
-  tmi.say(
-    config.channel,
-    `🌍 ${getArticle(itemToSpawn.name)} ${itemToSpawn.name} spawned in the ${
-      spawnZone.name
-    } zone 🌍`,
-  );
+  const message = `🌍 ${getArticle(itemToSpawn.name)} ${
+    itemToSpawn.name
+  } spawned in the ${spawnZone.name} zone`;
+
+  tmi.say(config.channel, message);
+
+  await sendPantherworldEvent(message);
 
   const spawnEvent: ItemSpawnPacket = {
     event: MainframeEvent.itemSpawn,

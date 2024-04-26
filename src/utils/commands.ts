@@ -1,3 +1,5 @@
+// import { SpawnEventType, spawn } from "./../world/spawn";
+// import { saveItem } from "../world/itemActions";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 import {
@@ -30,7 +32,6 @@ import {
   claimItem,
   getInventory,
 } from "../world/playerActions";
-import { saveItem } from "../world/itemActions";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -54,7 +55,10 @@ export const ExclusiveCommands: Commands = {
 
 export const BroadcasterCommands: Commands = {
   // "!test": async () => {
-  //   await saveItem("empty plant pot", "forest"); // DO NOT COMMIT
+  //   await spawn({
+  //     type: SpawnEventType.Cheer,
+  //     data: { bits: 123 },
+  //   });
   // },
   // "!testclaim": async () => {
   //   await claimItem("anotherItem", "469006291", "whitep4nth3r"); // DO NOT COMMIT

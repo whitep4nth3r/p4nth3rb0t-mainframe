@@ -41,6 +41,7 @@ export const discord = new Discord.Client({
 const TWITCH_TTS_TAG_ID = "1186989607770923129";
 
 let announcementsChannel: TextChannel;
+let feedChannel: TextChannel;
 let helpChannel: ForumChannel;
 
 import "./events/discord/messageReactionAdd";
@@ -51,6 +52,10 @@ discord.on("ready", async () => {
 
   announcementsChannel = (await discord.channels.fetch(
     config.discord.liveAnnouncementsChannelId,
+  )) as TextChannel;
+
+  feedChannel = (await discord.channels.fetch(
+    config.discord.p4nth3rworldChannelId,
   )) as TextChannel;
 
   helpChannel = (await discord.channels.fetch(
@@ -218,6 +223,14 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
     });
 
     await DiscordAnnouncementModel.deleteOne({ memberId: member_id });
+  }
+};
+
+export const sendPantherworldEvent = async (message: string) => {
+  if (feedChannel) {
+    await feedChannel.send({
+      content: message,
+    });
   }
 };
 

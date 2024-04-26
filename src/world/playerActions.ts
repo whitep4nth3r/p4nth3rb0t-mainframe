@@ -10,6 +10,7 @@ import {
   PlayerMovePacket,
   PlayerClaimPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
+import { sendPantherworldEvent } from "../discord";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -48,10 +49,11 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
         { upsert: true },
       );
 
-      tmi.say(
-        config.channel,
-        `${botPrefix}➡️ ${user.display_name} moved to ${zone} zone`,
-      );
+      const message = `➡️ ${user.display_name} moved to ${zone} zone`;
+
+      tmi.say(config.channel, `${botPrefix} ${message}`);
+
+      await sendPantherworldEvent(message);
 
       const playerMoveEvent: PlayerMovePacket = {
         event: MainframeEvent.playerMove,
@@ -124,10 +126,11 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          tmi.say(
-            config.channel,
-            `${botPrefix}🎒 @${username} claimed ${name} in the ${player.zone} zone`,
-          );
+          const message = `${username} claimed ${name} in the ${player.zone} zone`;
+
+          tmi.say(config.channel, `${botPrefix}🎒 @${message}`);
+
+          await sendPantherworldEvent(`🎒 ${message}`);
 
           const playerClaimEvent: PlayerClaimPacket = {
             event: MainframeEvent.playerClaim,

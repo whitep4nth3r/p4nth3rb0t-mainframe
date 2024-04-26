@@ -31,6 +31,7 @@ interface Config {
     liveAnnouncementColorOffline: Discord.ColorResolvable;
     liveAnnouncementImageSize: string;
     techHelpChannelId: string;
+    p4nth3rworldChannelId: string;
     reactionRole: DiscordReactionRole[];
   };
   moodRedemptions: {
@@ -86,6 +87,7 @@ const config: Config = {
     liveAnnouncementColorOffline: "#AE8439",
     liveAnnouncementImageSize: "1280x720",
     techHelpChannelId: "1006450043089326201",
+    p4nth3rworldChannelId: "1233405365392117791",
     reactionRole: [
       {
         role_id: "756956508234842145",
