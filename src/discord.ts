@@ -226,7 +226,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
   }
 };
 
-export const sendPantherworldEvent = async (message: string) => {
+export const sendPantherworldFeedEvent = async (message: string) => {
   if (feedChannel) {
     await feedChannel.send({
       content: message,

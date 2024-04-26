@@ -10,9 +10,26 @@ import {
   PlayerMovePacket,
   PlayerClaimPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import { sendPantherworldEvent } from "../discord";
+import { sendPantherworldFeedEvent } from "../discord";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
+
+function capitalise(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+export async function listPopulation(): Promise<void> {
+  const zoneCounts = await PantherworldPlayerModel.aggregate([
+    { $group: { _id: "$zone", count: { $sum: 1 } } },
+  ]);
+
+  const report = zoneCounts
+    .map((zone) => `${capitalise(zone._id)}: ${zone.count}`)
+    .join(", ");
+
+  tmi.say(config.channel, `${botPrefix}📊 Population: ${report}`);
+  await sendPantherworldFeedEvent(`📊 Population: ${report}`);
+}
 
 export async function locatePlayer(
   userId: string,
@@ -53,7 +70,7 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
 
       tmi.say(config.channel, `${botPrefix} ${message}`);
 
-      await sendPantherworldEvent(message);
+      await sendPantherworldFeedEvent(message);
 
       const playerMoveEvent: PlayerMovePacket = {
         event: MainframeEvent.playerMove,
@@ -130,7 +147,7 @@ export async function claimItem(
 
           tmi.say(config.channel, `${botPrefix}🎒 @${message}`);
 
-          await sendPantherworldEvent(`🎒 ${message}`);
+          await sendPantherworldFeedEvent(`🎒 ${message}`);
 
           const playerClaimEvent: PlayerClaimPacket = {
             event: MainframeEvent.playerClaim,

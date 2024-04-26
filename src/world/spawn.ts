@@ -9,7 +9,7 @@ import {
   ItemSpawnPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebsocketServer from "../WebSocketServer";
-import { sendPantherworldEvent } from "../discord";
+import { sendPantherworldFeedEvent } from "../discord";
 
 /**
     todo - add a !claim function for users ✅
@@ -117,7 +117,7 @@ export async function spawn(event: EventData): Promise<void> {
 
   tmi.say(config.channel, message);
 
-  await sendPantherworldEvent(message);
+  await sendPantherworldFeedEvent(message);
 
   const spawnEvent: ItemSpawnPacket = {
     event: MainframeEvent.itemSpawn,

@@ -31,6 +31,7 @@ import {
   locatePlayer,
   claimItem,
   getInventory,
+  listPopulation,
 } from "../world/playerActions";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
@@ -328,6 +329,11 @@ export const ChatCommands: Commands = {
         tags["user-id"] as string,
         tags["display-name"] as string,
       );
+    }
+  },
+  "!population": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      await listPopulation();
     }
   },
 };
