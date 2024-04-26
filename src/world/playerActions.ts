@@ -23,12 +23,26 @@ export async function listPopulation(): Promise<void> {
     { $group: { _id: "$zone", count: { $sum: 1 } } },
   ]);
 
+  let total = 0;
+
+  zoneCounts.forEach((zone) => (total += zone.count));
+
   const report = zoneCounts
-    .map((zone) => `${capitalise(zone._id)}: ${zone.count}`)
+    .map((zone) => `${capitalise(zone._id)} ${zone.count}`)
     .join(", ");
 
-  tmi.say(config.channel, `${botPrefix}📊 Population: ${report}`);
-  await sendPantherworldFeedEvent(`📊 Population: ${report}`);
+  const discordReport = zoneCounts
+    .map((zone) => `${capitalise(zone._id)} **${zone.count}**`)
+    .join(", ");
+
+  tmi.say(
+    config.channel,
+    `${botPrefix}📊 Population: Total ${total}, ${report}`,
+  );
+
+  await sendPantherworldFeedEvent(
+    `📊 Population: Total **${total}**,  ${discordReport}`,
+  );
 }
 
 export async function locatePlayer(
