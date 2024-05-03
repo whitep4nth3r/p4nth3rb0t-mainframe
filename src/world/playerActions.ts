@@ -11,6 +11,7 @@ import {
   PlayerClaimPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../discord";
+import { WorldState } from "./state";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -108,10 +109,21 @@ export async function claimItem(
   userId: string,
   username: string,
 ): Promise<void> {
-  const recentItems = await PantherworldItemModel.find({
-    name: name,
-    createdAt: { $gt: new Date(Date.now() - 1000 * 60) },
-  });
+  let items;
+
+  if (WorldState.ITEMS_RELEASED === false) {
+    // if not in a !release state, get the items spawned a minute or less ago
+    items = await PantherworldItemModel.find({
+      name: name,
+      createdAt: { $gt: new Date(Date.now() - 1000 * 60) },
+    });
+  } else {
+    // if in a release state, get unclaimed items
+    items = await PantherworldItemModel.find({
+      name: name,
+      userId: null,
+    });
+  }
 
   // where BUGS are actually features
 
@@ -121,7 +133,7 @@ export async function claimItem(
   // in the future, when the item is being passed around, we could
   // announce that SOMEONE stole THING from SOMEONE
 
-  const claimableItems = recentItems.filter((item) => name === item.name);
+  const claimableItems = items.filter((item) => name === item.name);
 
   if (claimableItems.length === 0) {
     tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
@@ -131,7 +143,7 @@ export async function claimItem(
     if (!player) {
       tmi.say(
         config.channel,
-        `${botPrefix}❌ @${username}: you are not in p4ntherw0rld... yet`,
+        `${botPrefix}❌ @${username}: you are not in p4ntherw0rld... type !move {zoneName} to land`,
       );
       return;
     }
@@ -144,7 +156,7 @@ export async function claimItem(
       if (firstClaimableItem === undefined) {
         tmi.say(
           config.channel,
-          `${botPrefix}❌ @${username}: You are in the wrong zone. Move to try and claim it!`,
+          `${botPrefix}❌ @${username}: You are in the wrong zone. !move to try and claim it!`,
         );
       } else {
         const updatedItem = await PantherworldItemModel.updateOne(
@@ -175,11 +187,6 @@ export async function claimItem(
           };
 
           WebsocketServer.sendData(playerClaimEvent);
-        } else {
-          tmi.say(
-            config.channel,
-            `${botPrefix}❌ @${username}: Nothing has been claimed`,
-          );
         }
       }
     }

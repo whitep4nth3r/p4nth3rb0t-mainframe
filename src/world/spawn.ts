@@ -32,7 +32,7 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
     move spawn commands to separate area for clarity ✅
 
-    unclaimed item party — where all unclaimed items are released for grabs
+    unclaimed item party — where all unclaimed items are released for grabs in a random zone ✅
 
     add a !leaderboard function to see who's got the most?
 
