@@ -145,22 +145,24 @@ const sendChatMessageEvent = async (data: ChatMessageData) => {
 };
 
 const sendteamMemberJoinEvent = async (teamMember: TwitchUser) => {
-  try {
-    const user = await UserManager.getUserById(teamMember.user_id as string);
+  if (teamMember !== undefined) {
+    try {
+      const user = await UserManager.getUserById(teamMember.user_id as string);
 
-    if (user) {
-      const teamMemberJoin: TeamMemberJoinPacket = {
-        event: MainframeEvent.teamMemberJoin,
-        id: teamMember.user_id + "-" + Date.now(),
-        data: {
-          logoUrl: user.profile_image_url,
-        },
-      };
+      if (user) {
+        const teamMemberJoin: TeamMemberJoinPacket = {
+          event: MainframeEvent.teamMemberJoin,
+          id: teamMember.user_id + "-" + Date.now(),
+          data: {
+            logoUrl: user.profile_image_url,
+          },
+        };
 
-      WebSocketServer.sendData(teamMemberJoin);
+        WebSocketServer.sendData(teamMemberJoin);
+      }
+    } catch (error) {
+      Sentry.captureException(error);
     }
-  } catch (error) {
-    Sentry.captureException(error);
   }
 };
 
