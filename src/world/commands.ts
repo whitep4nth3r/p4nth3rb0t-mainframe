@@ -1,0 +1,65 @@
+import { config } from "../config";
+import { isValidPantherworldZone } from "../world/zones";
+import {
+  movePlayer,
+  locatePlayer,
+  claimItem,
+  getInventory,
+  listPopulation,
+} from "../world/playerActions";
+import { getRestOfMessage } from "../utils/commands";
+import { tmi } from "./../tmi";
+import { SpawnEventType, spawn } from "./../world/spawn";
+
+export const WorldCommands = {
+  "!test": async () => {
+    await spawn({
+      type: SpawnEventType.Cheer,
+      data: { bits: 123 },
+    });
+  },
+  "!move": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      const zone = getRestOfMessage(message)[0];
+      const isValid = isValidPantherworldZone(zone);
+      if (isValid) {
+        await movePlayer(tags["user-id"] as string, zone);
+      } else {
+        tmi.say(config.channel, `❌ Move failed: zone is void`);
+      }
+    }
+  },
+  "!locate": async (tags) => {
+    if (!config.FREEZE_MODE) {
+      await locatePlayer(
+        tags["user-id"] as string,
+        tags["display-name"] as string,
+      );
+    }
+  },
+  "!claim": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      const item = getRestOfMessage(message).join(" ");
+      if (item !== "") {
+        await claimItem(
+          item,
+          tags["user-id"] as string,
+          tags["display-name"] as string,
+        );
+      }
+    }
+  },
+  "!inventory": async (tags) => {
+    if (!config.FREEZE_MODE) {
+      await getInventory(
+        tags["user-id"] as string,
+        tags["display-name"] as string,
+      );
+    }
+  },
+  "!population": async () => {
+    if (!config.FREEZE_MODE) {
+      await listPopulation();
+    }
+  },
+};

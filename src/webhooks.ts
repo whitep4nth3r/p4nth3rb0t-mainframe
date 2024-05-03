@@ -179,12 +179,6 @@ function callbackUrlAllowed(url: string): boolean {
       }
     });
   }
-  console.log("My existing subscriptions:");
-  console.dir(existingSubs);
-  console.log("Deletable: ");
-  console.dir(deletableSubIds);
-  console.log("Allowed:");
-  console.dir(allowed);
 
   // Delete all subscriptions with callback urls not explicitly allowed
   deletableSubIds.forEach(async (id) => await deleteSubscription(id));

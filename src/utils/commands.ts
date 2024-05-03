@@ -1,5 +1,3 @@
-// import { SpawnEventType, spawn } from "./../world/spawn";
-// import { saveItem } from "../world/itemActions";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 import {
@@ -11,7 +9,6 @@ import {
   sendImageDropEvent,
 } from "./../actions/drop";
 import { ChatUserstate } from "tmi.js";
-import { sendMoodChangeEvent } from "../events/twitch/moods";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
 import { sendRaidEvent } from "../events/twitch/raids_outgoing";
 import Giveaway from "../actions/Giveaway";
@@ -25,14 +22,7 @@ import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { megaTimeOut } from "./../events/twitch/megatimeout";
 import { announce } from "./twitchUtils";
-import { isValidPantherworldZone } from "../world/zones";
-import {
-  movePlayer,
-  locatePlayer,
-  claimItem,
-  getInventory,
-  listPopulation,
-} from "../world/playerActions";
+import { WorldCommands } from "../world/commands";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -46,7 +36,7 @@ type Commands = {
 };
 
 export const ExclusiveCommands: Commands = {
-  "!megatimeout": async (tags, message) => {
+  "!megatimeout": async () => {
     await megaTimeOut();
   },
   "!raid": async (tags, message) => {
@@ -55,16 +45,7 @@ export const ExclusiveCommands: Commands = {
 };
 
 export const BroadcasterCommands: Commands = {
-  // "!test": async () => {
-  //   await spawn({
-  //     type: SpawnEventType.Cheer,
-  //     data: { bits: 123 },
-  //   });
-  // },
-  // "!testclaim": async () => {
-  //   await claimItem("anotherItem", "469006291", "whitep4nth3r"); // DO NOT COMMIT
-  // },
-  "!freeze": async (tags, message) => {
+  "!freeze": async () => {
     announce("p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = true;
@@ -75,76 +56,21 @@ export const BroadcasterCommands: Commands = {
     sendClearBackSeatEvent();
     sendFreezeEvent();
   },
-  "!unfreeze": async (tags, message) => {
+  "!unfreeze": async () => {
     announce("p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = false;
     // deactivate sub only
     tmi.say(config.channel, "/subscribersoff");
   },
-  "!start-trail": async (tags, message) => {
+  "!start-trail": async () => {
     if (!config.FREEZE_MODE) {
       sendWeatherTrailEvent(true);
     }
   },
-  "!end-trail": async (tags, message) => {
+  "!end-trail": async () => {
     if (!config.FREEZE_MODE) {
       sendWeatherTrailEvent(false);
-    }
-  },
-  "!coffee": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("coffee", tags["id"] as string);
-    }
-  },
-  "!cool": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("cool", tags["id"] as string);
-    }
-  },
-  "!dolla": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("dolla", tags["id"] as string);
-    }
-  },
-  "!fire": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("fire", tags["id"] as string);
-    }
-  },
-  "!heart": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("heart", tags["id"] as string);
-    }
-  },
-  "!hype": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("hype", tags["id"] as string);
-    }
-  },
-  "!majick": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("majick", tags["id"] as string);
-    }
-  },
-  "!pewpew": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("pewpew", tags["id"] as string);
-    }
-  },
-  "!rap": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("rap", tags["id"] as string);
-    }
-  },
-  "!sad": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("sad", tags["id"] as string);
-    }
-  },
-  "!scam": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("scam", tags["id"] as string);
     }
   },
   "!so": async (tags, message) => {
@@ -152,27 +78,12 @@ export const BroadcasterCommands: Commands = {
       sendShoutoutEvent(tags["id"] as string, message);
     }
   },
-  "!star": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("star", tags["id"] as string);
-    }
-  },
-  "!tattoo": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("tattoo", tags["id"] as string);
-    }
-  },
-  "!troll": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      sendMoodChangeEvent("troll", tags["id"] as string);
-    }
-  },
-  "!merch": async (tags, message) => {
+  "!merch": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendMerchEvent(tags["id"] as string);
     }
   },
-  "!theclaw": async (tags, message) => {
+  "!theclaw": async () => {
     if (!config.FREEZE_MODE) {
       sendTheClawEvent();
     }
@@ -188,7 +99,7 @@ export const ChatCommands: Commands = {
       );
     }
   },
-  "!nobs": async (tags, message) => {
+  "!nobs": async () => {
     sendClearBackSeatEvent();
   },
   "!bs": async (tags, message) => {
@@ -199,7 +110,7 @@ export const ChatCommands: Commands = {
       }
     }
   },
-  "!win": async (tags, message) => {
+  "!win": async (tags) => {
     if (!config.FREEZE_MODE) {
       if (Giveaway.inProgress()) {
         Giveaway.enter(tags.username as string);
@@ -208,7 +119,7 @@ export const ChatCommands: Commands = {
       }
     }
   },
-  "!bigdrop": async (tags, message) => {
+  "!bigdrop": async (tags) => {
     if (tags.emotes && !config.FREEZE_MODE) {
       sendDropEmotesEvent(
         Object.keys(tags.emotes) as [],
@@ -234,32 +145,32 @@ export const ChatCommands: Commands = {
       }
     }
   },
-  "!rain": async (tags, message) => {
+  "!rain": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!rain", tags["id"] as string);
     }
   },
-  "!shower": async (tags, message) => {
+  "!shower": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!shower", tags["id"] as string);
     }
   },
-  "!snow": async (tags, message) => {
+  "!snow": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!snow", tags["id"] as string);
     }
   },
-  "!hail": async (tags, message) => {
+  "!hail": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!hail", tags["id"] as string);
     }
   },
-  "!blizzard": async (tags, message) => {
+  "!blizzard": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!blizzard", tags["id"] as string);
     }
   },
-  "!fire": async (tags, message) => {
+  "!fire": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendWeatherEvent("!fire", tags["id"] as string);
     }
@@ -275,17 +186,17 @@ export const ChatCommands: Commands = {
       }
     }
   },
-  "!checkmark": async (tags, message) => {
+  "!checkmark": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
     }
   },
-  "!spooky": async (tags, message) => {
+  "!spooky": async (tags) => {
     if (!config.FREEZE_MODE) {
       sendImageDropEvent(ImageDrops.Spooky, tags["id"] as string);
     }
   },
-  "!theclaw": async (tags, message) => {
+  "!theclaw": async (tags) => {
     if (!config.FREEZE_MODE) {
       announce(
         "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
@@ -294,48 +205,5 @@ export const ChatCommands: Commands = {
       sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
-  "!move": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      const zone = getRestOfMessage(message)[0];
-      const isValid = isValidPantherworldZone(zone);
-      if (isValid) {
-        await movePlayer(tags["user-id"] as string, zone);
-      } else {
-        tmi.say(config.channel, `❌ Move failed: zone is void`);
-      }
-    }
-  },
-  "!locate": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      await locatePlayer(
-        tags["user-id"] as string,
-        tags["display-name"] as string,
-      );
-    }
-  },
-  "!claim": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      const item = getRestOfMessage(message).join(" ");
-      if (item !== "") {
-        await claimItem(
-          item,
-          tags["user-id"] as string,
-          tags["display-name"] as string,
-        );
-      }
-    }
-  },
-  "!inventory": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      await getInventory(
-        tags["user-id"] as string,
-        tags["display-name"] as string,
-      );
-    }
-  },
-  "!population": async (tags, message) => {
-    if (!config.FREEZE_MODE) {
-      await listPopulation();
-    }
-  },
+  ...WorldCommands,
 };

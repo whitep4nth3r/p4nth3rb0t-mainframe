@@ -45,7 +45,7 @@ export default [
   },
   {
     rarity: 20,
-    name: "",
+    name: "blank notebook",
   },
   {
     rarity: 50,
@@ -68,6 +68,7 @@ export default [
     name: "empty plant pot",
   },
   { rarity: 500, name: "veryrareobject" },
+  { rarity: 500, name: "additional knowledge" },
   { rarity: 1000, name: "diamond" },
   { rarity: 1000, name: "emerald" },
   { rarity: 1000, name: "ruby" },

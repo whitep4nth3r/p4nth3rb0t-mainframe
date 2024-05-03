@@ -11,6 +11,8 @@ import {
 import WebsocketServer from "../WebSocketServer";
 import { sendPantherworldFeedEvent } from "../discord";
 
+const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
+
 /**
     todo - add a !claim function for users ✅
     save what they have claimed in DB ✅
@@ -26,15 +28,15 @@ import { sendPantherworldFeedEvent } from "../discord";
 
     mini overlay to show players moving and claiming and stuff ✅
 
-    blog post about how to play
+    fix some bugs (see Sentry) ✅
 
-    fix some bugs (see Sentry)
+    move spawn commands to separate area for clarity ✅
 
-    move spawn commands to separate area for clarity
+    unclaimed item party — where all unclaimed items are released for grabs
 
     add a !leaderboard function to see who's got the most?
 
-    unclaimed item party — where all unclaimed items are released for grabs
+    blog post about how to play
    */
 
 /**
@@ -114,14 +116,16 @@ function calculateEligibleItems(rarity: number): any[] {
 
 export async function spawn(event: EventData): Promise<void> {
   const rarity = calculateEventRarity(event);
+
   const eligibleItems = calculateEligibleItems(rarity);
+
   const itemToSpawn = getRandomEntry(eligibleItems);
   //todo rare items should spawn in zones where they are fewer people
   const spawnZone = getRandomEntry(PantherworldZones);
 
   await saveItem(itemToSpawn.name, spawnZone.name);
 
-  const message = `🌍 ${getArticle(itemToSpawn.name)} ${
+  const message = `${botPrefix}🌍 ${getArticle(itemToSpawn.name)} ${
     itemToSpawn.name
   } spawned in the ${spawnZone.name} zone`;
 
