@@ -17,21 +17,18 @@ export async function releaseUnclaimed(): Promise<void> {
   });
 
   if (unclaimed.length === 0) {
-    const message = `${botPrefix}🪹 There are no unclaimed items in the ${randomZone.name} zone!!`;
+    const message = `${botPrefix}🪹 There are no unclaimed items in the ${randomZone.name} zone!`;
 
     tmi.say(config.channel, message);
-
     await sendPantherworldFeedEvent(message);
-    return;
   } else {
     WorldState.ITEMS_RELEASED = true;
 
     const itemList = unclaimed.map((item) => item.name).join(", ");
 
-    const message = `${botPrefix}🔒 World items released in the ${randomZone.name} zone! Items available: ${itemList}`;
+    const message = `${botPrefix}📦 World items released in the ${randomZone.name} zone! Items available: ${itemList}`;
 
     tmi.say(config.channel, message);
-
     await sendPantherworldFeedEvent(message);
 
     setTimeout(async () => {
