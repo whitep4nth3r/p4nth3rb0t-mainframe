@@ -9,7 +9,14 @@ import {
 } from "../world/playerActions";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
-import { SpawnEventType, spawn } from "./../world/spawn";
+import { SpawnEventType, spawn } from "./spawn";
+import { releaseUnclaimed } from "./leaderActions";
+
+export const WorldLeaderCommands = {
+  "!release": async () => {
+    await releaseUnclaimed();
+  },
+};
 
 export const WorldCommands = {
   "!test": async () => {
