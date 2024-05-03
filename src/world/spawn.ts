@@ -22,13 +22,34 @@ import { sendPantherworldFeedEvent } from "../discord";
 
     when users type !locate gets their current zone and sends message ✅
 
-    add a command to find out how many people are in each zone
+    add a !population command to find out how many people are in each zone ✅
+
+    mini overlay to show players moving and claiming and stuff ✅
+
+    blog post about how to play
+
+    fix some bugs (see Sentry)
+
+    move spawn commands to separate area for clarity
+
     add a !leaderboard function to see who's got the most?
 
     unclaimed item party — where all unclaimed items are released for grabs
-
-    users can combine items to create new items
    */
+
+/**
+ * when users type !move {zone}
+ * they move to {zone}
+ * TODO: it takes time to move between zones
+ * update record in db
+ */
+
+/**
+ * more ideas
+ * !craft
+ * !recipes
+ * !gift
+ */
 
 export enum SpawnEventType {
   Follow = "Follow",
@@ -99,17 +120,6 @@ export async function spawn(event: EventData): Promise<void> {
   const spawnZone = getRandomEntry(PantherworldZones);
 
   await saveItem(itemToSpawn.name, spawnZone.name);
-
-  /**
-   * when users type !move {zone}
-   * they move to {zone}
-   * TODO: it takes time to move between zones
-   * update record in db
-   */
-
-  /**
-   * mini overlay to show players moving and claiming and stuff
-   */
 
   const message = `🌍 ${getArticle(itemToSpawn.name)} ${
     itemToSpawn.name

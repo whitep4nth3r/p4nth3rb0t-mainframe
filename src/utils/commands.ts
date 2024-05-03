@@ -316,11 +316,13 @@ export const ChatCommands: Commands = {
   "!claim": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       const item = getRestOfMessage(message).join(" ");
-      await claimItem(
-        item,
-        tags["user-id"] as string,
-        tags["display-name"] as string,
-      );
+      if (item !== "") {
+        await claimItem(
+          item,
+          tags["user-id"] as string,
+          tags["display-name"] as string,
+        );
+      }
     }
   },
   "!inventory": async (tags, message) => {

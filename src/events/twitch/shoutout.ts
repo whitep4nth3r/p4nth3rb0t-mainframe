@@ -18,7 +18,10 @@ export const sendShoutoutEvent = async (
   const possibleUsername: string[] = getRestOfMessage(message);
 
   try {
-    const user = await UserManager.getUserByLogin(possibleUsername[0]);
+    // replace @ if I make a typo which messes up the API call
+    const user = await UserManager.getUserByLogin(
+      possibleUsername[0].replace("@", ""),
+    );
 
     if (user) {
       const channel: TwitchChannel | undefined = await Team.getChannelById(
