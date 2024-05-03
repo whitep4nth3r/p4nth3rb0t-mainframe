@@ -61,7 +61,7 @@ export async function locatePlayer(
   } else {
     tmi.say(
       config.channel,
-      `${botPrefix}❌ @${displayName}: you are not in p4ntherw0rld... yet`,
+      `${botPrefix}❌ @${displayName}: you are not in p4ntherworld... type !move {zoneName} to land`,
     );
   }
 }
@@ -143,7 +143,7 @@ export async function claimItem(
     if (!player) {
       tmi.say(
         config.channel,
-        `${botPrefix}❌ @${username}: you are not in p4ntherw0rld... type !move {zoneName} to land`,
+        `${botPrefix}❌ @${username}: you are not in p4ntherworld... type !move {zoneName} to land`,
       );
       return;
     }
