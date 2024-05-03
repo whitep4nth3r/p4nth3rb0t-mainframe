@@ -5,6 +5,11 @@ import { sendPantherworldFeedEvent } from "../discord";
 import { WorldState } from "./state";
 import { getRandomEntry } from "../utils/getRandomEntry";
 import { PantherworldZones } from "./zones";
+import WebsocketServer from "../WebSocketServer";
+import {
+  MainframeEvent,
+  ReleaseUnclaimedPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -30,6 +35,18 @@ export async function releaseUnclaimed(): Promise<void> {
 
     tmi.say(config.channel, message);
     await sendPantherworldFeedEvent(message);
+
+    const releaseUnclaimedEvent: ReleaseUnclaimedPacket = {
+      event: MainframeEvent.releaseUnclaimed,
+      id: randomZone.name + "-" + Date.now(),
+      type: "release",
+      data: {
+        count: unclaimed.length,
+        zone: randomZone.name,
+      },
+    };
+
+    WebsocketServer.sendData(releaseUnclaimedEvent);
 
     setTimeout(async () => {
       WorldState.ITEMS_RELEASED = false;
