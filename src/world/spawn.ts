@@ -3,6 +3,7 @@ import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 import { WorldItems } from "./items";
+import type WorldItem from "./items";
 import { PantherworldZones } from "./zones";
 import {
   MainframeEvent,
@@ -32,6 +33,8 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
     landing page about how to play
 
     hook into hype trains and mega spawn things
+
+    automatically put someone in pantherworld when they follow???
    */
 
 /**
@@ -113,9 +116,9 @@ function calculateEligibleItems(rarity: number): any[] {
 export async function spawn(event: EventData): Promise<void> {
   const rarity = calculateEventRarity(event);
 
-  const eligibleItems = calculateEligibleItems(rarity);
+  const eligibleItems: WorldItem[] = calculateEligibleItems(rarity);
 
-  const itemToSpawn = getRandomEntry(eligibleItems);
+  const itemToSpawn: WorldItem = getRandomEntry(eligibleItems);
   //todo rare items should spawn in zones where they are fewer people
   const spawnZone = getRandomEntry(PantherworldZones);
 
@@ -123,7 +126,7 @@ export async function spawn(event: EventData): Promise<void> {
 
   const message = `${botPrefix}🌍 ${getArticle(itemToSpawn.name)} ${
     itemToSpawn.name
-  } spawned in the ${spawnZone.name} zone`;
+  } spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
 
   tmi.say(config.channel, message);
 
