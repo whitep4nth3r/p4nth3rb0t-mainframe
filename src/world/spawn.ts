@@ -3,7 +3,7 @@ import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 import { WorldItems } from "./items";
-import type WorldItem from "./items";
+import type { WorldItem } from "./items";
 import { PantherworldZones } from "./zones";
 import {
   MainframeEvent,

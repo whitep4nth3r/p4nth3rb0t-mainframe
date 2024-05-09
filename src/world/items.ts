@@ -1,4 +1,4 @@
-type WorldItem = {
+export type WorldItem = {
   rarity: number;
   name: string;
 };
