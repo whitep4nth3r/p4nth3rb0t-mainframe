@@ -27,16 +27,18 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
     fix some bugs (see Sentry) ✅
     move spawn commands to separate area for clarity ✅
     unclaimed item party — where all unclaimed items are released for grabs in a random zone ✅
-
     automatically put someone in pantherworld when they follow ✅
-
-    sort inventory by frequency of item
+    sort inventory by frequency of item ✅
 
     add a !leaderboard function to see who's got the most?
 
     landing page about how to play
 
     hook into hype trains and mega spawn things
+
+    when someone gets banned they die in pantherworld
+    (we'll need a !dead command)
+    all their items get released
    */
 
 /**
