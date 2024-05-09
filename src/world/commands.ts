@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { isValidPantherworldZone } from "../world/zones";
+import { isValidPantherworldZone, PantherworldZones } from "../world/zones";
 import {
   movePlayer,
   locatePlayer,
@@ -9,8 +9,8 @@ import {
 } from "../world/playerActions";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
-import { SpawnEventType, spawn } from "./spawn";
 import { releaseUnclaimed } from "./leaderActions";
+// import { SpawnEventType, spawn } from "./spawn";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
@@ -19,11 +19,15 @@ export const WorldLeaderCommands = {
 };
 
 export const WorldCommands = {
-  "!test": async () => {
-    await spawn({
-      type: SpawnEventType.Cheer,
-      data: { bits: 123 },
-    });
+  // "!test": async () => {
+  //   await spawn({
+  //     type: SpawnEventType.Cheer,
+  //     data: { bits: 123 },
+  //   });
+  // },
+  "!map": async () => {
+    const zones = PantherworldZones.map((zone) => zone.name).join(", ");
+    tmi.say(config.channel, `🗺️ Available zones: ${zones}`);
   },
   "!move": async (tags, message) => {
     if (!config.FREEZE_MODE) {

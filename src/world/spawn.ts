@@ -16,27 +16,22 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 /**
     todo - add a !claim function for users ✅
     save what they have claimed in DB ✅
-
     add a !move function for users to move around zones ✅
     save user's zone positions ✅
     users can only claim when they are in that zone ✅
     add a !inventory function for users to check what's in their inventory ✅
-
     when users type !locate gets their current zone and sends message ✅
-
     add a !population command to find out how many people are in each zone ✅
-
     mini overlay to show players moving and claiming and stuff ✅
-
     fix some bugs (see Sentry) ✅
-
     move spawn commands to separate area for clarity ✅
-
     unclaimed item party — where all unclaimed items are released for grabs in a random zone ✅
 
     add a !leaderboard function to see who's got the most?
 
-    blog post about how to play
+    landing page about how to play
+
+    hook into hype trains and mega spawn things
    */
 
 /**
