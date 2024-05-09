@@ -2,7 +2,7 @@ import { config } from "../config";
 import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
-import Items from "./items";
+import { WorldItems } from "./items";
 import { PantherworldZones } from "./zones";
 import {
   MainframeEvent,
@@ -46,6 +46,7 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
  * !craft
  * !recipes
  * !gift
+ * sort inventory by frequency of item
  */
 
 export enum SpawnEventType {
@@ -92,7 +93,7 @@ function calculateEventRarity(event: EventData): number {
 }
 
 function calculateEligibleItems(rarity: number): any[] {
-  const exactRarityItems = Items.filter((item) => item.rarity === rarity);
+  const exactRarityItems = WorldItems.filter((item) => item.rarity === rarity);
 
   if (exactRarityItems.length) {
     return exactRarityItems;
@@ -103,8 +104,8 @@ function calculateEligibleItems(rarity: number): any[] {
   const goHigher = Math.random() > 0.8;
 
   const otherRarityItems = goHigher
-    ? Items.filter((item) => item.rarity > rarity)
-    : Items.filter((item) => item.rarity < rarity);
+    ? WorldItems.filter((item) => item.rarity > rarity)
+    : WorldItems.filter((item) => item.rarity < rarity);
 
   return otherRarityItems;
 }

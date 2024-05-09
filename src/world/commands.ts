@@ -12,6 +12,8 @@ import { tmi } from "./../tmi";
 import { releaseUnclaimed } from "./leaderActions";
 // import { SpawnEventType, spawn } from "./spawn";
 
+const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
+
 export const WorldLeaderCommands = {
   "!release": async () => {
     await releaseUnclaimed();
@@ -27,7 +29,7 @@ export const WorldCommands = {
   // },
   "!map": async () => {
     const zones = PantherworldZones.map((zone) => zone.name).join(", ");
-    tmi.say(config.channel, `🗺️ Available zones: ${zones}`);
+    tmi.say(config.channel, `${botPrefix}🗺️ Available zones: ${zones}`);
   },
   "!move": async (tags, message) => {
     if (!config.FREEZE_MODE) {
