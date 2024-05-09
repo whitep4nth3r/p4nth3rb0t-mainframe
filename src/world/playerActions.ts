@@ -208,12 +208,16 @@ export async function getInventory(
     { $sort: { count: -1 } },
   ]);
 
+  let total = 0;
+
+  items.forEach((item) => (total += item.count));
+
   const list = items.map((item) => `${item._id}: ${item.count}`).join(", ");
   const itemString = list.length === 0 || list.length > 1 ? "items" : "item";
 
   tmi.say(
     config.channel,
-    `${botPrefix}🎒 @${username}: you have ${items.length} ${itemString}${
+    `${botPrefix}🎒 @${username}: you have ${total} ${itemString}${
       items.length > 0 ? ": " : ""
     } ${list}`,
   );
