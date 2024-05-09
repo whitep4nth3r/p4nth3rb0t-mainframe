@@ -1,3 +1,4 @@
+import { FullTwitchUser, TwitchAnnouncementColor } from "./../../data/types";
 import * as Sentry from "@sentry/node";
 import WebsocketServer from "../../WebSocketServer";
 import { config } from "../../config";
@@ -9,8 +10,10 @@ import {
 } from "../../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
-import { TwitchAnnouncementColor } from "../../data/types";
 import { SpawnEventType, spawn } from "../../world/spawn";
+import { getRandomEntry } from "../../utils/getRandomEntry";
+import { PantherworldZones } from "../../world/zones";
+import { movePlayer } from "../../world/playerActions";
 
 export const sendBroadcasterFollowEvent = async (
   followerName: string,
@@ -40,7 +43,9 @@ export const sendBroadcasterFollowEvent = async (
     });
 
     if (broadcasterStream) {
-      const user = await UserManager.getUserById(followerUserId as string);
+      const user: FullTwitchUser = await UserManager.getUserById(
+        followerUserId as string,
+      );
 
       if (user) {
         console.log(`🚨 ${user.login} is now following 🚨`);
@@ -58,6 +63,9 @@ export const sendBroadcasterFollowEvent = async (
 
             WebsocketServer.sendData(broadcasterFollowEvent);
 
+            const randomZone = getRandomEntry(PantherworldZones);
+            await movePlayer(user.id, randomZone.name);
+
             setTimeout(async () => {
               // Send random mood change
               const newRandomMood: string = Moods.getRandomNewMood();
@@ -68,8 +76,8 @@ export const sendBroadcasterFollowEvent = async (
 
               // Announce with p4nth3rb0t
               announce(
-                `p4nth3rPEWPEW Welcome to p4nth3rworld, @${followerName}! You get ${newRandomMood} panther! p4nth3rPEWPEW`,
-                TwitchAnnouncementColor.Purple,
+                `🌍 Welcome to p4nth3rworld, @${followerName}! You have been dropped in the ${randomZone.name} zone`,
+                TwitchAnnouncementColor.Green,
               );
             }, 3500);
           }

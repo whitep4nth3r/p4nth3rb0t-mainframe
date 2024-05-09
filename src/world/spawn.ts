@@ -28,13 +28,15 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
     move spawn commands to separate area for clarity ✅
     unclaimed item party — where all unclaimed items are released for grabs in a random zone ✅
 
+    automatically put someone in pantherworld when they follow ✅
+
+    sort inventory by frequency of item
+
     add a !leaderboard function to see who's got the most?
 
     landing page about how to play
 
     hook into hype trains and mega spawn things
-
-    automatically put someone in pantherworld when they follow???
    */
 
 /**
@@ -49,7 +51,6 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
  * !craft
  * !recipes
  * !gift
- * sort inventory by frequency of item
  */
 
 export enum SpawnEventType {
