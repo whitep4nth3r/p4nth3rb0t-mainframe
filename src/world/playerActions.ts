@@ -197,34 +197,24 @@ export async function getInventory(
   userId: string,
   username: string,
 ): Promise<void> {
-  const items = await PantherworldItemModel.find({ userId: userId }).exec();
-  const list: { [key: string]: number } = {};
+  const items = await PantherworldItemModel.aggregate([
+    // Match documents with a specific userId
+    { $match: { userId: userId } },
 
-  items.forEach((item) => {
-    // if list doesn't have a key of item.name
-    // add key to list with value 1
-    if (!Object.keys(list).includes(item.name)) {
-      list[item.name] = 1;
-    } else {
-      list[item.name] += 1;
-    }
-  });
+    // Group documents by name, count the number of items in each group
+    { $group: { _id: "$name", count: { $sum: 1 } } },
 
-  const listStringArray = [];
+    // Sort the groups by count in descending order
+    { $sort: { count: -1 } },
+  ]);
 
-  for (const [key, value] of Object.entries(list)) {
-    listStringArray.push(`${value} ${key}`);
-  }
-
-  const itemString =
-    listStringArray.length === 0 || listStringArray.length > 1
-      ? "items"
-      : "item";
+  const list = items.map((item) => `${item._id}: ${item.count}`).join(", ");
+  const itemString = list.length === 0 || list.length > 1 ? "items" : "item";
 
   tmi.say(
     config.channel,
     `${botPrefix}🎒 @${username}: you have ${items.length} ${itemString}${
-      listStringArray.length > 0 ? ": " : ""
-    } ${listStringArray.join(", ")}`,
+      items.length > 0 ? ": " : ""
+    } ${list}`,
   );
 }
