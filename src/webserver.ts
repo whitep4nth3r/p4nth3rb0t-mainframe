@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import express, { Request, Response } from "express";
 
 import cors from "cors";
@@ -42,10 +42,10 @@ Sentry.init({
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
     new Sentry.Integrations.Express({ app }),
-    new ProfilingIntegration(),
+    nodeProfilingIntegration(),
   ],
   // Performance Monitoring
-  tracesSampleRate: 0.5,
+  tracesSampleRate: 1,
   profilesSampleRate: 0.5,
 });
 
