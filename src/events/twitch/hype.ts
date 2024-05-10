@@ -43,12 +43,10 @@ export async function sendHypeTrainProgressEvent(level: number): Promise<void> {
 
     WebSocketServer.sendData(hypeTrainProgressPacket);
 
-    for (let i = 0; i < level; i++) {
-      await spawn({
-        type: SpawnEventType.Hype,
-        data: { level: level },
-      });
-    }
+    await spawn({
+      type: SpawnEventType.Hype,
+      data: { level: level },
+    });
   } catch (error) {
     Sentry.captureException(error);
   }
