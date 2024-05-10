@@ -14,47 +14,6 @@ import { sendPantherworldFeedEvent } from "../discord";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
-/**
-    todo - add a !claim function for users ✅
-    save what they have claimed in DB ✅
-    add a !move function for users to move around zones ✅
-    save user's zone positions ✅
-    users can only claim when they are in that zone ✅
-    add a !inventory function for users to check what's in their inventory ✅
-    when users type !locate gets their current zone and sends message ✅
-    add a !population command to find out how many people are in each zone ✅
-    mini overlay to show players moving and claiming and stuff ✅
-    fix some bugs (see Sentry) ✅
-    move spawn commands to separate area for clarity ✅
-    unclaimed item party — where all unclaimed items are released for grabs in a random zone ✅
-    automatically put someone in pantherworld when they follow ✅
-    sort inventory by frequency of item ✅
-
-    add a !leaderboard function to see who's got the most?
-
-    landing page about how to play
-
-    hook into hype trains and mega spawn things
-
-    when someone gets banned they die in pantherworld
-    (we'll need a !dead command)
-    all their items get released
-   */
-
-/**
- * when users type !move {zone}
- * they move to {zone}
- * TODO: it takes time to move between zones
- * update record in db
- */
-
-/**
- * more ideas
- * !craft
- * !recipes
- * !gift
- */
-
 export enum SpawnEventType {
   Follow = "Follow",
   Cheer = "Cheer",
@@ -69,17 +28,6 @@ type EventData =
   | { type: SpawnEventType.Redeem; data: { reward: string } }
   | { type: SpawnEventType.Sub; data: { username: string } }
   | { type: SpawnEventType.Raid; data: { raiders: number } };
-
-function getArticle(name: string): string {
-  const startsWithVowel =
-    name.startsWith("a") ||
-    name.startsWith("e") ||
-    name.startsWith("i") ||
-    name.startsWith("o") ||
-    name.startsWith("u");
-
-  return startsWithVowel ? "An" : "A";
-}
 
 function calculateEventRarity(event: EventData): number {
   switch (event.type) {
@@ -127,9 +75,7 @@ export async function spawn(event: EventData): Promise<void> {
 
   await saveItem(itemToSpawn.name, spawnZone.name);
 
-  const message = `${botPrefix}🌍 ${getArticle(itemToSpawn.name)} ${
-    itemToSpawn.name
-  } spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
+  const message = `${botPrefix}🌍 ${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
 
   tmi.say(config.channel, message);
 

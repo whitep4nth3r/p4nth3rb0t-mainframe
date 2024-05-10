@@ -69,6 +69,10 @@ export const WorldItems: WorldItem[] = [
     name: "raspberry",
   },
   {
+    rarity: 5,
+    name: "cucumber",
+  },
+  {
     rarity: 6,
     name: "fresh basil",
   },
@@ -97,8 +101,16 @@ export const WorldItems: WorldItem[] = [
     name: "fresh ginger",
   },
   {
-    rarity: 5,
-    name: "cucumber",
+    rarity: 7,
+    name: "spring onions",
+  },
+  {
+    rarity: 8,
+    name: "chicken egg",
+  },
+  {
+    rarity: 9,
+    name: "green olive",
   },
   {
     rarity: 10,
@@ -117,12 +129,40 @@ export const WorldItems: WorldItem[] = [
     name: "aubergine",
   },
   {
+    rarity: 8,
+    name: "dandelion",
+  },
+  {
+    rarity: 10,
+    name: "buttercup",
+  },
+  {
+    rarity: 12,
+    name: "three leaf clover",
+  },
+  {
     rarity: 15,
     name: "fresh pasta",
   },
   {
+    rarity: 18,
+    name: "daisy",
+  },
+  {
+    rarity: 19,
+    name: "bluebell",
+  },
+  {
     rarity: 20,
     name: "blank notebook",
+  },
+  {
+    rarity: 21,
+    name: "black olive",
+  },
+  {
+    rarity: 30,
+    name: "wooden bucket",
   },
   {
     rarity: 50,
@@ -135,6 +175,14 @@ export const WorldItems: WorldItem[] = [
   {
     rarity: 60,
     name: "bag of oats",
+  },
+  {
+    rarity: 70,
+    name: "quail egg",
+  },
+  {
+    rarity: 85,
+    name: "pine cone",
   },
   {
     rarity: 100,
@@ -155,6 +203,10 @@ export const WorldItems: WorldItem[] = [
   {
     rarity: 200,
     name: "watering can",
+  },
+  {
+    rarity: 340,
+    name: "four leaf clover",
   },
   {
     rarity: 420,
@@ -184,4 +236,5 @@ export const WorldItems: WorldItem[] = [
   { rarity: 1000, name: "emerald" },
   { rarity: 1000, name: "ruby" },
   { rarity: 1000, name: "sapphire" },
+  { rarity: 1000, name: "opal" },
 ];

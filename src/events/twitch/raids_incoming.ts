@@ -29,10 +29,14 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       WebSocketServer.sendData(raidEvent);
 
-      await spawn({
-        type: SpawnEventType.Raid,
-        data: { raiders: raiderCount },
-      });
+      const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
+
+      for (let i = 0; i < spawnAmount; i++) {
+        await spawn({
+          type: SpawnEventType.Raid,
+          data: { raiders: spawnAmount },
+        });
+      }
 
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();

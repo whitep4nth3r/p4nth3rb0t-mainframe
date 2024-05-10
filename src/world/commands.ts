@@ -18,15 +18,20 @@ export const WorldLeaderCommands = {
   "!release": async () => {
     await releaseUnclaimed();
   },
+  // "!test": async () => {
+  //   const raiderCount = 323;
+  //   const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
+
+  //   for (let i = 0; i < spawnAmount; i++) {
+  //     await spawn({
+  //       type: SpawnEventType.Raid,
+  //       data: { raiders: spawnAmount },
+  //     });
+  //   }
+  // },
 };
 
 export const WorldCommands = {
-  // "!test": async () => {
-  //   await spawn({
-  //     type: SpawnEventType.Cheer,
-  //     data: { bits: 123 },
-  //   });
-  // },
   "!map": async () => {
     const zones = PantherworldZones.map((zone) => zone.name).join(", ");
     tmi.say(config.channel, `${botPrefix}🗺️ Available zones: ${zones}`);
