@@ -20,6 +20,7 @@ export enum SpawnEventType {
   Redeem = "Redeem",
   Sub = "Sub",
   Raid = "raid",
+  Hype = "hype",
 }
 
 type EventData =
@@ -27,6 +28,7 @@ type EventData =
   | { type: SpawnEventType.Follow; data: { username: string } }
   | { type: SpawnEventType.Redeem; data: { reward: string } }
   | { type: SpawnEventType.Sub; data: { username: string } }
+  | { type: SpawnEventType.Hype; data: { level: number } }
   | { type: SpawnEventType.Raid; data: { raiders: number } };
 
 function calculateEventRarity(event: EventData): number {
@@ -41,6 +43,8 @@ function calculateEventRarity(event: EventData): number {
       return event.data.username.length;
     case SpawnEventType.Raid:
       return event.data.raiders;
+    case SpawnEventType.Hype:
+      return event.data.level;
     default:
       return 1;
   }
