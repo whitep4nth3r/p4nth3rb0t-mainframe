@@ -14,6 +14,11 @@ import Team from "./users/Team";
 import AccessToken from "./classes/AccessToken";
 import { deploySite } from "./utils/netlifyUtils";
 import { config } from "./config";
+import {
+  sendHypeTrainBeginEvent,
+  sendHypeTrainEndEvent,
+  sendHypeTrainProgressEvent,
+} from "./events/twitch/hype";
 
 const accessTokenUtil = new AccessToken();
 
@@ -148,6 +153,7 @@ app.post(
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {
       console.log("🚂 Hype train begin received");
+      await sendHypeTrainBeginEvent(req.body.event.level);
     }
 
     return res.status(200).send();
@@ -166,6 +172,7 @@ app.post(
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {
       console.log("🚂 Hype train progress received");
+      await sendHypeTrainProgressEvent(req.body.event.level);
     }
 
     return res.status(200).send();
@@ -184,6 +191,7 @@ app.post(
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {
       console.log("🚂 Hype train end received");
+      await sendHypeTrainEndEvent(req.body.event.level);
     }
 
     return res.status(200).send();
