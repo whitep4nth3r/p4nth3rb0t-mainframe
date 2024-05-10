@@ -14,9 +14,9 @@ import {
   AuthCodeResponse,
   UserAccessTokenResponse,
 } from "../data/types";
-import { tmi } from "../tmi";
-import { config } from "../config";
 import { URLSearchParams } from "url";
+// import { tmi } from "../tmi";
+// import { config } from "../config";
 
 export const USER_SCOPES: string[] = [
   "moderator:read:chatters",
@@ -26,11 +26,13 @@ export const USER_SCOPES: string[] = [
   "moderator:manage:announcements",
   "moderator:manage:shoutouts",
   "channel:manage:raids",
+  "channel:read:hype_train",
 ];
 
 export default class AccessToken {
   async getUserAccessToken(): Promise<UserAccessTokenData | undefined> {
     const cachedToken = await UserAccessTokenModel.findOne();
+
     if (cachedToken) {
       if (
         JSON.stringify(cachedToken.scope.sort()) ===
@@ -66,10 +68,13 @@ export default class AccessToken {
       scope: USER_SCOPES.join(" "),
       state: "random-uuid",
     });
-    await tmi.say(
-      config.channel,
-      `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`,
-    );
+
+    // this causes an error right now...
+    // tmi.say(
+    //   config.channel,
+    //   `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`,
+    // );
+
     console.log(
       `Please visit: https://id.twitch.tv/oauth2/authorize?${params}`,
     );
@@ -114,11 +119,16 @@ export default class AccessToken {
       return getAccessToken;
     }
 
-    const response = await this.fetch();
+    try {
+      const response = await this.fetch();
+      console.log(response);
 
-    if (response) {
-      const accessToken = await this.set(response);
-      return this.get();
+      if (response) {
+        const accessToken = await this.set(response);
+        return this.get();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -202,6 +212,7 @@ export default class AccessToken {
 
     return undefined;
   }
+
   async fetchUserAccessToken(
     code: string,
   ): Promise<UserAccessTokenResponse | undefined> {

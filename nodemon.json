@@ -3,6 +3,7 @@
   "ext": ".ts,.js",
   "ignore": [".git", "node_modules/**/node_modules"],
   "exec": "ts-node --project ./tsconfig.json  ./src/app.ts",
+  "verbose": true,
   "env": {
     "NODE_ENV": "development"
   }

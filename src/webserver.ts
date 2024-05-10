@@ -137,6 +137,60 @@ app.post(
 );
 
 app.post(
+  "/webhooks/subscribe/hype/begin",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const valid = verifySignature(req);
+    if (!valid) {
+      return res.status(403).send();
+    }
+    if (req.body.challenge) {
+      console.log(`🚂  Webhook subscribed for hype train begin!`);
+      return res.status(200).contentType("text/plain").send(req.body.challenge);
+    } else {
+      console.log("🚂 Hype train begin received");
+    }
+
+    return res.status(200).send();
+  }),
+);
+
+app.post(
+  "/webhooks/subscribe/hype/progress",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const valid = verifySignature(req);
+    if (!valid) {
+      return res.status(403).send();
+    }
+    if (req.body.challenge) {
+      console.log(`🚂  Webhook subscribed for hype train progress!`);
+      return res.status(200).contentType("text/plain").send(req.body.challenge);
+    } else {
+      console.log("🚂 Hype train progress received");
+    }
+
+    return res.status(200).send();
+  }),
+);
+
+app.post(
+  "/webhooks/subscribe/hype/end",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const valid = verifySignature(req);
+    if (!valid) {
+      return res.status(403).send();
+    }
+    if (req.body.challenge) {
+      console.log(`🚂  Webhook subscribed for hype train end!`);
+      return res.status(200).contentType("text/plain").send(req.body.challenge);
+    } else {
+      console.log("🚂 Hype train end received");
+    }
+
+    return res.status(200).send();
+  }),
+);
+
+app.post(
   "/webhooks/subscribe/broadcaster/follow",
   asyncWrapper(async (req: Request, res: Response) => {
     Sentry.startSpan({ name: "twitch follow" }, async () => {

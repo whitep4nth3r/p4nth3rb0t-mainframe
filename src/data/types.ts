@@ -66,6 +66,9 @@ export const enum EventSubType {
   StreamOnline = "stream.online",
   StreamOffline = "stream.offline",
   ChannelFollow = "channel.follow",
+  HypeTrainBegin = "channel.hype_train.begin",
+  HypeTrainProgress = "channel.hype_train.progress",
+  HypeTrainEnd = "channel.hype_train.end",
 }
 
 export interface EventSubDefinition {

@@ -45,8 +45,6 @@ const sendFirstEvent = async (username: string, message: string) => {
         },
       };
 
-      console.log(firstEvent);
-
       WebSocketServer.sendData(firstEvent);
     }
   } catch (error) {

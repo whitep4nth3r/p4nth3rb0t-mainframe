@@ -21,6 +21,7 @@ async function getAllSubscriptions(): Promise<
   EventSubscriptionResponse | undefined
 > {
   const accessTokenData = await accessTokenUtil.get();
+
   if (accessTokenData) {
     try {
       const response = await axios.get(`${eventSubApiUrl}`, {
@@ -161,6 +162,10 @@ function callbackUrlAllowed(url: string): boolean {
   const deletableSubIds: string[] = [];
   const allowed: string[] = [];
   const myCallbackUrl = process.env.TWITCH_API_CALLBACK_URL ?? "";
+
+  // Delete all subscriptions with callback urls not explicitly allowed
+  existingSubs.forEach(async (id) => await deleteSubscription(id));
+
   if (subscriptionResponse) {
     subscriptionResponse.data.forEach(async (eventSub) => {
       //await deleteSubscription(eventSub.id);
@@ -182,6 +187,45 @@ function callbackUrlAllowed(url: string): boolean {
 
   // Delete all subscriptions with callback urls not explicitly allowed
   deletableSubIds.forEach(async (id) => await deleteSubscription(id));
+
+  const hypeTrainBeginDefinition: EventSubDefinition = {
+    eventType: EventSubType.HypeTrainBegin,
+    userId: config.broadcaster.user_id,
+    callbackUrl: `${myCallbackUrl}/hype/begin`,
+    version: "1",
+  };
+
+  if (existingSubs.has(JSON.stringify(hypeTrainBeginDefinition))) {
+    console.log("Already subscribed to hype train begin events");
+  } else {
+    await registerEventSub(hypeTrainBeginDefinition);
+  }
+
+  const hypeTrainProgressDefinition: EventSubDefinition = {
+    eventType: EventSubType.HypeTrainProgress,
+    userId: config.broadcaster.user_id,
+    callbackUrl: `${myCallbackUrl}/hype/progress`,
+    version: "1",
+  };
+
+  if (existingSubs.has(JSON.stringify(hypeTrainProgressDefinition))) {
+    console.log("Already subscribed to hype train progress events");
+  } else {
+    await registerEventSub(hypeTrainProgressDefinition);
+  }
+
+  const hypeTrainEndDefinition: EventSubDefinition = {
+    eventType: EventSubType.HypeTrainEnd,
+    userId: config.broadcaster.user_id,
+    callbackUrl: `${myCallbackUrl}/hype/end`,
+    version: "1",
+  };
+
+  if (existingSubs.has(JSON.stringify(hypeTrainEndDefinition))) {
+    console.log("Already subscribed to hype train end events");
+  } else {
+    await registerEventSub(hypeTrainEndDefinition);
+  }
 
   // Register for new follower events
   const followDefinition: EventSubDefinition = {
@@ -216,5 +260,6 @@ function callbackUrlAllowed(url: string): boolean {
       await registerEventSub(onlineDefinition);
     }
   });
+
   console.log("Webhooks initialization complete");
 })();
