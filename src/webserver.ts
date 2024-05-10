@@ -45,7 +45,7 @@ Sentry.init({
     nodeProfilingIntegration(),
   ],
   // Performance Monitoring
-  tracesSampleRate: 1,
+  tracesSampleRate: 0.5,
   profilesSampleRate: 0.5,
 });
 
@@ -201,25 +201,20 @@ app.post(
 app.post(
   "/webhooks/subscribe/broadcaster/follow",
   asyncWrapper(async (req: Request, res: Response) => {
-    Sentry.startSpan({ name: "twitch follow" }, async () => {
-      const valid = verifySignature(req);
-      if (!valid) {
-        return res.status(403).send();
-      }
-      if (req.body.challenge) {
-        console.log(`💘  Webhook subscribed for broadcaster follows!`);
-        return res
-          .status(200)
-          .contentType("text/plain")
-          .send(req.body.challenge);
-      } else {
-        console.log("🔔 Broadcaster follow received");
-        await sendBroadcasterFollowEvent(
-          req.body.event.user_name,
-          req.body.event.user_id,
-        );
-      }
-    });
+    const valid = verifySignature(req);
+    if (!valid) {
+      return res.status(403).send();
+    }
+    if (req.body.challenge) {
+      console.log(`💘  Webhook subscribed for broadcaster follows!`);
+      return res.status(200).contentType("text/plain").send(req.body.challenge);
+    } else {
+      console.log("🔔 Broadcaster follow received");
+      await sendBroadcasterFollowEvent(
+        req.body.event.user_name,
+        req.body.event.user_id,
+      );
+    }
 
     return res.status(200).send();
   }),
