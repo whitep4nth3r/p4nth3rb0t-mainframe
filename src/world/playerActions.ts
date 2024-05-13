@@ -212,7 +212,7 @@ export async function getInventory(
 
   items.forEach((item) => (total += item.count));
 
-  const list = items.map((item) => `${item._id}: ${item.count}`).join(", ");
+  const list = items.map((item) => `${item.count} ${item._id}`).join(", ");
   const itemString = list.length === 0 || list.length > 1 ? "items" : "item";
 
   tmi.say(
