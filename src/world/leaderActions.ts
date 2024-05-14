@@ -16,10 +16,16 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 export async function releaseUnclaimed(): Promise<void> {
   const randomZone = getRandomEntry(PantherworldZones);
 
-  const unclaimed = await PantherworldItemModel.find({
-    userId: null,
-    zone: randomZone.name,
-  });
+  const unclaimed = await PantherworldItemModel.aggregate([
+    // Match documents with a null userId and random zone name
+    { $match: { userId: null, zone: randomZone.name } },
+
+    // Group documents by name, count the number of items in each group
+    { $group: { _id: "$name", count: { $sum: 1 } } },
+
+    // Sort the groups by count in descending order
+    { $sort: { count: -1 } },
+  ]);
 
   if (unclaimed.length === 0) {
     const message = `${botPrefix}🪹 There are no unclaimed items in the ${randomZone.name} zone!`;
@@ -29,7 +35,9 @@ export async function releaseUnclaimed(): Promise<void> {
   } else {
     WorldState.ITEMS_RELEASED = true;
 
-    const itemList = unclaimed.map((item) => item.name).join(", ");
+    const itemList = unclaimed
+      .map((item) => `${item.count} ${item._id}`)
+      .join(", ");
 
     const message = `${botPrefix}📦 World items released in the ${randomZone.name} zone! Items available: ${itemList}`;
 
