@@ -36,4 +36,14 @@ export const Herbs: WorldItem[] = [
     name: "fresh ginger",
     onlyZone: null,
   },
+  {
+    rarity: 20,
+    name: "fresh green chilli",
+    onlyZone: null,
+  },
+  {
+    rarity: 100,
+    name: "fresh red chilli",
+    onlyZone: null,
+  },
 ];

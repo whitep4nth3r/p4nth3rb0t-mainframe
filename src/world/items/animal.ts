@@ -7,6 +7,11 @@ export const Animal: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 48,
+    name: "wood pigeon feather",
+    onlyZone: null,
+  },
+  {
     rarity: 70,
     name: "quail egg",
     onlyZone: null,

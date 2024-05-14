@@ -8,6 +8,11 @@ export const SwampItems: WorldItem[] = [
     onlyZone: PantherworldZoneNames.Swamp,
   },
   {
+    rarity: 3,
+    name: "rotten egg",
+    onlyZone: PantherworldZoneNames.Swamp,
+  },
+  {
     rarity: 4,
     name: "irradiated pineapple",
     onlyZone: PantherworldZoneNames.Swamp,
@@ -25,6 +30,11 @@ export const SwampItems: WorldItem[] = [
   {
     rarity: 50,
     name: "irradiated parchment paper",
+    onlyZone: PantherworldZoneNames.Swamp,
+  },
+  {
+    rarity: 55,
+    name: "glowing mushroom",
     onlyZone: PantherworldZoneNames.Swamp,
   },
   {

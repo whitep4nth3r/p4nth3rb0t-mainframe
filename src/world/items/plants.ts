@@ -7,6 +7,11 @@ export const Plants: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 55,
+    name: "acorn",
+    onlyZone: null,
+  },
+  {
     rarity: 85,
     name: "pine cone",
     onlyZone: null,

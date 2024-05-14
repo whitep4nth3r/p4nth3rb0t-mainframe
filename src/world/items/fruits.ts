@@ -51,4 +51,24 @@ export const Fruits: WorldItem[] = [
     name: "watermelon",
     onlyZone: null,
   },
+  {
+    rarity: 30,
+    name: "peach",
+    onlyZone: null,
+  },
+  {
+    rarity: 350,
+    name: "star fruit",
+    onlyZone: null,
+  },
+  {
+    rarity: 400,
+    name: "dragon fruit",
+    onlyZone: null,
+  },
+  {
+    rarity: 500,
+    name: "whole mango",
+    onlyZone: null,
+  },
 ];

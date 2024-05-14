@@ -58,8 +58,23 @@ export const Vegetables: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 12,
+    name: "generic mushroom",
+    onlyZone: null,
+  },
+  {
+    rarity: 16,
+    name: "watercress",
+    onlyZone: null,
+  },
+  {
     rarity: 21,
     name: "black olive",
+    onlyZone: null,
+  },
+  {
+    rarity: 60,
+    name: "cob of corn",
     onlyZone: null,
   },
 ];

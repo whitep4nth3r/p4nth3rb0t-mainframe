@@ -6,6 +6,8 @@ export const Gems: WorldItem[] = [
     name: "crystal ball",
     onlyZone: null,
   },
+  { rarity: 1000, name: "rose quartz", onlyZone: null },
+  { rarity: 1000, name: "topaz", onlyZone: null },
   { rarity: 1000, name: "diamond", onlyZone: null },
   { rarity: 1000, name: "emerald", onlyZone: null },
   { rarity: 1000, name: "ruby", onlyZone: null },

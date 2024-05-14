@@ -81,8 +81,12 @@ export const UniversalItems: WorldItem[] = [
     name: "cool stick",
     onlyZone: null,
   },
+  {
+    rarity: 420,
+    name: "cool shell",
+    onlyZone: null,
+  },
   { rarity: 500, name: "veryrareobject", onlyZone: null },
   { rarity: 500, name: "additional knowledge", onlyZone: null },
   { rarity: 500, name: "fishing net", onlyZone: null },
-  { rarity: 750, name: "wooden flute", onlyZone: null },
 ];

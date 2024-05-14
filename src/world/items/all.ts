@@ -7,6 +7,7 @@ import { Flowers } from "./flowers";
 import { Plants } from "./plants";
 import { Gems } from "./gems";
 import { Animal } from "./animal";
+import { Instruments } from "./instruments";
 
 export type WorldItem = {
   rarity: number;
@@ -21,6 +22,7 @@ export const WorldItems: WorldItem[] = [
   ...Flowers,
   ...Fruits,
   ...Plants,
+  ...Instruments,
   ...SwampItems,
   ...Vegetables,
   ...UniversalItems,
