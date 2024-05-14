@@ -19,7 +19,7 @@ export const WorldLeaderCommands = {
     await releaseUnclaimed();
   },
   // "!test": async () => {
-  //   const raiderCount = 323;
+  //   const raiderCount = 5;
   //   const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
 
   //   for (let i = 0; i < spawnAmount; i++) {

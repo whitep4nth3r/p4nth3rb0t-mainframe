@@ -7,37 +7,31 @@ export const SwampItems: WorldItem[] = [
     name: "toxic waste",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 4,
     name: "irradiated pineapple",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 10,
     name: "irradiated avocado",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 10,
     name: "irradiated croissant",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 50,
     name: "irradiated parchment paper",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 60,
     name: "irradiated stick of butter",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 85,
     name: "irradiated pine cone",
@@ -48,25 +42,21 @@ export const SwampItems: WorldItem[] = [
     name: "irradiated coal",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 420,
     name: "irradiated leaf",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 420,
     name: "irradiated feather",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 420,
     name: "irradiated pebble",
     onlyZone: PantherworldZoneNames.Swamp,
   },
-
   {
     rarity: 420,
     name: "irradiated stick",

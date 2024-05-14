@@ -51,11 +51,11 @@ function calculateEventRarity(event: EventData): number {
 }
 
 export function calculateEligibleItems(rarity: number, zone: string): any[] {
-  const onlyZoneItems = WorldItems.filter((item) =>
+  const eligibleZoneItems = WorldItems.filter((item) =>
     item.onlyZone !== null ? item.onlyZone === zone : null,
   );
 
-  const exactRarityItems = onlyZoneItems.filter(
+  const exactRarityItems = eligibleZoneItems.filter(
     (item) => item.rarity === rarity,
   );
 
@@ -68,8 +68,8 @@ export function calculateEligibleItems(rarity: number, zone: string): any[] {
   const goHigher = Math.random() > 0.8;
 
   const otherRarityItems = goHigher
-    ? WorldItems.filter((item) => item.rarity > rarity)
-    : WorldItems.filter((item) => item.rarity < rarity);
+    ? eligibleZoneItems.filter((item) => item.rarity > rarity)
+    : eligibleZoneItems.filter((item) => item.rarity < rarity);
 
   return otherRarityItems;
 }
