@@ -3,6 +3,7 @@ export enum PantherworldZoneNames {
   Forest = "forest",
   Mountain = "mountain",
   Desert = "desert",
+  Swamp = "swamp",
 }
 
 export const PantherworldZones = [
@@ -18,6 +19,7 @@ export const PantherworldZones = [
   {
     name: PantherworldZoneNames.Desert,
   },
+  { name: PantherworldZoneNames.Swamp },
 ];
 
 export function isValidPantherworldZone(input: string): boolean {

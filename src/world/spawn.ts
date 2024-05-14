@@ -50,8 +50,14 @@ function calculateEventRarity(event: EventData): number {
   }
 }
 
-function calculateEligibleItems(rarity: number): any[] {
-  const exactRarityItems = WorldItems.filter((item) => item.rarity === rarity);
+export function calculateEligibleItems(rarity: number, zone: string): any[] {
+  const onlyZoneItems = WorldItems.filter((item) =>
+    item.onlyZone !== null ? item.onlyZone === zone : null,
+  );
+
+  const exactRarityItems = onlyZoneItems.filter(
+    (item) => item.rarity === rarity,
+  );
 
   if (exactRarityItems.length) {
     return exactRarityItems;
@@ -71,11 +77,14 @@ function calculateEligibleItems(rarity: number): any[] {
 export async function spawn(event: EventData): Promise<void> {
   const rarity = calculateEventRarity(event);
 
-  const eligibleItems: WorldItem[] = calculateEligibleItems(rarity);
+  const spawnZone = getRandomEntry(PantherworldZones);
+
+  const eligibleItems: WorldItem[] = calculateEligibleItems(
+    rarity,
+    spawnZone.name,
+  );
 
   const itemToSpawn: WorldItem = getRandomEntry(eligibleItems);
-  //todo rare items should spawn in zones where they are fewer people
-  const spawnZone = getRandomEntry(PantherworldZones);
 
   await saveItem(itemToSpawn.name, spawnZone.name);
 
