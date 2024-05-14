@@ -2,8 +2,8 @@ import { config } from "../config";
 import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
-import { WorldItems } from "./items";
-import type { WorldItem } from "./items";
+import { WorldItems } from "./items/all";
+import type { WorldItem } from "./items/all";
 import { PantherworldZones } from "./zones";
 import {
   MainframeEvent,
