@@ -4,7 +4,7 @@ import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 import { WorldItems } from "./items/all";
 import type { WorldItem } from "./items/all";
-import { PantherworldZones } from "./zones";
+import { PantherworldZoneNames, PantherworldZones } from "./zones";
 import {
   MainframeEvent,
   ItemSpawnPacket,
@@ -51,9 +51,14 @@ function calculateEventRarity(event: EventData): number {
 }
 
 export function calculateEligibleItems(rarity: number, zone: string): any[] {
-  const eligibleZoneItems = WorldItems.filter((item) =>
-    item.onlyZone !== null ? item.onlyZone === zone : null,
-  );
+  let eligibleZoneItems;
+
+  // this does not scale to other zone limits right now
+  if (zone === PantherworldZoneNames.Swamp) {
+    eligibleZoneItems = WorldItems.filter((item) => item.onlyZone === zone);
+  } else {
+    eligibleZoneItems = WorldItems.filter((item) => item.onlyZone === null);
+  }
 
   const exactRarityItems = eligibleZoneItems.filter(
     (item) => item.rarity === rarity,
