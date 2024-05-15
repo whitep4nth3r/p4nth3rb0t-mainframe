@@ -10,6 +10,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebsocketServer from "../WebSocketServer";
 import { sendPantherworldFeedEvent } from "../discord";
+import { PantherworldZones } from "./zones";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
