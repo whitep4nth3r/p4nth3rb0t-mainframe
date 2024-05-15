@@ -21,6 +21,7 @@ export enum SpawnEventType {
   Sub = "Sub",
   Raid = "raid",
   Hype = "hype",
+  StreamOnline = "streamonline",
 }
 
 type EventData =
@@ -29,6 +30,7 @@ type EventData =
   | { type: SpawnEventType.Redeem; data: { reward: string } }
   | { type: SpawnEventType.Sub; data: { username: string } }
   | { type: SpawnEventType.Hype; data: { level: number } }
+  | { type: SpawnEventType.StreamOnline; data: { username: string } }
   | { type: SpawnEventType.Raid; data: { raiders: number } };
 
 function calculateEventRarity(event: EventData): number {
@@ -43,6 +45,8 @@ function calculateEventRarity(event: EventData): number {
       return event.data.username.length;
     case SpawnEventType.Raid:
       return event.data.raiders;
+    case SpawnEventType.StreamOnline:
+      return event.data.username.length * 20;
     case SpawnEventType.Hype:
       return event.data.level;
     default:

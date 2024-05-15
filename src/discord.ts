@@ -15,6 +15,7 @@ import {
   getActiveBroadcasterStreamByBroadcasterId,
 } from "./utils/twitchUtils";
 import type { StreamInfo } from "./data/types";
+import { spawn, SpawnEventType } from "./world/spawn";
 
 const getTwitchVodTimestampInSeconds = (
   date_now: Date,
@@ -168,6 +169,11 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
           embeds: [embed],
         });
       }
+
+      await spawn({
+        type: SpawnEventType.StreamOnline,
+        data: { username: user.display_name },
+      });
 
       await DiscordAnnouncementModel.updateOne(
         { memberId: streamInfo.broadcaster_user_id },
