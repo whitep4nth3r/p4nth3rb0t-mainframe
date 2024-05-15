@@ -22,15 +22,10 @@ export const WorldLeaderCommands = {
     await getLeaderboard();
   },
   // "!test": async () => {
-  //   const raiderCount = 5;
-  //   const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
-
-  //   for (let i = 0; i < spawnAmount; i++) {
-  //     await spawn({
-  //       type: SpawnEventType.Raid,
-  //       data: { raiders: spawnAmount },
-  //     });
-  //   }
+  //   await spawn({
+  //     type: SpawnEventType.Raid,
+  //     data: { raiders: 1000 },
+  //   });
   // },
 };
 
