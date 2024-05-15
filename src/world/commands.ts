@@ -9,7 +9,7 @@ import {
 } from "../world/playerActions";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
-import { releaseUnclaimed } from "./leaderActions";
+import { getLeaderboard, releaseUnclaimed } from "./leaderActions";
 // import { SpawnEventType, spawn } from "./spawn";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
@@ -17,6 +17,9 @@ const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 export const WorldLeaderCommands = {
   "!release": async () => {
     await releaseUnclaimed();
+  },
+  "!leaderboard": async () => {
+    await getLeaderboard();
   },
   // "!test": async () => {
   //   const raiderCount = 5;

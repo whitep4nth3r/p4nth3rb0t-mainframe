@@ -29,15 +29,6 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       WebSocketServer.sendData(raidEvent);
 
-      const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
-
-      for (let i = 0; i < spawnAmount; i++) {
-        await spawn({
-          type: SpawnEventType.Raid,
-          data: { raiders: spawnAmount },
-        });
-      }
-
       setTimeout(async () => {
         const newRandomMood: string = Moods.getRandomNewMood();
         await sendMoodChangeEvent(newRandomMood, Date.now().toString());
@@ -47,7 +38,16 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
         // this will trigger twitch guru stream clips
         tmi.say(config.channel, `!so ${user.login}`);
         sendShoutoutEvent(user.id, `!so ${user.login}`);
-      }, 7000);
+      }, 5000);
+
+      const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;
+
+      for (let i = 0; i < spawnAmount; i++) {
+        await spawn({
+          type: SpawnEventType.Raid,
+          data: { raiders: spawnAmount },
+        });
+      }
     } catch (error) {
       Sentry.captureException(error);
     }
