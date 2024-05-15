@@ -23,6 +23,11 @@ export const Fruits: WorldItem[] = [
   },
   {
     rarity: 4,
+    name: "green grape",
+    onlyZone: null,
+  },
+  {
+    rarity: 4,
     name: "pineapple",
     onlyZone: null,
   },
@@ -52,8 +57,18 @@ export const Fruits: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 14,
+    name: "red grape",
+    onlyZone: null,
+  },
+  {
     rarity: 30,
     name: "peach",
+    onlyZone: null,
+  },
+  {
+    rarity: 100,
+    name: "black grape",
     onlyZone: null,
   },
   {

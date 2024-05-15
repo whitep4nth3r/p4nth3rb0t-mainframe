@@ -21,4 +21,14 @@ export const Flowers: WorldItem[] = [
     name: "bluebell",
     onlyZone: null,
   },
+  {
+    rarity: 300,
+    name: "red rose",
+    onlyZone: null,
+  },
+  {
+    rarity: 1000,
+    name: "black rose",
+    onlyZone: null,
+  },
 ];

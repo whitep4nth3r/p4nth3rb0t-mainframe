@@ -37,6 +37,11 @@ export const Herbs: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 14,
+    name: "garlic bulb",
+    onlyZone: null,
+  },
+  {
     rarity: 20,
     name: "fresh green chilli",
     onlyZone: null,
