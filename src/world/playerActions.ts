@@ -9,6 +9,7 @@ import {
   MainframeEvent,
   PlayerMovePacket,
   PlayerClaimPacket,
+  PlayerDropPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../discord";
 import { WorldState } from "./state";
@@ -252,6 +253,19 @@ export async function dropItem(
     tmi.say(config.channel, message);
 
     await sendPantherworldFeedEvent(message);
+
+    const playerDropEvent: PlayerDropPacket = {
+      event: MainframeEvent.playerDrop,
+      id: userId + "-" + Date.now(),
+      type: "drop",
+      data: {
+        username: displayName,
+        zone: zoneQuery.zone,
+        item: item,
+      },
+    };
+
+    WebsocketServer.sendData(playerDropEvent);
   } else {
     tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
   }
