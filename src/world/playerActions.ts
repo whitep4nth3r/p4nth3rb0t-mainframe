@@ -112,10 +112,15 @@ export async function claimItem(
   let items;
 
   if (WorldState.ITEMS_RELEASED === false) {
-    // if not in a !release state, get the items spawned a minute or less ago
+    // claimable items are those spawned or dropped < 1 minute ago
+    const oneMinuteAgo = new Date(Date.now() - 1000 * 60);
+
     items = await PantherworldItemModel.find({
       name: name,
-      createdAt: { $gt: new Date(Date.now() - 1000 * 60) },
+      $or: [
+        { createdAt: { $gt: oneMinuteAgo } },
+        { updatedAt: { $gt: oneMinuteAgo } },
+      ],
     });
   } else {
     // if in a release state, get unclaimed items
@@ -221,4 +226,33 @@ export async function getInventory(
       items.length > 0 ? ": " : ""
     } ${list}`,
   );
+}
+
+export async function dropItem(
+  item: string,
+  userId: string,
+  displayName: string,
+): Promise<void> {
+  const zoneQuery = await PantherworldPlayerModel.findOne({
+    userId: userId,
+  });
+
+  const itemUpdate = await PantherworldItemModel.updateOne(
+    { userId: userId, name: item },
+    {
+      userId: null,
+      zone: zoneQuery.zone,
+    },
+    { upsert: true },
+  );
+
+  if (itemUpdate.modifiedCount === 1) {
+    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone!`;
+
+    tmi.say(config.channel, message);
+
+    await sendPantherworldFeedEvent(message);
+  } else {
+    tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
+  }
 }

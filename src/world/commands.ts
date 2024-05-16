@@ -6,6 +6,7 @@ import {
   claimItem,
   getInventory,
   listPopulation,
+  dropItem,
 } from "../world/playerActions";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
@@ -76,6 +77,18 @@ export const WorldCommands = {
   "!population": async () => {
     if (!config.FREEZE_MODE) {
       await listPopulation();
+    }
+  },
+  "!drop": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      const item = getRestOfMessage(message).join(" ");
+      if (item !== "") {
+        await dropItem(
+          item,
+          tags["user-id"] as string,
+          tags["display-name"] as string,
+        );
+      }
     }
   },
 };
