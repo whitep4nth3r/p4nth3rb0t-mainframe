@@ -11,7 +11,7 @@ import {
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
 import { getLeaderboard, releaseUnclaimed } from "./leaderActions";
-import { SpawnEventType, spawn } from "./spawn";
+// import { SpawnEventType, spawn } from "./spawn";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -22,12 +22,12 @@ export const WorldLeaderCommands = {
   "!leaderboard": async () => {
     await getLeaderboard();
   },
-  "!test": async () => {
-    await spawn({
-      type: SpawnEventType.Raid,
-      data: { raiders: 1 },
-    });
-  },
+  // "!test": async () => {
+  //   await spawn({
+  //     type: SpawnEventType.Raid,
+  //     data: { raiders: 1 },
+  //   });
+  // },
 };
 
 export const WorldCommands = {
