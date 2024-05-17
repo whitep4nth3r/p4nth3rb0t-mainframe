@@ -11,7 +11,7 @@ import {
   FirstPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../WebSocketServer";
-import { MoodEmotes } from "../../data/types";
+// import { MoodEmotes } from "../../data/types";
 import { SpawnEventType, spawn } from "../../world/spawn";
 
 const sendNumeronymEvent = async (isActive: boolean) => {
@@ -52,22 +52,22 @@ const sendFirstEvent = async (username: string, message: string) => {
   }
 };
 
-const MoodEmotesForChatResponse: MoodEmotes = {
-  coffee: "p4nth3rUP",
-  cool: "p4nth3rCOOL",
-  dolla: "p4nth3rUP",
-  fire: "p4nth3rFIRE",
-  heart: "p4nth3rLOVE",
-  hype: "p4nth3rHYPE",
-  majick: "p4nth3rMAGIC",
-  pewpew: "p4nth3rPEWPEW",
-  rap: "p4nth3rUP",
-  sad: "p4nth3rSAD",
-  scam: "p4nth3rSCAM",
-  star: "p4nth3rSTAR",
-  tattoo: "p4nth3rUP",
-  troll: "p4nth3rTROLL",
-};
+// const MoodEmotesForChatResponse: MoodEmotes = {
+//   coffee: "p4nth3rUP",
+//   cool: "p4nth3rCOOL",
+//   dolla: "p4nth3rUP",
+//   fire: "p4nth3rFIRE",
+//   heart: "p4nth3rLOVE",
+//   hype: "p4nth3rHYPE",
+//   majick: "p4nth3rMAGIC",
+//   pewpew: "p4nth3rPEWPEW",
+//   rap: "p4nth3rUP",
+//   sad: "p4nth3rSAD",
+//   scam: "p4nth3rSCAM",
+//   star: "p4nth3rSTAR",
+//   tattoo: "p4nth3rUP",
+//   troll: "p4nth3rTROLL",
+// };
 
 tmi.on(
   "message",

@@ -25,7 +25,7 @@ export const WorldLeaderCommands = {
   // "!test": async () => {
   //   await spawn({
   //     type: SpawnEventType.Raid,
-  //     data: { raiders: 1000 },
+  //     data: { raiders: 1 },
   //   });
   // },
 };
