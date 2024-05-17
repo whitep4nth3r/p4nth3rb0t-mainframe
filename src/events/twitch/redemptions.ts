@@ -104,7 +104,6 @@ tmi.on(
 
       if (Object.keys(config.moodRedemptions).includes(rewardId)) {
         const mood: string = config.moodRedemptions[rewardId];
-        const username: string = tags["username"] as string;
 
         await sendMoodChangeEvent(mood, rewardId);
 
@@ -112,11 +111,6 @@ tmi.on(
           type: SpawnEventType.Redeem,
           data: { reward: mood },
         });
-
-        tmi.say(
-          config.channel,
-          `${MoodEmotesForChatResponse[mood]} @${username} redeemed ${mood} panther! ${MoodEmotesForChatResponse[mood]}`,
-        );
       }
     }
   },
