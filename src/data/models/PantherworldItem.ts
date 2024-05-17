@@ -14,6 +14,7 @@ export const PantherworldItemSchema: Schema = new mongoose.Schema(
     userId: { type: String, required: false },
     name: { type: String, required: true },
     zone: { type: String, required: true },
+    dropped: { type: Boolean, required: false },
   },
   { timestamps: true },
 );

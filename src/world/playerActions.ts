@@ -118,10 +118,7 @@ export async function claimItem(
 
     items = await PantherworldItemModel.find({
       name: name,
-      $or: [
-        { createdAt: { $gt: oneMinuteAgo } },
-        { updatedAt: { $gt: oneMinuteAgo } },
-      ],
+      $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
     // if in a release state, get unclaimed items
@@ -133,11 +130,11 @@ export async function claimItem(
 
   // where BUGS are actually features
 
-  // currently items are stealable within the 1 minute time frame
+  // spawned items are stealable within a 1 minute time frame
   // technically, a claimable item should be where userID = null
+  // but it was more fun to pass it around
 
-  // in the future, when the item is being passed around, we could
-  // announce that SOMEONE stole THING from SOMEONE
+  // dropped or released items are claimable only once
 
   const claimableItems = items.filter((item) => name === item.name);
 
@@ -171,6 +168,7 @@ export async function claimItem(
           },
           {
             userId: userId,
+            dropped: null,
           },
         );
 
@@ -243,6 +241,7 @@ export async function dropItem(
     {
       userId: null,
       zone: zoneQuery.zone,
+      dropped: true,
     },
     { upsert: true },
   );
