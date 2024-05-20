@@ -243,7 +243,6 @@ export async function dropItem(
       zone: zoneQuery.zone,
       dropped: true,
     },
-    { upsert: true },
   );
 
   if (itemUpdate.modifiedCount === 1) {
