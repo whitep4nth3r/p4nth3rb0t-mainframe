@@ -106,6 +106,9 @@ app.get(
 app.get(
   "/world/inventory/:userId",
   asyncWrapper(async (req: Request, res: Response) => {
+
+    // only process if userId === something else sent in the body that matches userId???
+
     const inventory = await getFullInventory(req.params.userId);
     return res.json({ inventory });
   }),
