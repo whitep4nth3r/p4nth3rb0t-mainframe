@@ -225,6 +225,9 @@ export async function getInventory(
       items.length > 0 ? ": " : ""
     } ${list}`,
   );
+
+  // eventually, just send a link to:
+  // `whatever-front-end/{userId}`
 }
 
 export async function dropItem(
