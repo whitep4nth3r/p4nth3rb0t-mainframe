@@ -101,7 +101,7 @@ export async function spawn(event: EventData): Promise<void> {
 
   const itemToSpawn: WorldItem = getRandomEntry(eligibleItems);
 
-  await saveItem(itemToSpawn.name, spawnZone.name);
+  await saveItem(itemToSpawn.name, itemToSpawn.rarity, spawnZone.name);
 
   const message = `${botPrefix}🌍 ${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
 
