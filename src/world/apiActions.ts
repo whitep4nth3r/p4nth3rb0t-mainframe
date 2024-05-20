@@ -1,5 +1,8 @@
 import PantherworldItemModel from "../data/models/PantherworldItem";
 
+// this is ordered by count
+
+// we could order by rarity?
 export async function getFullInventory(userId: string) {
   // todo - return rarity of item when saved in DB
 
@@ -8,7 +11,13 @@ export async function getFullInventory(userId: string) {
     { $match: { userId: userId } },
 
     // Group documents by name, count the number of items in each group
-    { $group: { _id: "$name", count: { $sum: 1 } } },
+    {
+      $group: {
+        _id: "$name",
+        rarity: { $first: "$rarity" },
+        count: { $sum: 1 },
+      },
+    },
 
     // Project to rename _id to name
     {
@@ -16,6 +25,7 @@ export async function getFullInventory(userId: string) {
         _id: 0,
         name: "$_id",
         count: 1,
+        rarity: 1,
       },
     },
 
