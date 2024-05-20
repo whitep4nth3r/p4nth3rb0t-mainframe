@@ -1,6 +1,8 @@
 import UserManager from "../users/UserManager";
 import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
-import PantherworldItemModel from "../data/models/PantherworldItem";
+import PantherworldItemModel, {
+  PantherworldItemDoc,
+} from "../data/models/PantherworldItem";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 import * as Sentry from "@sentry/node";
@@ -236,17 +238,19 @@ export async function dropItem(
     userId: userId,
   });
 
-  const itemUpdate = await PantherworldItemModel.updateOne(
+  // any because whatever
+  const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
     { userId: userId, name: item },
     {
       userId: null,
       zone: zoneQuery.zone,
       dropped: true,
     },
-  );
+    { returnDocument: "after" },
+  )) as PantherworldItemDoc | null;
 
-  if (itemUpdate.modifiedCount === 1) {
-    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone!`;
+  if (itemUpdate !== null) {
+    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
 
     tmi.say(config.channel, message);
 
@@ -260,6 +264,7 @@ export async function dropItem(
         username: displayName,
         zone: zoneQuery.zone,
         item: item,
+        rarity: itemUpdate.rarity,
       },
     };
 
