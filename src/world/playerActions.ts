@@ -250,7 +250,7 @@ export async function dropItem(
   )) as PantherworldItemDoc | null;
 
   if (itemUpdate !== null) {
-    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone!`;
+    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
 
     tmi.say(config.channel, message);
 
