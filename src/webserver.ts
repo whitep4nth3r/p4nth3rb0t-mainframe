@@ -109,6 +109,9 @@ app.get(
 
     // only process if userId === something else sent in the body that matches userId???
 
+    // 1. users should only be able to see their own inventory
+    // 2. prevent spamming the db
+
     const inventory = await getFullInventory(req.params.userId);
     return res.json({ inventory });
   }),
