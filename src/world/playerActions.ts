@@ -145,7 +145,9 @@ export async function claimItem(
   const claimableItems = items.filter((item) => name === item.name);
 
   if (claimableItems.length === 0) {
-    tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    // trying to reduce noise
+    // tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    return;
   } else {
     const player = await PantherworldPlayerModel.findOne({ userId: userId });
 
@@ -167,7 +169,11 @@ export async function claimItem(
           config.channel,
           `${botPrefix}❌ @${username}: You are in the wrong zone. !move to try and claim it!`,
         );
+      } else if (firstClaimableItem.userId === userId) {
+        // do nothing because it was already claimed
+        return;
       } else {
+        // user can claim item
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
