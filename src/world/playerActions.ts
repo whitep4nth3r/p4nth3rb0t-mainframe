@@ -69,7 +69,11 @@ export async function locatePlayer(
   }
 }
 
-export async function movePlayer(userId: string, zone: string): Promise<void> {
+export async function movePlayer(
+  userId: string,
+  zone: string,
+  announceToChat: boolean = true,
+): Promise<void> {
   const user = await UserManager.getUserById(userId as string);
 
   if (user) {
@@ -84,11 +88,11 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
         { upsert: true },
       );
 
-      const message = `➡️ ${user.display_name} moved to ${zone} zone`;
-
-      tmi.say(config.channel, `${botPrefix} ${message}`);
-
-      await sendPantherworldFeedEvent(message);
+      if (announceToChat) {
+        const message = `➡️ ${user.display_name} moved to ${zone} zone`;
+        tmi.say(config.channel, `${botPrefix} ${message}`);
+        await sendPantherworldFeedEvent(message);
+      }
 
       const playerMoveEvent: PlayerMovePacket = {
         event: MainframeEvent.playerMove,
