@@ -145,7 +145,9 @@ export async function claimItem(
   const claimableItems = items.filter((item) => name === item.name);
 
   if (claimableItems.length === 0) {
-    tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    // trying to reduce noise
+    // tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    return;
   } else {
     const player = await PantherworldPlayerModel.findOne({ userId: userId });
 
@@ -167,7 +169,11 @@ export async function claimItem(
           config.channel,
           `${botPrefix}❌ @${username}: You are in the wrong zone. !move to try and claim it!`,
         );
+      } else if (firstClaimableItem.userId === userId) {
+        // do nothing because it was already claimed
+        return;
       } else {
+        // user can claim item
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -242,38 +248,40 @@ export async function dropItem(
     userId: userId,
   });
 
-  // any because whatever
-  const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
-    { userId: userId, name: item },
-    {
-      userId: null,
-      zone: zoneQuery.zone,
-      dropped: true,
-    },
-    { returnDocument: "after" },
-  )) as PantherworldItemDoc | null;
-
-  if (itemUpdate !== null) {
-    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
-
-    tmi.say(config.channel, message);
-
-    await sendPantherworldFeedEvent(message);
-
-    const playerDropEvent: PlayerDropPacket = {
-      event: MainframeEvent.playerDrop,
-      id: userId + "-" + Date.now(),
-      type: "drop",
-      data: {
-        username: displayName,
+  if (zoneQuery !== null) {
+    // any because whatever
+    const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
+      { userId: userId, name: item },
+      {
+        userId: null,
         zone: zoneQuery.zone,
-        item: item,
-        rarity: itemUpdate.rarity,
+        dropped: true,
       },
-    };
+      { returnDocument: "after" },
+    )) as PantherworldItemDoc | null;
 
-    WebsocketServer.sendData(playerDropEvent);
-  } else {
-    tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
+    if (itemUpdate !== null) {
+      const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
+
+      tmi.say(config.channel, message);
+
+      await sendPantherworldFeedEvent(message);
+
+      const playerDropEvent: PlayerDropPacket = {
+        event: MainframeEvent.playerDrop,
+        id: userId + "-" + Date.now(),
+        type: "drop",
+        data: {
+          username: displayName,
+          zone: zoneQuery.zone,
+          item: item,
+          rarity: itemUpdate.rarity,
+        },
+      };
+
+      WebsocketServer.sendData(playerDropEvent);
+    } else {
+      tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
+    }
   }
 }
