@@ -1,6 +1,8 @@
 import UserManager from "../users/UserManager";
 import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
-import PantherworldItemModel from "../data/models/PantherworldItem";
+import PantherworldItemModel, {
+  PantherworldItemDoc,
+} from "../data/models/PantherworldItem";
 import { tmi } from "./../tmi";
 import { config } from "../config";
 import * as Sentry from "@sentry/node";
@@ -67,7 +69,11 @@ export async function locatePlayer(
   }
 }
 
-export async function movePlayer(userId: string, zone: string): Promise<void> {
+export async function movePlayer(
+  userId: string,
+  zone: string,
+  announceToChat: boolean = true,
+): Promise<void> {
   const user = await UserManager.getUserById(userId as string);
 
   if (user) {
@@ -82,11 +88,11 @@ export async function movePlayer(userId: string, zone: string): Promise<void> {
         { upsert: true },
       );
 
-      const message = `➡️ ${user.display_name} moved to ${zone} zone`;
-
-      tmi.say(config.channel, `${botPrefix} ${message}`);
-
-      await sendPantherworldFeedEvent(message);
+      if (announceToChat) {
+        const message = `➡️ ${user.display_name} moved to ${zone} zone`;
+        tmi.say(config.channel, `${botPrefix} ${message}`);
+        await sendPantherworldFeedEvent(message);
+      }
 
       const playerMoveEvent: PlayerMovePacket = {
         event: MainframeEvent.playerMove,
@@ -139,7 +145,9 @@ export async function claimItem(
   const claimableItems = items.filter((item) => name === item.name);
 
   if (claimableItems.length === 0) {
-    tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    // trying to reduce noise
+    // tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+    return;
   } else {
     const player = await PantherworldPlayerModel.findOne({ userId: userId });
 
@@ -161,7 +169,11 @@ export async function claimItem(
           config.channel,
           `${botPrefix}❌ @${username}: You are in the wrong zone. !move to try and claim it!`,
         );
+      } else if (firstClaimableItem.userId === userId) {
+        // do nothing because it was already claimed
+        return;
       } else {
+        // user can claim item
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -239,35 +251,40 @@ export async function dropItem(
     userId: userId,
   });
 
-  const itemUpdate = await PantherworldItemModel.updateOne(
-    { userId: userId, name: item },
-    {
-      userId: null,
-      zone: zoneQuery.zone,
-      dropped: true,
-    },
-  );
-
-  if (itemUpdate.modifiedCount === 1) {
-    const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone!`;
-
-    tmi.say(config.channel, message);
-
-    await sendPantherworldFeedEvent(message);
-
-    const playerDropEvent: PlayerDropPacket = {
-      event: MainframeEvent.playerDrop,
-      id: userId + "-" + Date.now(),
-      type: "drop",
-      data: {
-        username: displayName,
+  if (zoneQuery !== null) {
+    // any because whatever
+    const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
+      { userId: userId, name: item },
+      {
+        userId: null,
         zone: zoneQuery.zone,
-        item: item,
+        dropped: true,
       },
-    };
+      { returnDocument: "after" },
+    )) as PantherworldItemDoc | null;
 
-    WebsocketServer.sendData(playerDropEvent);
-  } else {
-    tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
+    if (itemUpdate !== null) {
+      const message = `${botPrefix}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
+
+      tmi.say(config.channel, message);
+
+      await sendPantherworldFeedEvent(message);
+
+      const playerDropEvent: PlayerDropPacket = {
+        event: MainframeEvent.playerDrop,
+        id: userId + "-" + Date.now(),
+        type: "drop",
+        data: {
+          username: displayName,
+          zone: zoneQuery.zone,
+          item: item,
+          rarity: itemUpdate.rarity,
+        },
+      };
+
+      WebsocketServer.sendData(playerDropEvent);
+    } else {
+      tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
+    }
   }
 }

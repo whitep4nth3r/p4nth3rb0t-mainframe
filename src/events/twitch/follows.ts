@@ -63,13 +63,12 @@ export const sendBroadcasterFollowEvent = async (
             );
 
             const randomZone = getRandomEntry(PantherworldZones);
+            await movePlayer(user.id, randomZone.name, false);
 
             announce(
               `🌍 Welcome to p4nth3rworld, @${followerName}! You have been dropped in the ${randomZone.name} zone`,
               TwitchAnnouncementColor.Green,
             );
-
-            await movePlayer(user.id, randomZone.name);
           }, 3500);
         }
 
