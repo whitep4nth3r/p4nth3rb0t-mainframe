@@ -6,11 +6,7 @@ export const Plants: WorldItem[] = [
     name: "three leaf clover",
     onlyZone: null,
   },
-  {
-    rarity: 55,
-    name: "acorn",
-    onlyZone: null,
-  },
+
   {
     rarity: 85,
     name: "pine cone",
