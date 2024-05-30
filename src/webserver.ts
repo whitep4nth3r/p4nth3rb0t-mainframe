@@ -102,19 +102,26 @@ app.get(
   }),
 );
 
-// http://localhost:8999/world/inventory/469006291
+// http://localhost:8999/world/inventory/
 app.get(
-  "/world/inventory/:userId",
+  "/world/inventory/",
   asyncWrapper(async (req: Request, res: Response) => {
-    // look for the jwt in req.headers
-    // validate that with Twitch
-    // https://dev.twitch.tv/docs/authentication/validate-tokens/#who-must-validate-tokens
-    // if ok {
-    // const inventory = await getFullInventory(req.params.userId);
-    // return res.json({ inventory });
+    console.log("req");
+    console.log(req.headers);
+
+    // https://dev.twitch.tv/docs/authentication/getting-tokens-oidc/#validating-an-id-token
+
+    // if (isValid.status === 401) {
+    //   return res.sendStatus(401);
     // }
-    // else
-    // { return 403 }
+
+    // todo send user_id from validate body response
+    // if (isValid) {
+    //   const inventory = await getFullInventory(userId);
+    //   return res.json({ inventory });
+    // } else {
+    //   return res.status(401);
+    // }
   }),
 );
 

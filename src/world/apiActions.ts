@@ -4,8 +4,6 @@ import PantherworldItemModel from "../data/models/PantherworldItem";
 
 // we could order by rarity?
 export async function getFullInventory(userId: string) {
-  // todo - return rarity of item when saved in DB
-
   const items = await PantherworldItemModel.aggregate([
     // Match documents with a specific userId
     { $match: { userId: userId } },
