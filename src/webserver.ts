@@ -106,14 +106,15 @@ app.get(
 app.get(
   "/world/inventory/:userId",
   asyncWrapper(async (req: Request, res: Response) => {
-
-    // only process if userId === something else sent in the body that matches userId???
-
-    // 1. users should only be able to see their own inventory
-    // 2. prevent spamming the db
-
-    const inventory = await getFullInventory(req.params.userId);
-    return res.json({ inventory });
+    // look for the jwt in req.headers
+    // validate that with Twitch
+    // https://dev.twitch.tv/docs/authentication/validate-tokens/#who-must-validate-tokens
+    // if ok {
+    // const inventory = await getFullInventory(req.params.userId);
+    // return res.json({ inventory });
+    // }
+    // else
+    // { return 403 }
   }),
 );
 
