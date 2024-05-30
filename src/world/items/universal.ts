@@ -37,11 +37,6 @@ export const UniversalItems: WorldItem[] = [
     onlyZone: null,
   },
   {
-    rarity: 60,
-    name: "bag of oats",
-    onlyZone: null,
-  },
-  {
     rarity: 100,
     name: "coal",
     onlyZone: null,
