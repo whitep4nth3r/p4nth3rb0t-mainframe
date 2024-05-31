@@ -1,4 +1,5 @@
 import PantherworldItemModel from "../data/models/PantherworldItem";
+import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
 
 export async function getFullInventory(userId: string) {
   const items = await PantherworldItemModel.aggregate([
@@ -33,4 +34,15 @@ export async function getFullInventory(userId: string) {
   items.forEach((item) => (total += item.count));
 
   return { total, items };
+}
+
+export async function getLocation(userId: string): Promise<string> {
+  const entry = await PantherworldPlayerModel.findOne({
+    userId: userId,
+  });
+  if (entry) {
+    return entry.zone;
+  } else {
+    return "Not found";
+  }
 }
