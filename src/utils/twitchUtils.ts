@@ -280,3 +280,14 @@ const clientAuthConfig = (token: UserAccessTokenData) => {
     },
   };
 };
+
+export async function validateTwitchSession(accessToken: string) {
+  const validateSession = await fetch("https://id.twitch.tv/oauth2/validate", {
+    headers: {
+      Authorization: `OAuth ${accessToken}`,
+    },
+  });
+
+  const validateSessionData: any = await validateSession.json();
+  return validateSessionData;
+}
