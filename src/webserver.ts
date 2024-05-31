@@ -19,6 +19,7 @@ import {
   sendHypeTrainEndEvent,
   sendHypeTrainProgressEvent,
 } from "./events/twitch/hype";
+import { getFullInventory } from "./world/apiActions";
 
 const accessTokenUtil = new AccessToken();
 
@@ -75,6 +76,10 @@ app.use(Sentry.Handlers.requestHandler());
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("🔥 Welcome to the p4nth3rb0t mainframe");
+});
+
 app.get(
   "/authcode",
   asyncWrapper(async (req: Request, res: Response) => {
@@ -94,6 +99,29 @@ app.get(
       }
     }
     return res.status(200).send();
+  }),
+);
+
+app.get(
+  "/world/inventory/",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const validateSession = await fetch(
+      "https://id.twitch.tv/oauth2/validate",
+      {
+        headers: {
+          Authorization: `OAuth ${req.headers.token}`,
+        },
+      },
+    );
+
+    const validateSessionData: any = await validateSession.json();
+
+    if (validateSessionData.user_id) {
+      const inventory = await getFullInventory(validateSessionData.user_id);
+      return res.json({ inventory });
+    } else {
+      return res.status(401);
+    }
   }),
 );
 
@@ -219,10 +247,6 @@ app.post(
     return res.status(200).send();
   }),
 );
-
-app.use("/", (req: Request, res: Response) => {
-  res.send("🔥 Welcome to the p4nth3rb0t mainframe");
-});
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
