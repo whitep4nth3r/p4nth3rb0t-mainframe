@@ -102,26 +102,26 @@ app.get(
   }),
 );
 
-// http://localhost:8999/world/inventory/
 app.get(
   "/world/inventory/",
   asyncWrapper(async (req: Request, res: Response) => {
-    console.log("req");
-    console.log(req.headers);
+    const validateSession = await fetch(
+      "https://id.twitch.tv/oauth2/validate",
+      {
+        headers: {
+          Authorization: `OAuth ${req.headers.token}`,
+        },
+      },
+    );
 
-    // https://dev.twitch.tv/docs/authentication/getting-tokens-oidc/#validating-an-id-token
+    const validateSessionData = await validateSession.json();
 
-    // if (isValid.status === 401) {
-    //   return res.sendStatus(401);
-    // }
-
-    // todo send user_id from validate body response
-    // if (isValid) {
-    //   const inventory = await getFullInventory(userId);
-    //   return res.json({ inventory });
-    // } else {
-    //   return res.status(401);
-    // }
+    if (validateSessionData.user_id) {
+      const inventory = await getFullInventory(validateSessionData.user_id);
+      return res.json({ inventory });
+    } else {
+      return res.status(401);
+    }
   }),
 );
 
