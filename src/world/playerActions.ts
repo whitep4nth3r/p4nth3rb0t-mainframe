@@ -213,6 +213,7 @@ export async function getInventory(
   userId: string,
   username: string,
 ): Promise<void> {
+  // TODO - simplify query?
   const items = await PantherworldItemModel.aggregate([
     // Match documents with a specific userId
     { $match: { userId: userId } },
@@ -235,11 +236,8 @@ export async function getInventory(
     config.channel,
     `${botPrefix}🎒 @${username}: you have ${total} ${itemString}${
       items.length > 0 ? ": " : ""
-    } ${list}`,
+    }. View your full inventory at https://p4nth3rworld.netlify.app/`,
   );
-
-  // eventually, just send a link to:
-  // `whatever-front-end/{userId}`
 }
 
 export async function dropItem(
