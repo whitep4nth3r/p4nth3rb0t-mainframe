@@ -1,8 +1,5 @@
 import PantherworldItemModel from "../data/models/PantherworldItem";
 
-// this is ordered by count
-
-// we could order by rarity?
 export async function getFullInventory(userId: string) {
   const items = await PantherworldItemModel.aggregate([
     // Match documents with a specific userId
@@ -27,8 +24,8 @@ export async function getFullInventory(userId: string) {
       },
     },
 
-    // Sort the groups by count in descending order
-    { $sort: { count: -1 } },
+    // Sort the groups by rarity in descending order
+    { $sort: { rarity: -1 } },
   ]);
 
   let total = 0;

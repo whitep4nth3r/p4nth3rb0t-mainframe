@@ -114,7 +114,7 @@ app.get(
       },
     );
 
-    const validateSessionData = await validateSession.json();
+    const validateSessionData: any = await validateSession.json();
 
     if (validateSessionData.user_id) {
       const inventory = await getFullInventory(validateSessionData.user_id);
