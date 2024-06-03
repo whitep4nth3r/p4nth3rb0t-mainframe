@@ -11,7 +11,7 @@ import {
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
 import { getLeaderboard, releaseUnclaimed } from "./leaderActions";
-import { SpawnEventType, spawn } from "./spawn";
+import { EventData, SpawnEventType, spawn } from "./spawn";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -24,9 +24,57 @@ export const WorldLeaderCommands = {
   },
   "!test": async () => {
     await spawn({
-      type: SpawnEventType.Raid,
-      data: { raiders: 1 },
+      type: SpawnEventType.StreamOnline,
+      data: { username: "whitep4nth3rskjdfsdkjfhskdjfh" },
     });
+  },
+  "!reactnorway": async () => {
+    const events: EventData[] = [
+      {
+        type: SpawnEventType.StreamOnline,
+        data: { username: "whitep4nth3r" },
+      },
+      {
+        type: SpawnEventType.Cheer,
+        data: { bits: 1000 },
+      },
+      {
+        type: SpawnEventType.Follow,
+        data: { username: "reactnorway" },
+      },
+      {
+        type: SpawnEventType.Redeem,
+        data: { reward: "skdjfskdjfsksdfkdfjksdfsodfsd" },
+      },
+      {
+        type: SpawnEventType.Sub,
+        data: { username: "reactnorway12345" },
+      },
+      {
+        type: SpawnEventType.Hype,
+        data: { level: 10 },
+      },
+      {
+        type: SpawnEventType.StreamOnline,
+        data: { username: "reactnorway12347" },
+      },
+      {
+        type: SpawnEventType.Raid,
+        data: { raiders: 4 },
+      },
+      {
+        type: SpawnEventType.Follow,
+        data: { username: "reactnorwaydddd" },
+      },
+      {
+        type: SpawnEventType.Follow,
+        data: { username: "reactnorwaysdlllllllllllll" },
+      },
+    ];
+
+    for (let i = 0; i < 10; i++) {
+      await spawn(events[i]);
+    }
   },
 };
 

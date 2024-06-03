@@ -24,7 +24,7 @@ export enum SpawnEventType {
   StreamOnline = "streamonline",
 }
 
-type EventData =
+export type EventData =
   | { type: SpawnEventType.Cheer; data: { bits: number } }
   | { type: SpawnEventType.Follow; data: { username: string } }
   | { type: SpawnEventType.Redeem; data: { reward: string } }
