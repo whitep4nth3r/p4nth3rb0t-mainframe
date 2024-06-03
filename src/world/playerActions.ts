@@ -127,26 +127,13 @@ export async function claimItem(
       $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
-    // if in a release state, get unclaimed items
     items = await PantherworldItemModel.find({
       name: name,
       userId: null,
     });
   }
 
-  // where BUGS are actually features
-
-  // spawned items are stealable within a 1 minute time frame
-  // technically, a claimable item should be where userID = null
-  // but it was more fun to pass it around
-
-  // dropped or released items are claimable only once
-
-  const claimableItems = items.filter((item) => name === item.name);
-
-  if (claimableItems.length === 0) {
-    // trying to reduce noise
-    // tmi.say(config.channel, `${botPrefix}❌ @${username}: Nothing to claim`);
+  if (items.length === 0) {
     return;
   } else {
     const player = await PantherworldPlayerModel.findOne({ userId: userId });
@@ -160,7 +147,7 @@ export async function claimItem(
     }
 
     if (player) {
-      const firstClaimableItem = claimableItems.find(
+      const firstClaimableItem = items.find(
         (item) => item.zone === player.zone,
       );
 
