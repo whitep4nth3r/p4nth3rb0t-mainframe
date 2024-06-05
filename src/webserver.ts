@@ -19,7 +19,7 @@ import {
   sendHypeTrainEndEvent,
   sendHypeTrainProgressEvent,
 } from "./events/twitch/hype";
-import { getFullInventory, getLocation } from "./world/apiActions";
+import { getFullInventory } from "./world/apiActions";
 import { validateTwitchSession } from "./utils/twitchUtils";
 
 const accessTokenUtil = new AccessToken();
@@ -74,24 +74,6 @@ app.get(
 );
 
 app.get(
-  "/world/location/",
-  asyncWrapper(async (req: Request, res: Response) => {
-    const validSession: any = await validateTwitchSession(
-      req.headers.token as string,
-    );
-
-    if (validSession.user_id) {
-      const location = await getLocation(validSession.user_id);
-      console.log(location);
-
-      return res.json({ location });
-    } else {
-      return res.status(401);
-    }
-  }),
-);
-
-app.get(
   "/world/inventory/",
   asyncWrapper(async (req: Request, res: Response) => {
     const validSession: any = await validateTwitchSession(
@@ -102,7 +84,7 @@ app.get(
       const inventory = await getFullInventory(validSession.user_id);
       return res.json({ inventory });
     } else {
-      return res.status(401);
+      return res.json({ inventory: validSession });
     }
   }),
 );

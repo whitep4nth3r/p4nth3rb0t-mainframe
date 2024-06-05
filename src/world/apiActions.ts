@@ -1,7 +1,27 @@
 import PantherworldItemModel from "../data/models/PantherworldItem";
 import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
+import { WorldItem } from "./items/all";
 
-export async function getFullInventory(userId: string) {
+export async function getLocation(userId: string): Promise<string> {
+  const entry = await PantherworldPlayerModel.findOne({
+    userId: userId,
+  });
+  if (entry) {
+    return entry.zone;
+  } else {
+    return "Not found";
+  }
+}
+
+type InventoryResponse = {
+  total: number;
+  items: WorldItem[];
+  location: string;
+};
+
+export async function getFullInventory(
+  userId: string,
+): Promise<InventoryResponse> {
   const items = await PantherworldItemModel.aggregate([
     // Match documents with a specific userId
     { $match: { userId: userId } },
@@ -33,16 +53,14 @@ export async function getFullInventory(userId: string) {
 
   items.forEach((item) => (total += item.count));
 
-  return { total, items };
-}
-
-export async function getLocation(userId: string): Promise<string> {
-  const entry = await PantherworldPlayerModel.findOne({
+  let locationString = "Not found";
+  const location = await PantherworldPlayerModel.findOne({
     userId: userId,
   });
-  if (entry) {
-    return entry.zone;
-  } else {
-    return "Not found";
+
+  if (location) {
+    locationString = location.zone;
   }
+
+  return { total, items, location: locationString };
 }
