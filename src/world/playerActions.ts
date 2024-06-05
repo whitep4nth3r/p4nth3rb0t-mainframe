@@ -221,9 +221,7 @@ export async function getInventory(
 
   tmi.say(
     config.channel,
-    `${botPrefix}🎒 @${username}: you have ${total} ${itemString}${
-      items.length > 0 ? ": " : ""
-    }. View your full inventory at https://p4nth3rworld.netlify.app/`,
+    `${botPrefix}🎒 @${username}: you have ${total} ${itemString}. View your full inventory at https://p4nth3rworld.netlify.app/`,
   );
 }
 
