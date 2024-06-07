@@ -84,7 +84,7 @@ app.get(
       const inventory = await getFullInventory(validSession.user_id);
       return res.json({ inventory });
     } else {
-      return res.json({ inventory: validSession });
+      return res.status(401).send();
     }
   }),
 );
