@@ -94,6 +94,11 @@ const config: Config = {
         emoji_tag: "📣",
         message_id: "841608870001508372",
       },
+      {
+        role_id: "1252907938834681986",
+        emoji_tag: "🎒",
+        message_id: "841608870001508372",
+      },
     ],
   },
   moodRedemptions: {
