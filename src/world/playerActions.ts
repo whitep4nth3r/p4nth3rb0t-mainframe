@@ -1,5 +1,7 @@
+import PantherworldPlayerModel, {
+  PantherworldPlayerDoc,
+} from "./../data/models/PantherworldPlayer";
 import UserManager from "../users/UserManager";
-import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
 import PantherworldItemModel, {
   PantherworldItemDoc,
 } from "../data/models/PantherworldItem";
@@ -18,6 +20,8 @@ import { sendPantherworldFeedEvent } from "../discord";
 import { WorldState } from "./state";
 import { getLocation } from "./apiActions";
 import { getRandomEntry } from "../utils/getRandomEntry";
+import { getCurrentChatters } from "../utils/twitchUtils";
+import { TwitchUser } from "../data/types";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -275,6 +279,35 @@ export async function dropItem(
   }
 }
 
+function isUserIdInCurrentChatters(
+  currentChatters: TwitchUser[],
+  userId: string,
+) {
+  return currentChatters.find((chatter) => chatter.user_id === userId);
+}
+
+function getRandPlayerInSameZoneFromCurrentChatters(
+  currentChatters: any[],
+  players: any[],
+): PantherworldPlayerDoc {
+  let rand = getRandomEntry(players);
+  let counter = 1;
+
+  while (
+    isUserIdInCurrentChatters(currentChatters, rand.userId) === undefined &&
+    counter <= currentChatters.length
+  ) {
+    if (counter === currentChatters.length) {
+      return null;
+    }
+
+    counter++;
+    rand = getRandomEntry(players);
+  }
+
+  return rand;
+}
+
 export async function giftItem(
   item: string,
   receiver: string,
@@ -282,6 +315,13 @@ export async function giftItem(
   giverName: string,
 ): Promise<void> {
   // !gift receiver item
+  const nonEligibleMessage = `${botPrefix}❌ @${giverName}: there is no one eligible to receive your gift`;
+
+  const currentChatters = await getCurrentChatters();
+
+  if (currentChatters.length === 0) {
+    return;
+  }
 
   const giverZone = await getLocation(giverId);
   let receiverAsUser;
@@ -290,8 +330,23 @@ export async function giftItem(
     const allPlayersInGiverZone = await PantherworldPlayerModel.find({
       zone: giverZone,
     });
-    const randPlayer = getRandomEntry(allPlayersInGiverZone);
-    receiverAsUser = await UserManager.getUserById(randPlayer.userId);
+
+    if (allPlayersInGiverZone.length === 1) {
+      tmi.say(config.channel, nonEligibleMessage);
+      return;
+    } else {
+      const randPlayer = getRandPlayerInSameZoneFromCurrentChatters(
+        currentChatters,
+        allPlayersInGiverZone,
+      );
+
+      if (randPlayer === null) {
+        tmi.say(config.channel, nonEligibleMessage);
+        return;
+      }
+
+      receiverAsUser = await UserManager.getUserById(randPlayer.userId);
+    }
   } else {
     receiverAsUser = await UserManager.getUserByLogin(receiver);
   }

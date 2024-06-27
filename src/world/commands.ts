@@ -91,7 +91,7 @@ export const WorldCommands = {
       if (isValid) {
         await movePlayer(tags["user-id"] as string, zone);
       } else {
-        tmi.say(config.channel, `❌ Move failed: zone is void`);
+        tmi.say(config.channel, `${botPrefix}❌ Move failed: zone is void`);
       }
     }
   },
