@@ -7,6 +7,7 @@ import {
   getInventory,
   listPopulation,
   dropItem,
+  giftItem,
 } from "../world/playerActions";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
@@ -28,7 +29,7 @@ export const WorldLeaderCommands = {
       data: { username: "whitep4nth3rskjdfsdkjfhskdjfh" },
     });
   },
-  "!reactnorway": async () => {
+  "!mfe": async () => {
     const events: EventData[] = [
       {
         type: SpawnEventType.StreamOnline,
@@ -137,6 +138,18 @@ export const WorldCommands = {
           tags["display-name"] as string,
         );
       }
+    }
+  },
+  "!gift": async (tags, message) => {
+    // !gift receiver item
+    if (!config.FREEZE_MODE) {
+      const restOfMessage = getRestOfMessage(message);
+      const receiver = restOfMessage[0];
+      const item = restOfMessage[1];
+      const giverId = tags["user-id"];
+      const giverName = tags["display-name"];
+
+      await giftItem(item, receiver, giverId, giverName);
     }
   },
 };

@@ -26,7 +26,7 @@ import { WorldCommands, WorldLeaderCommands } from "../world/commands";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
-export const getRestOfMessage = (message: string) =>
+export const getRestOfMessage = (message: string): string[] =>
   message.split(" ").slice(1);
 
 type Handler = (tags: ChatUserstate, message: string) => void;
