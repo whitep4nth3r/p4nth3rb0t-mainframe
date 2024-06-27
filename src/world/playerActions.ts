@@ -17,6 +17,7 @@ import {
 import { sendPantherworldFeedEvent } from "../discord";
 import { WorldState } from "./state";
 import { getLocation } from "./apiActions";
+import { getRandomEntry } from "../utils/getRandomEntry";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -281,7 +282,19 @@ export async function giftItem(
   giverName: string,
 ): Promise<void> {
   // !gift receiver item
-  const receiverAsUser = await UserManager.getUserByLogin(receiver);
+
+  const giverZone = await getLocation(giverId);
+  let receiverAsUser;
+
+  if (receiver === "random") {
+    const allPlayersInGiverZone = await PantherworldPlayerModel.find({
+      zone: giverZone,
+    });
+    const randPlayer = getRandomEntry(allPlayersInGiverZone);
+    receiverAsUser = await UserManager.getUserById(randPlayer.userId);
+  } else {
+    receiverAsUser = await UserManager.getUserByLogin(receiver);
+  }
 
   if (!receiverAsUser) {
     return;
@@ -291,7 +304,6 @@ export async function giftItem(
     return;
   }
 
-  const giverZone = await getLocation(giverId);
   const receiverZone = await getLocation(receiverAsUser.id);
 
   if (giverZone !== receiverZone) {
@@ -311,7 +323,7 @@ export async function giftItem(
   )) as PantherworldItemDoc | null;
 
   if (itemUpdate !== null) {
-    const message = `${botPrefix}🎁 @${giverName} gifted ${item} to @${receiver} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
+    const message = `${botPrefix}🎁 @${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
 
     tmi.say(config.channel, message);
 
@@ -323,7 +335,7 @@ export async function giftItem(
       type: "gift",
       data: {
         giver: giverName,
-        receiver,
+        receiver: receiverAsUser.display_name,
         zone: giverZone,
         item: item,
         rarity: itemUpdate.rarity,
