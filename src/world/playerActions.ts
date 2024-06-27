@@ -12,9 +12,11 @@ import {
   PlayerMovePacket,
   PlayerClaimPacket,
   PlayerDropPacket,
+  PlayerGiftPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../discord";
 import { WorldState } from "./state";
+import { getLocation } from "./apiActions";
 
 const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
@@ -64,7 +66,7 @@ export async function locatePlayer(
   } else {
     tmi.say(
       config.channel,
-      `${botPrefix}❌ @${displayName}: you are not in p4ntherworld... type !move {zoneName} to land`,
+      `${botPrefix}❌ @${displayName}: you are not in p4nth3rworld! Use !move [zone] to land`,
     );
   }
 }
@@ -141,7 +143,7 @@ export async function claimItem(
     if (!player) {
       tmi.say(
         config.channel,
-        `${botPrefix}❌ @${username}: you are not in p4ntherworld... type !move {zoneName} to land`,
+        `${botPrefix}❌ @${username}: you are not in p4nth3rworld. Use !move [zone] to land`,
       );
       return;
     }
@@ -269,5 +271,65 @@ export async function dropItem(
     } else {
       tmi.say(config.channel, `${botPrefix} @${displayName} nothing to drop!`);
     }
+  }
+}
+
+export async function giftItem(
+  item: string,
+  receiver: string,
+  giverId: string,
+  giverName: string,
+): Promise<void> {
+  // !gift receiver item
+  const receiverAsUser = await UserManager.getUserByLogin(receiver);
+
+  if (!receiverAsUser) {
+    return;
+  }
+
+  if (receiverAsUser.id === giverId) {
+    return;
+  }
+
+  const giverZone = await getLocation(giverId);
+  const receiverZone = await getLocation(receiverAsUser.id);
+
+  if (giverZone !== receiverZone) {
+    const message = `${botPrefix}❌ @${giverName}: you must be in the same zone as the receiver!`;
+    tmi.say(config.channel, message);
+
+    return;
+  }
+
+  const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
+    { userId: giverId, name: item },
+    {
+      userId: receiverAsUser.id,
+      zone: giverZone,
+    },
+    { returnDocument: "after" },
+  )) as PantherworldItemDoc | null;
+
+  if (itemUpdate !== null) {
+    const message = `${botPrefix}🎁 @${giverName} gifted ${item} to @${receiver} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
+
+    tmi.say(config.channel, message);
+
+    await sendPantherworldFeedEvent(message);
+
+    const playerGiftEvent: PlayerGiftPacket = {
+      event: MainframeEvent.playerGift,
+      id: receiverAsUser.id + "-" + Date.now(),
+      type: "gift",
+      data: {
+        giver: giverName,
+        receiver,
+        zone: giverZone,
+        item: item,
+        rarity: itemUpdate.rarity,
+      },
+    };
+
+    WebsocketServer.sendData(playerGiftEvent);
   }
 }
