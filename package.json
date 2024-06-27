@@ -11,6 +11,9 @@
     "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./out && sentry-cli sourcemaps upload --org the-claw --project p4nth3rb0t ./out"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@sentry/node": "^8.0.0",
     "@sentry/profiling-node": "^8.0.0",
@@ -23,7 +26,7 @@
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
-    "@whitep4nth3r/p4nth3rb0t-types": "^1.1.7",
+    "@whitep4nth3r/p4nth3rb0t-types": "^1.1.8",
     "axios": "^1.5.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

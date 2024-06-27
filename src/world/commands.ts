@@ -145,10 +145,9 @@ export const WorldCommands = {
     if (!config.FREEZE_MODE) {
       const restOfMessage = getRestOfMessage(message);
       const receiver = restOfMessage[0];
-      const item = restOfMessage[1];
+      const item = getRestOfMessage(message).slice(1).join(" ");
       const giverId = tags["user-id"];
       const giverName = tags["display-name"];
-
       await giftItem(item, receiver, giverId, giverName);
     }
   },
