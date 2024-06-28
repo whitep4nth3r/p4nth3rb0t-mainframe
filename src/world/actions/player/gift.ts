@@ -22,8 +22,6 @@ function isUserIdInCurrentChatters(
   currentChatters: TwitchUser[],
   userId: string,
 ) {
-  console.log(currentChatters.find((chatter) => chatter.user_id === userId));
-
   return currentChatters.find((chatter) => chatter.user_id === userId);
 }
 
