@@ -1,4 +1,4 @@
-import { getIngredientsFromCraftCommand } from "../actions/player/craft";
+import { getIngredientsFromCraftCommand } from "../actions/player/cook";
 
 test("ingredients list as string is converted to array 1", () => {
   const result = getIngredientsFromCraftCommand(

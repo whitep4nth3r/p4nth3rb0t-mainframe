@@ -1,4 +1,4 @@
-import { WorldRecipes } from "./../../recipes/all";
+import { WorldRecipes } from "../../recipes/all";
 import { getCommandFromMessage } from "../../../utils/commands";
 import PantherworldItemModel from "../../../data/models/PantherworldItem";
 import { config } from "../../../config";
@@ -20,7 +20,7 @@ function getCannotCraftMsg(username) {
   return `❌ @${username} cannot craft!`;
 }
 
-export async function craftItem(
+export async function cookItem(
   recipe: string,
   userId: string,
   username: string,
@@ -45,9 +45,7 @@ export async function craftItem(
     }
   }
 
-  console.log("CAN CRAFT");
-
-  // 2. check if ingredientList[0] matches a primary ingredient for a recipe
+  // 2. check if recipe available
   // ALWAYS JUST ONE RECIPE WITH THAT PRIMARY INGREDIENT
   // Combos are created with the secondary items
   const recipeWithPrimaryIngredient = WorldRecipes.find(

@@ -14,6 +14,7 @@ export type WorldItem = {
   rarity: number;
   name: string;
   onlyZone: string | null;
+  flavour?: string; //// Potential idea for naming recipes
 };
 
 export const WorldItems: WorldItem[] = [

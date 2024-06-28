@@ -12,7 +12,7 @@ import { tmi } from "./../tmi";
 import { getLeaderboard } from "./actions/leader/getLeaderboard";
 import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
-import { craftItem } from "./actions/player/craft";
+import { cookItem } from "./actions/player/cook";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
@@ -152,12 +152,12 @@ export const WorldCommands = {
       await giftItem(item, receiver, giverId, giverName);
     }
   },
-  "!craft": async (tags, message) => {
+  "!cook": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      // !craft ingredient + another ingredient + another
+      // !cook ingredient + another ingredient + another
       const userId = tags["user-id"];
       const username = tags["display-name"];
-      await craftItem(message, userId, username);
+      await cookItem(message, userId, username);
     }
   },
 };
