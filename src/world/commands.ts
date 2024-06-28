@@ -12,6 +12,7 @@ import { tmi } from "./../tmi";
 import { getLeaderboard } from "./actions/leader/getLeaderboard";
 import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
+import { craftItem } from "./actions/player/craft";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
@@ -149,6 +150,14 @@ export const WorldCommands = {
       const giverId = tags["user-id"];
       const giverName = tags["display-name"];
       await giftItem(item, receiver, giverId, giverName);
+    }
+  },
+  "!craft": async (tags, message) => {
+    if (!config.FREEZE_MODE) {
+      // !craft ingredient + another ingredient + another
+      const userId = tags["user-id"];
+      const username = tags["display-name"];
+      await craftItem(message, userId, username);
     }
   },
 };

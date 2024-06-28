@@ -4,6 +4,7 @@
   "version": "1.0.103",
   "scripts": {
     "test": "jest",
+    "test:craft": "jest -- -t 'craft'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
     "dev": "nodemon",
