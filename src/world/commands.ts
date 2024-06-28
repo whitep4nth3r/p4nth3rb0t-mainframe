@@ -1,20 +1,17 @@
 import { config } from "../config";
 import { isValidPantherworldZone, PantherworldZones } from "../world/zones";
-import {
-  movePlayer,
-  locatePlayer,
-  claimItem,
-  getInventory,
-  listPopulation,
-  dropItem,
-  giftItem,
-} from "../world/playerActions";
+import { movePlayer } from "./actions/player/move";
+import { locatePlayer } from "./actions/player/locate";
+import { claimItem } from "./actions/player/claim";
+import { getInventory } from "./actions/player/getInventory";
+import { listPopulation } from "./actions/player/listPopulation";
+import { dropItem } from "./actions/player/drop";
+import { giftItem } from "./actions/player/gift";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
-import { getLeaderboard, releaseUnclaimed } from "./leaderActions";
+import { getLeaderboard } from "./actions/leader/getLeaderboard";
+import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
-
-const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
@@ -82,7 +79,7 @@ export const WorldLeaderCommands = {
 export const WorldCommands = {
   "!map": async () => {
     const zones = PantherworldZones.map((zone) => zone.name).join(", ");
-    tmi.say(config.channel, `${botPrefix}🗺️ Available zones: ${zones}`);
+    tmi.say(config.channel, `${config.BOT_PREFIX}🗺️ Available zones: ${zones}`);
   },
   "!move": async (tags, message) => {
     if (!config.FREEZE_MODE) {
@@ -91,7 +88,10 @@ export const WorldCommands = {
       if (isValid) {
         await movePlayer(tags["user-id"] as string, zone);
       } else {
-        tmi.say(config.channel, `${botPrefix}❌ Move failed: zone is void`);
+        tmi.say(
+          config.channel,
+          `${config.BOT_PREFIX}❌ Move failed: zone is void`,
+        );
       }
     }
   },
