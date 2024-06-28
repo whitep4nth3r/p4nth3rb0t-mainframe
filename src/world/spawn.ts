@@ -12,8 +12,6 @@ import WebsocketServer from "../WebSocketServer";
 import { sendPantherworldFeedEvent } from "../discord";
 import { PantherworldZones } from "./zones";
 
-const botPrefix = process.env.NODE_ENV === "development" ? "DEV: " : "";
-
 export enum SpawnEventType {
   Follow = "Follow",
   Cheer = "Cheer",
@@ -103,7 +101,7 @@ export async function spawn(event: EventData): Promise<void> {
 
   await saveItem(itemToSpawn.name, itemToSpawn.rarity, spawnZone.name);
 
-  const message = `${botPrefix}🌍 ${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
+  const message = `${config.BOT_PREFIX}🌍 ${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
 
   tmi.say(config.channel, message);
 

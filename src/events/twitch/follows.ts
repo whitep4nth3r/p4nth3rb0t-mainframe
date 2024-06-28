@@ -10,7 +10,7 @@ import Moods, { sendMoodChangeEvent } from "./moods";
 import { SpawnEventType, spawn } from "../../world/spawn";
 import { getRandomEntry } from "../../utils/getRandomEntry";
 import { PantherworldZones } from "../../world/zones";
-import { movePlayer } from "../../world/playerActions";
+import { movePlayer } from "../../world/actions/player/move";
 
 export const sendBroadcasterFollowEvent = async (
   followerName: string,

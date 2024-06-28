@@ -3,6 +3,7 @@ import { channels } from "./maps/discord/channels";
 import Discord from "discord.js";
 
 interface Config {
+  BOT_PREFIX: string;
   FREEZE_MODE: boolean;
   broadcaster: TwitchUser;
   bot: TwitchUser;
@@ -43,6 +44,7 @@ interface Config {
 }
 
 const config: Config = {
+  BOT_PREFIX: process.env.NODE_ENV === "development" ? "DEV: " : "",
   FREEZE_MODE: false,
   broadcaster: {
     user_login: "whitep4nth3r",
