@@ -14,7 +14,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { getLocation } from "../../apiActions";
-import { getRandomEntry } from "../../../utils/getRandomEntry";
+import { getRandomEntryAndModifiedArray } from "../../../utils/getRandomEntry";
 import { getCurrentChatters } from "../../../utils/twitchUtils";
 import { TwitchUser } from "../../../data/types";
 
@@ -22,22 +22,28 @@ function isUserIdInCurrentChatters(
   currentChatters: TwitchUser[],
   userId: string,
 ) {
+  console.log(currentChatters.find((chatter) => chatter.user_id === userId));
+
   return currentChatters.find((chatter) => chatter.user_id === userId);
 }
 
 export function getRandPlayerInSameZoneFromCurrentChatters(
   currentChatters: any[],
   players: any[],
-): PantherworldPlayerDoc {
+): PantherworldPlayerDoc | null {
   if (currentChatters.length === 0) {
     return null;
   }
 
-  let rand = getRandomEntry(players);
+  let randEntryAndModifiedArray = getRandomEntryAndModifiedArray(players);
+
   let counter = 0;
 
   while (
-    isUserIdInCurrentChatters(currentChatters, rand.userId) === undefined &&
+    isUserIdInCurrentChatters(
+      currentChatters,
+      randEntryAndModifiedArray.entry.userId,
+    ) === undefined &&
     counter < currentChatters.length
   ) {
     if (counter === currentChatters.length - 1) {
@@ -45,10 +51,13 @@ export function getRandPlayerInSameZoneFromCurrentChatters(
     }
 
     counter++;
-    rand = getRandomEntry(players);
+
+    randEntryAndModifiedArray = getRandomEntryAndModifiedArray(
+      randEntryAndModifiedArray.array,
+    );
   }
 
-  return rand;
+  return randEntryAndModifiedArray.entry;
 }
 
 export async function giftItem(
