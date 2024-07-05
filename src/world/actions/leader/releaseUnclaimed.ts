@@ -58,8 +58,9 @@ export async function releaseUnclaimed(): Promise<void> {
     setTimeout(async () => {
       WorldState.ITEMS_RELEASED = false;
       WorldState.RELEASE_ZONE = null;
-      tmi.say(config.channel, `${config.BOT_PREFIX}🔒 All items locked!`);
-      await sendPantherworldFeedEvent("🔒 All items locked!");
+      const message = `${config.BOT_PREFIX}🔒 All items locked!`;
+      tmi.say(config.channel, message);
+      await sendPantherworldFeedEvent(message);
     }, 60000);
   }
 }

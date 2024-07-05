@@ -73,11 +73,9 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `${username} claimed ${name} in the ${player.zone} zone`;
-
-          tmi.say(config.channel, `${config.BOT_PREFIX}🎒 @${message}`);
-
-          await sendPantherworldFeedEvent(`🎒 ${message}`);
+          const message = `${config.BOT_PREFIX}🎒 @${username} claimed ${name} in the ${player.zone} zone`;
+          tmi.say(config.channel, message);
+          await sendPantherworldFeedEvent(message);
 
           const playerClaimEvent: PlayerClaimPacket = {
             event: MainframeEvent.playerClaim,
