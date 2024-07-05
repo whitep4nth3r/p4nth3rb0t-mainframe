@@ -5,7 +5,7 @@ import { locatePlayer } from "./actions/player/locate";
 import { claimItem } from "./actions/player/claim";
 import { getInventory } from "./actions/player/getInventory";
 import { listPopulation } from "./actions/player/listPopulation";
-import { dropItem } from "./actions/player/drop";
+import { throwItem } from "./actions/player/throw";
 import { giftItem } from "./actions/player/gift";
 import { getRestOfMessage } from "../utils/commands";
 import { tmi } from "./../tmi";
@@ -128,11 +128,11 @@ export const WorldCommands = {
       await listPopulation();
     }
   },
-  "!drop": async (tags, message) => {
+  "!throw": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       const item = getRestOfMessage(message).join(" ");
       if (item !== "") {
-        await dropItem(
+        await throwItem(
           item,
           tags["user-id"] as string,
           tags["display-name"] as string,

@@ -11,7 +11,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
 
-export async function dropItem(
+export async function throwItem(
   item: string,
   userId: string,
   displayName: string,
@@ -55,7 +55,7 @@ export async function dropItem(
     } else {
       tmi.say(
         config.channel,
-        `${config.BOT_PREFIX} @${displayName} nothing to drop!`,
+        `${config.BOT_PREFIX} @${displayName} nothing to throw!`,
       );
     }
   }
