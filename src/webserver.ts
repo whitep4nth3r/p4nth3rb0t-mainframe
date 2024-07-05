@@ -27,14 +27,16 @@ const accessTokenUtil = new AccessToken();
 const app = express();
 app.use(bodyParser.json());
 
-if (process.env.NODE_ENV !== "production") {
-  app.use(
-    cors({
-      origin: "http://localhost:5000",
-      credentials: true,
-    }),
-  );
-}
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://pantherworld.netlify.app",
+      "https://p4nth3r.world",
+    ],
+    credentials: true,
+  }),
+);
 
 function verifySignature(req: Request) {
   const messageId = req.header("Twitch-Eventsub-Message-Id") ?? "";

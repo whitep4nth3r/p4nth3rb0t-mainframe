@@ -1,7 +1,7 @@
 {
   "name": "p4nth3rb0t-mainframe",
   "private": true,
-  "version": "1.0.103",
+  "version": "1.0.106",
   "scripts": {
     "test": "jest",
     "test:craft": "jest -- -t 'craft'",
