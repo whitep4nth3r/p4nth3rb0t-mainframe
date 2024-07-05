@@ -27,6 +27,6 @@ export async function listPopulation(): Promise<void> {
   );
 
   await sendPantherworldFeedEvent(
-    `📊 Population: Total **${total}**,  ${discordReport}`,
+    `${config.BOT_PREFIX}📊 Population: Total **${total}**,  ${discordReport}`,
   );
 }

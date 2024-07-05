@@ -1,5 +1,7 @@
 import PantherworldItemModel from "../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../data/models/PantherworldPlayer";
+import PantherworldPlayerModel, {
+  PantherworldPlayerData,
+} from "../data/models/PantherworldPlayer";
 import { WorldItem } from "./items/all";
 
 export async function getLocation(userId: string): Promise<string> {
@@ -17,6 +19,7 @@ type InventoryResponse = {
   total: number;
   items: WorldItem[];
   location: string;
+  spawn_date: Date | null;
 };
 
 export async function getFullInventory(
@@ -54,13 +57,21 @@ export async function getFullInventory(
   items.forEach((item) => (total += item.count));
 
   let locationString = "Not found";
-  const location = await PantherworldPlayerModel.findOne({
-    userId: userId,
-  });
+  let spawnDateString = null;
 
-  if (location) {
-    locationString = location.zone;
+  const player = (await PantherworldPlayerModel.findOne({
+    userId: userId,
+  })) as PantherworldPlayerData;
+
+  if (player) {
+    locationString = player.zone;
+    spawnDateString = player.createdAt;
   }
 
-  return { total, items, location: locationString };
+  return {
+    total,
+    items,
+    location: locationString,
+    spawn_date: spawnDateString,
+  };
 }
