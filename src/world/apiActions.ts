@@ -20,6 +20,7 @@ type InventoryResponse = {
   items: WorldItem[];
   location: string;
   spawn_date: Date | null;
+  players_in_zone: number;
 };
 
 export async function getFullInventory(
@@ -58,6 +59,7 @@ export async function getFullInventory(
 
   let locationString = "Not found";
   let spawnDateString = null;
+  let playersInZone = 0;
 
   const player = (await PantherworldPlayerModel.findOne({
     userId: userId,
@@ -66,6 +68,12 @@ export async function getFullInventory(
   if (player) {
     locationString = player.zone;
     spawnDateString = player.createdAt;
+
+    const otherPlayers = await PantherworldPlayerModel.find({
+      zone: player.zone,
+    });
+
+    playersInZone = otherPlayers.length;
   }
 
   return {
@@ -73,5 +81,6 @@ export async function getFullInventory(
     items,
     location: locationString,
     spawn_date: spawnDateString,
+    players_in_zone: playersInZone,
   };
 }
