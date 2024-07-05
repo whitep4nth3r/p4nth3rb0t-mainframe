@@ -30,6 +30,7 @@ export async function claimItem(
     items = await PantherworldItemModel.find({
       name: name,
       userId: null,
+      zone: WorldState.RELEASE_ZONE,
     });
   }
 
