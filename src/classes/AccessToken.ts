@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import axios from "axios";
 import AccessTokenModel, {
   AccessTokenDoc,
   AccessTokenData,
@@ -194,18 +193,24 @@ export default class AccessToken {
   }
 
   async fetch(): Promise<AccessTokenResponse | undefined> {
+    const params = new URLSearchParams({
+      client_id: process.env.CLIENT_ID || "",
+      client_secret: process.env.CLIENT_SECRET || "",
+      grant_type: "client_credentials",
+      scope: "user:edit",
+    });
+
     try {
-      const params = new URLSearchParams({
-        client_id: process.env.CLIENT_ID || "",
-        client_secret: process.env.CLIENT_SECRET || "",
-        grant_type: "client_credentials",
-        scope: "user:edit",
-      });
-      const response = await axios.post<AccessTokenResponse>(
+      const response = await fetch(
         `https://id.twitch.tv/oauth2/token?${params}`,
+        {
+          method: "POST",
+        },
       );
 
-      return response.data;
+      if (response.ok) {
+        return await response.json() as AccessTokenResponse;
+      }
     } catch (error: any) {
       Sentry.captureException(error);
     }
@@ -227,17 +232,23 @@ export default class AccessToken {
   async invokeTokenEndpoint(
     params: any,
   ): Promise<UserAccessTokenResponse | undefined> {
+    const urlParams = new URLSearchParams({
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      ...params,
+    });
+
     try {
-      const urlParams = new URLSearchParams({
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
-        ...params,
-      });
-      const response = await axios.post<UserAccessTokenResponse>(
+      const response = await fetch(
         `https://id.twitch.tv/oauth2/token?${urlParams}`,
+        {
+          method: "POST",
+        },
       );
 
-      return response.data;
+      if (response.ok) {
+        return await response.json() as UserAccessTokenResponse;
+      }
     } catch (error: any) {
       Sentry.captureException(error);
     }

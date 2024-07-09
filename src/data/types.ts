@@ -128,10 +128,12 @@ export interface GameByIdResponse {
 }
 
 export interface TwitchVideo {
-  id: string;
-  thumbnail_url: string;
-  duration: string;
-  title: string;
+  data: {
+    id: string;
+    thumbnail_url: string;
+    duration: string;
+    title: string;
+  }
 }
 
 export interface StreamInfo {
@@ -144,18 +146,20 @@ export interface StreamInfo {
 }
 
 export interface StreamByBroadcasterIdResponse {
-  id: string;
-  user_id: string;
-  user_name: string;
-  game_id: string;
-  game_name: string;
-  type: string;
-  title: string;
-  viewer_count: number;
-  started_at: string;
-  language: string;
-  thumbnail_url: string;
-  tag_ids: string[];
+  data: {
+    id: string;
+    user_id: string;
+    user_name: string;
+    game_id: string;
+    game_name: string;
+    type: string;
+    title: string;
+    viewer_count: number;
+    started_at: string;
+    language: string;
+    thumbnail_url: string;
+    tag_ids: string[];
+  }
 }
 
 export enum ImageDrops {
@@ -181,3 +185,25 @@ export enum TwitchAnnouncementColor {
 }
 
 export type MoodEmotes = { [key: string]: string };
+
+export interface StartRaidResponse {
+  status: number;
+  data: [];
+}
+
+export interface TwitchModeratorsResponse {
+  data: TwitchUser[];
+}
+
+export interface TwitchCurrentChattersResponse {
+  data: TwitchUser[];
+}
+
+export interface TwitchGameResponse {
+  data: {
+    id: string;
+    name: string;
+    box_art_url: string;
+    igdb_id: "string"
+  }
+}
