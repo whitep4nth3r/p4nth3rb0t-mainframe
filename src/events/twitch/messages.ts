@@ -45,7 +45,7 @@ const sendTailwindEvent = async (user_id: string) => {
       config.broadcaster.user_id,
     );
     if (liveStream !== null) {
-      const streamStartTime = new Date(liveStream.started_at).valueOf();
+      const streamStartTime = new Date(liveStream.data.started_at).valueOf();
       const now = new Date().valueOf();
 
       const timeInMs = now - streamStartTime;

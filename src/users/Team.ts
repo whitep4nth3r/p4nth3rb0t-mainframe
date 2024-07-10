@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import axios from "axios";
 import AccessToken from "../classes/AccessToken";
 import { TwitchChannel, TeamResponse, TeamMembers } from "../data/types";
 import { config } from "../config";
@@ -20,17 +19,20 @@ export default class Team {
 
     if (accessTokenData) {
       try {
-        const response = await axios.get<{ data: TwitchChannel[] }>(
+        const response = await fetch(
           `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
           {
+            method: "GET",
             headers: {
-              authorization: `Bearer ${accessTokenData.accessToken}`,
-              "client-id": process.env.CLIENT_ID,
+              "Authorization": `Bearer ${accessTokenData.accessToken}`,
+              "Client-Id": process.env.CLIENT_ID,
             },
           },
         );
 
-        return response.data.data[0];
+        if (response.ok) {
+          return (await response.json()) as TwitchChannel;
+        }
       } catch (error) {
         Sentry.captureException(error);
       }
@@ -48,19 +50,24 @@ export default class Team {
 
     if (accessTokenData) {
       try {
-        const response = await axios.get<TeamResponse>(
+        const response = await fetch(
           `https://api.twitch.tv/helix/teams?name=${config.team.name}`,
           {
+            method: "GET",
             headers: {
-              Authorization: `Bearer ${accessTokenData.accessToken}`,
-              "client-id": process.env.CLIENT_ID,
+              "Authorization": `Bearer ${accessTokenData.accessToken}`,
+              "Client-Id": process.env.CLIENT_ID,
             },
           },
         );
 
-        Team.cache = response.data.data[0].users;
+        if (response.ok) {
+          const data = await response.json() as TeamResponse;
 
-        return response.data.data[0].users;
+          Team.cache = data.data[0].users;
+
+          return data.data[0].users;
+        }
       } catch (error) {
         Sentry.captureException(error);
       }

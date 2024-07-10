@@ -6,13 +6,13 @@
     "test": "jest",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
-    "dev": "nodemon",
+    "dev": "node-dev --notify=false src/app.ts",
     "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development npm install --only=dev --dev",
     "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./out && sentry-cli sourcemaps upload --org the-claw --project p4nth3rb0t ./out"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "dependencies": {
     "@sentry/node": "^8.0.0",
@@ -27,7 +27,6 @@
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "@whitep4nth3r/p4nth3rb0t-types": "^1.1.8",
-    "axios": "^1.5.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "discord.js": "^14.13.0",
@@ -47,6 +46,6 @@
     "ws": "^8.14.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "node-dev": "^8.0.0"
   }
 }

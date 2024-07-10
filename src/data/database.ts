@@ -4,14 +4,16 @@ const conn_string = process.env.DB_CONN_STRING;
 
 const connect = () => {
   if (conn_string) {
-    mongoose.connect(conn_string, {
-      authSource: "admin",
-    });
-    const db = mongoose.connection;
-    db.on("error", console.error.bind(console, "connection error:"));
-    db.once("open", function () {
-      console.log("🧁 Database connected!");
-    });
+    mongoose
+      .connect(conn_string, {
+        authSource: "admin",
+      })
+      .then(() => {
+        console.log("🧁 Database connected!");
+      })
+      .catch((e) => {
+        console.error("Connection error", e.message);
+      });
   }
 };
 

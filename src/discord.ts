@@ -78,11 +78,11 @@ export const createTechHelpThread = async (
     if (liveStream !== null) {
       const vod = await fetchVideoByUserId(config.broadcaster.user_id);
       if (vod !== null) {
-        const streamStartTime = new Date(liveStream.started_at);
+        const streamStartTime = new Date(liveStream.data.started_at);
         const now = new Date();
 
         const vodLink = `https://www.twitch.tv/videos/${
-          vod.id
+          vod.data.id
         }?t=${getTwitchVodTimestampInSeconds(now, streamStartTime)}`;
 
         const postTitle =
@@ -127,9 +127,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         streamInfo.broadcaster_user_id,
       );
 
-      const videoTitle = stream !== null ? stream.title : "";
-      const videoThumbnailUrl = stream !== null ? stream.thumbnail_url : "";
-      const category = stream !== null ? stream.game_name : "";
+      const videoTitle = stream !== null ? stream.data.title : "";
+      const videoThumbnailUrl = stream !== null ? stream.data.thumbnail_url : "";
+      const category = stream !== null ? stream.data.game_name : "";
 
       const embed = buildDiscordEmbed(
         true,
@@ -216,11 +216,11 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       user.login,
       user.display_name,
       user.profile_image_url,
-      video.title,
-      video.thumbnail_url,
-      `Finished streaming • Streamed for ${video.duration}`,
+      video.data.title,
+      video.data.thumbnail_url,
+      `Finished streaming • Streamed for ${video.data.duration}`,
       saved_message.category,
-      video.id,
+      video.data.id,
     );
 
     await message.edit({

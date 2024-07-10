@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import axios from "axios";
 import AccessToken from "./classes/AccessToken";
 import { config } from "./config";
 import {
@@ -24,14 +23,17 @@ async function getAllSubscriptions(): Promise<
 
   if (accessTokenData) {
     try {
-      const response = await axios.get(`${eventSubApiUrl}`, {
+      const response = await fetch(`${eventSubApiUrl}`, {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${accessTokenData.accessToken}`,
-          "Client-ID": process.env.CLIENT_ID,
+          "Authorization": `Bearer ${accessTokenData.accessToken}`,
+          "Client-Id": process.env.CLIENT_ID,
           "Content-Type": "application/json",
         },
       });
-      return response.data;
+      if (response.ok) {
+        return (await response.json()) as EventSubscriptionResponse;
+      }
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -43,10 +45,11 @@ async function deleteSubscription(id: string) {
   const accessTokenData = await accessTokenUtil.get();
   if (accessTokenData) {
     try {
-      await axios.delete(`${eventSubApiUrl}?id=${id}`, {
+      await fetch(`${eventSubApiUrl}?id=${id}`, {
+        method: "DELETE",
         headers: {
-          Authorization: `Bearer ${accessTokenData.accessToken}`,
-          "Client-ID": process.env.CLIENT_ID,
+          "Authorization": `Bearer ${accessTokenData.accessToken}`,
+          "Client-Id": process.env.CLIENT_ID,
           "Content-Type": "application/json",
         },
       });
@@ -96,13 +99,14 @@ async function registerEventSub(definition: EventSubDefinition) {
       const data = generateEventData(definition);
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const response = await axios.post(eventSubApiUrl, data, {
+        await fetch(eventSubApiUrl, {
+          method: "POST",
           headers: {
-            Authorization: `Bearer ${accessTokenData.accessToken}`,
-            "Client-ID": process.env.CLIENT_ID,
+            "Authorization": `Bearer ${accessTokenData.accessToken}`,
+            "Client-Id": process.env.CLIENT_ID,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(data),
         });
 
         console.log(

@@ -1,6 +1,5 @@
-import axios from "axios";
 import AccessToken from "../classes/AccessToken";
-import { FullTwitchUser } from "../data/types";
+import { FullTwitchUser, TwitchUserResponse } from "../data/types";
 import { tmi } from "../tmi";
 import { config } from "../config";
 
@@ -36,32 +35,37 @@ export default class UserManager {
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
-      const response = await axios.get(
+      const response = await fetch(
         `https://api.twitch.tv/helix/users?login=${login}`,
         {
+          method: "GET",
           headers: {
-            authorization: `Bearer ${accessTokenData.accessToken}`,
-            "client-id": process.env.CLIENT_ID,
+            "Authorization": `Bearer ${accessTokenData.accessToken}`,
+            "Client-Id": process.env.CLIENT_ID,
           },
         },
       );
 
-      if (response.data.data.length === 0) {
-        tmi.say(config.channel, "User not found, @whitep4nth3r made a typo");
-        return undefined;
+      if (response.ok) {
+        const responseData = await response.json() as TwitchUserResponse;
+
+        if (responseData.data.length === 0) {
+          tmi.say(config.channel, "User not found, @whitep4nth3r made a typo");
+          return undefined;
+        }
+
+        this.cache.set(login, responseData.data[0]);
+
+        const passesAgeCheck = accountIsOlderThanSevenDays(
+          responseData.data[0].created_at
+        );
+
+        if (!passesAgeCheck) {
+          responseData.data[0].profile_image_url = "";
+        }
+
+        return responseData.data[0];
       }
-
-      this.cache.set(login, response.data.data[0]);
-
-      const passesAgeCheck = accountIsOlderThanSevenDays(
-        response.data.data[0].created_at,
-      );
-
-      if (!passesAgeCheck) {
-        response.data.data[0].profile_image_url = "";
-      }
-
-      return response.data.data[0];
     }
 
     return undefined;
@@ -87,28 +91,34 @@ export default class UserManager {
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
-      const response = await axios.get(
+      const response = await fetch(
         `https://api.twitch.tv/helix/users?id=${userId}`,
         {
+          method: "GET",
           headers: {
-            authorization: `Bearer ${accessTokenData.accessToken}`,
-            "client-id": process.env.CLIENT_ID,
+            "Authorization": `Bearer ${accessTokenData.accessToken}`,
+            "Client-Id": process.env.CLIENT_ID,
           },
         },
       );
 
-      this.cache.set(userId, response.data.data[0]);
+      if (response.ok) {
+        const responseData = await response.json() as TwitchUserResponse;
 
-      const passesAgeCheck = accountIsOlderThanSevenDays(
-        response.data.data[0].created_at,
-      );
+        this.cache.set(userId, responseData.data[0]);
 
-      if (!passesAgeCheck) {
-        response.data.data[0].profile_image_url = "";
+        const passesAgeCheck = accountIsOlderThanSevenDays(
+          responseData.data[0].created_at
+        );
+
+        if (!passesAgeCheck) {
+          responseData.data[0].profile_image_url = "";
+        }
+
+        return responseData.data[0];
       }
-
-      return response.data.data[0];
     }
+
     return undefined;
   }
 }
