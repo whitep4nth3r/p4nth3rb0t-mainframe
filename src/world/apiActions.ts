@@ -1,8 +1,42 @@
+import * as Sentry from "@sentry/node";
 import PantherworldItemModel from "../data/models/PantherworldItem";
 import PantherworldPlayerModel, {
   PantherworldPlayerData,
 } from "../data/models/PantherworldPlayer";
+import UserManager from "../users/UserManager";
 import { WorldItem } from "./items/all";
+
+type InventoryResponse = {
+  total: number;
+  items: WorldItem[];
+  location: string;
+  spawn_date: Date | null;
+  players_in_zone: number;
+};
+
+type LeaderBoardPlayer = {
+  username: string;
+  items: number;
+};
+
+type SpawnedItem = {
+  name: string;
+  number?: number;
+  zone?: string;
+  createdAt?: Date;
+};
+
+type Population = {
+  [key: string]: number;
+};
+
+type MetaResponse = {
+  leaderboard: LeaderBoardPlayer[];
+  latestSpawned: SpawnedItem;
+  mostSpawned: SpawnedItem;
+  leastSpawned: SpawnedItem;
+  population: Population;
+};
 
 export async function getLocation(userId: string): Promise<string> {
   const entry = await PantherworldPlayerModel.findOne({
@@ -15,13 +49,83 @@ export async function getLocation(userId: string): Promise<string> {
   }
 }
 
-type InventoryResponse = {
-  total: number;
-  items: WorldItem[];
-  location: string;
-  spawn_date: Date | null;
-  players_in_zone: number;
-};
+export async function getMeta(): Promise<MetaResponse> {
+  // leaderboard
+  const top3Users = await PantherworldItemModel.aggregate([
+    { $match: { userId: { $ne: null } } },
+
+    // Group documents by userId, count the number of items in each group
+    { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
+
+    // Sort the groups by itemCount in ascending order
+    { $sort: { itemCount: -1 } },
+
+    { $limit: 3 },
+  ]);
+
+  const leaderboard = [];
+
+  const promises = top3Users.map(async (item, index) => {
+    const user = await UserManager.getUserById(item._id);
+
+    if (user) {
+      leaderboard.push({
+        username: user.display_name,
+        items: item.itemCount,
+      });
+    }
+  });
+
+  await Promise.all(promises)
+    .then()
+    .catch((err) => {
+      Sentry.captureException(err);
+    });
+
+  //population
+  const zoneCounts = await PantherworldPlayerModel.aggregate([
+    { $group: { _id: "$zone", count: { $sum: 1 } } },
+  ]);
+
+  const population: Population = {};
+
+  zoneCounts.forEach((zone) => {
+    population[zone._id] = zone.count;
+  });
+
+  // latest spawned
+  const recentItem = await PantherworldItemModel.aggregate([
+    { $sort: { createdAt: -1 } },
+    { $limit: 1 },
+  ]);
+
+  // most and least spawned
+  const spawnedItems = await PantherworldItemModel.aggregate([
+    // Group documents by name, count the number of items in each group
+    { $group: { _id: "$name", count: { $sum: 1 } } },
+
+    // Sort the groups by count in descending order
+    { $sort: { count: -1 } },
+  ]);
+
+  return {
+    leaderboard,
+    latestSpawned: {
+      name: recentItem[0].name,
+      zone: recentItem[0].zone,
+      createdAt: recentItem[0].createdAt,
+    },
+    mostSpawned: {
+      name: spawnedItems[0]._id,
+      number: spawnedItems[0].count,
+    },
+    leastSpawned: {
+      name: spawnedItems[spawnedItems.length - 1]._id,
+      number: spawnedItems[spawnedItems.length - 1].count,
+    },
+    population,
+  };
+}
 
 export async function getFullInventory(
   userId: string,
