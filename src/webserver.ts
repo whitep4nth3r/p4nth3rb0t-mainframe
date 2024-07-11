@@ -19,7 +19,7 @@ import {
   sendHypeTrainEndEvent,
   sendHypeTrainProgressEvent,
 } from "./events/twitch/hype";
-import { getFullInventory } from "./world/apiActions";
+import { getFullInventory, getMeta } from "./world/apiActions";
 import { validateTwitchSession } from "./utils/twitchUtils";
 
 const accessTokenUtil = new AccessToken();
@@ -88,6 +88,14 @@ app.get(
     } else {
       return res.status(401).send();
     }
+  }),
+);
+
+app.get(
+  "/world/meta/",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const meta = await getMeta();
+    return res.json({ meta });
   }),
 );
 
