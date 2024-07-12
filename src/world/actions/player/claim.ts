@@ -10,6 +10,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { WorldState } from "../../state";
+import { wealthDistribution } from "../wealth/wealthDistribution";
 
 export async function claimItem(
   name: string,
@@ -89,6 +90,8 @@ export async function claimItem(
           };
 
           WebsocketServer.sendData(playerClaimEvent);
+
+          await wealthDistribution(userId, username);
         }
       }
     }
