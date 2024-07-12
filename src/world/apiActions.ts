@@ -66,7 +66,7 @@ export async function getMeta(): Promise<MetaResponse> {
 
   const leaderboard = [];
 
-  const promises = top3Users.map(async (item, index) => {
+  const promises = top3Users.map(async (item) => {
     const user = await UserManager.getUserById(item._id);
 
     if (user) {
