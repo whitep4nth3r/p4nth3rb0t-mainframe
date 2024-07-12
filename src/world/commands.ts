@@ -12,6 +12,7 @@ import { tmi } from "./../tmi";
 import { getLeaderboard } from "./actions/leader/getLeaderboard";
 import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
+import { wealthDistribution } from "./actions/wealth/wealthDistribution";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
