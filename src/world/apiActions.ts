@@ -5,6 +5,7 @@ import PantherworldPlayerModel, {
 } from "../data/models/PantherworldPlayer";
 import UserManager from "../users/UserManager";
 import { WorldItem } from "./items/all";
+import { getWealthIndex } from "./actions/wealth/wealthDistribution";
 
 type InventoryResponse = {
   total: number;
@@ -18,6 +19,7 @@ type LeaderBoardPlayer = {
   username: string;
   image_url: string;
   items: number;
+  wealthIndex: number;
 };
 
 type SpawnedItem = {
@@ -70,11 +72,24 @@ export async function getMeta(): Promise<MetaResponse> {
   const promises = top3Users.map(async (item) => {
     const user = await UserManager.getUserById(item._id);
 
+    //todo — make into single function, also used in wealthDistribution.ts
+    const allItems = await PantherworldItemModel.aggregate([
+      { $match: { userId: item._id } },
+      {
+        $group: {
+          _id: "$name",
+          count: { $sum: 1 },
+          rarity: { $first: "$rarity" },
+        },
+      },
+    ]);
+
     if (user) {
       leaderboard.push({
         username: user.display_name,
         image_url: user.profile_image_url,
         items: item.itemCount,
+        wealthIndex: getWealthIndex(allItems),
       });
     }
   });
