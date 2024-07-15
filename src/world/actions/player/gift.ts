@@ -81,13 +81,17 @@ export async function giftItem(
       zone: giverZone,
     });
 
-    if (allPlayersInGiverZone.length === 1) {
+    const allPlayersInGiverZoneMinusReceiver = allPlayersInGiverZone.filter(
+      (player) => player.userId !== giverId,
+    );
+
+    if (allPlayersInGiverZoneMinusReceiver.length === 0) {
       tmi.say(config.channel, nonEligibleMessage);
       return;
     } else {
       const randPlayer = getRandPlayerInSameZoneFromCurrentChatters(
         currentChatters,
-        allPlayersInGiverZone,
+        allPlayersInGiverZoneMinusReceiver,
       );
 
       if (randPlayer === null) {
@@ -106,6 +110,8 @@ export async function giftItem(
   }
 
   if (receiverAsUser.id === giverId) {
+    // we shouldn't get here now because we remove the giver from the players array
+    // but we'll leave it anyway
     return;
   }
 
