@@ -16,6 +16,7 @@ type InventoryResponse = {
 
 type LeaderBoardPlayer = {
   username: string;
+  image_url: string;
   items: number;
 };
 
@@ -72,6 +73,7 @@ export async function getMeta(): Promise<MetaResponse> {
     if (user) {
       leaderboard.push({
         username: user.display_name,
+        image_url: user.profile_image_url,
         items: item.itemCount,
       });
     }
