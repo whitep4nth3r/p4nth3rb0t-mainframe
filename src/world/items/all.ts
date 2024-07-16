@@ -1,3 +1,4 @@
+import { Geological } from "./geological";
 import { Vegetables } from "./vegetables";
 import { SwampItems } from "./swamp";
 import { UniversalItems } from "./universal";
@@ -21,6 +22,7 @@ export const WorldItems: WorldItem[] = [
   ...Flowers,
   ...Fruits,
   ...Gems,
+  ...Geological,
   ...Herbs,
   ...Instruments,
   ...Natural,
