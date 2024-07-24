@@ -10,6 +10,7 @@ import { getWealthIndex } from "./actions/wealth/wealthDistribution";
 type InventoryResponse = {
   total: number;
   items: WorldItem[];
+  wealth_index: number;
   location: string;
   spawn_date: Date | null;
   players_in_zone: number;
@@ -19,7 +20,7 @@ type LeaderBoardPlayer = {
   username: string;
   image_url: string;
   items: number;
-  wealthIndex: number;
+  wealth_index: number;
 };
 
 type SpawnedItem = {
@@ -188,6 +189,8 @@ export async function getFullInventory(
 
   items.forEach((item) => (total += item.count));
 
+  const wealth_index = getWealthIndex(items);
+
   let locationString = "Not found";
   let spawnDateString = null;
   let playersInZone = 0;
@@ -213,5 +216,6 @@ export async function getFullInventory(
     location: locationString,
     spawn_date: spawnDateString,
     players_in_zone: playersInZone,
+    wealth_index,
   };
 }
