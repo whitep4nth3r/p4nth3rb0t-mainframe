@@ -90,8 +90,8 @@ export async function getMeta(): Promise<MetaResponse> {
         username: user.display_name,
         image_url: user.profile_image_url,
         items: item.itemCount,
-        wealthIndex: getWealthIndex(allItems),
-      });
+        wealth_index: getWealthIndex(allItems),
+      } as LeaderBoardPlayer);
     }
   });
 
