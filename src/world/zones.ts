@@ -1,4 +1,5 @@
 export enum PantherworldZoneNames {
+  Beach = "beach",
   City = "city",
   Forest = "forest",
   Mountain = "mountain",

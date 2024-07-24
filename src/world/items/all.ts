@@ -1,3 +1,4 @@
+import { BeachItems } from "./beach";
 import { Geological } from "./geological";
 import { Vegetables } from "./vegetables";
 import { SwampItems } from "./swamp";
@@ -19,6 +20,7 @@ export type WorldItem = {
 
 export const WorldItems: WorldItem[] = [
   ...Animal,
+  ...BeachItems,
   ...Flowers,
   ...Fruits,
   ...Gems,
