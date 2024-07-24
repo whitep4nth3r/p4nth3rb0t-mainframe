@@ -9,6 +9,9 @@ export enum PantherworldZoneNames {
 
 export const PantherworldZones = [
   {
+    name: PantherworldZoneNames.Beach,
+  },
+  {
     name: PantherworldZoneNames.City,
   },
   {
