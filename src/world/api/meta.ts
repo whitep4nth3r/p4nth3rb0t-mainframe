@@ -7,7 +7,7 @@ import { MetaResponse, Population } from "./types";
 export async function getMeta(): Promise<MetaResponse> {
   const mostRecentUpdatedItem = await PantherworldItemModel.findOne(
     { userId: { $ne: null } },
-    { sort: { updatedAt: -1 } },
+    { sort: { updatedAt: 1 } },
     {
       projection: { rarity: 1, name: 1, zone: 1, userId: 1 },
     },
@@ -33,7 +33,7 @@ export async function getMeta(): Promise<MetaResponse> {
   const mostRecentlyCreatedPlayer = await PantherworldPlayerModel.findOne(
     {},
     {
-      sort: { createdAt: -1 },
+      sort: { createdAt: 1 },
     },
     {
       projection: { zone: 1, userId: 1 },
