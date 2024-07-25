@@ -46,7 +46,7 @@ export async function getMeta(): Promise<MetaResponse> {
   // newest player
   const mostRecentlyCreatedPlayer = (
     await PantherworldPlayerModel.aggregate([
-      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
+      { $sort: { createdAt: -1 } }, // Sort documents by updatedAt in descending order
       { $limit: 1 }, // Limit the result to 1 document
       {
         $project: {
