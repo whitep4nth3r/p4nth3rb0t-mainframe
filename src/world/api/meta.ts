@@ -1,43 +1,13 @@
-import * as Sentry from "@sentry/node";
-import { LeaderboardPlayer, MetaResponse, Population } from "./types";
 import PantherworldItemModel from "../../data/models/PantherworldItem";
 import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
-import UserManager from "../../users/UserManager";
-import { getWealthIndex } from "../actions/wealth/wealthDistribution";
-import { getAllItemsForPlayerToCalculateWealthIndex } from "./player/allItems";
+import { MetaResponse, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
-  // leaderboard
-  const top3Users = await PantherworldItemModel.aggregate([
-    { $match: { userId: { $ne: null } } },
 
-    // Group documents by userId, count the number of items in each group
-    { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
+  // latest claimer
+  // newest player
+  // 
 
-    { $limit: 3 },
-  ]);
-
-  const leaderboard = [];
-
-  const promises = top3Users.map(async (item) => {
-    const user = await UserManager.getUserById(item._id);
-    const allItems = await getAllItemsForPlayerToCalculateWealthIndex(item._id);
-
-    if (user) {
-      leaderboard.push({
-        username: user.display_name,
-        image_url: user.profile_image_url,
-        items: item.itemCount,
-        wealth_index: getWealthIndex(allItems),
-      } as LeaderboardPlayer);
-    }
-  });
-
-  await Promise.all(promises)
-    .then()
-    .catch((err) => {
-      Sentry.captureException(err);
-    });
 
   //population
   const zoneCounts = await PantherworldPlayerModel.aggregate([
@@ -72,7 +42,6 @@ export async function getMeta(): Promise<MetaResponse> {
   ]);
 
   return {
-    leaderboard,
     latestSpawned: {
       name: recentItem[0].name,
       zone: recentItem[0].zone,

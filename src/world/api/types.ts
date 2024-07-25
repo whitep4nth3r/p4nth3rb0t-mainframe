@@ -45,7 +45,6 @@ export type Population = {
 };
 
 export type MetaResponse = {
-  leaderboard: LeaderboardPlayer[];
   latestSpawned: SpawnedItem;
   mostSpawned: SpawnedItem;
   leastSpawned: SpawnedItem;
