@@ -14,9 +14,6 @@ export async function getMeta(): Promise<MetaResponse> {
     // Group documents by userId, count the number of items in each group
     { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
 
-    // Sort the groups by itemCount in ascending order
-    { $sort: { itemCount: -1 } },
-
     { $limit: 3 },
   ]);
 
