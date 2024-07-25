@@ -1,13 +1,53 @@
+import { FullTwitchUser } from "./../../data/types";
 import PantherworldItemModel from "../../data/models/PantherworldItem";
 import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
+import UserManager from "../../users/UserManager";
 import { MetaResponse, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
+  const mostRecentUpdatedItem = await PantherworldItemModel.findOne(
+    { userId: { $ne: null } },
+    { sort: { updatedAt: -1 } },
+    {
+      projection: { rarity: 1, name: 1, zone: 1, userId: 1 },
+    },
+  );
 
-  // latest claimer
+  const latestClaimAsTwitchUser: FullTwitchUser = await UserManager.getUserById(
+    mostRecentUpdatedItem.userId,
+  );
+
+  const latestClaim = {
+    player: {
+      username: latestClaimAsTwitchUser.display_name,
+      image_url: latestClaimAsTwitchUser.profile_image_url,
+    },
+    item: {
+      name: mostRecentUpdatedItem.name,
+      rarity: mostRecentUpdatedItem.rarity,
+      zone: mostRecentUpdatedItem.zone,
+    },
+  };
+
   // newest player
-  // 
+  const mostRecentlyCreatedPlayer = await PantherworldPlayerModel.findOne(
+    {},
+    {
+      sort: { createdAt: -1 },
+    },
+    {
+      projection: { zone: 1, userId: 1 },
+    },
+  );
 
+  const newestPlayerAsTwitchUser: FullTwitchUser =
+    await UserManager.getUserById(mostRecentlyCreatedPlayer.userId);
+
+  const newestPlayer = {
+    username: newestPlayerAsTwitchUser.display_name,
+    image_url: newestPlayerAsTwitchUser.profile_image_url,
+    zone: mostRecentlyCreatedPlayer.zone,
+  };
 
   //population
   const zoneCounts = await PantherworldPlayerModel.aggregate([
@@ -59,5 +99,7 @@ export async function getMeta(): Promise<MetaResponse> {
       rarity: spawnedItems[spawnedItems.length - 1].rarity,
     },
     population,
+    latestClaim,
+    newestPlayer,
   };
 }
