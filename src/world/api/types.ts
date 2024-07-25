@@ -25,11 +25,22 @@ export type InventoryResponse = {
   players_in_zone: number;
 };
 
-export type LeaderboardPlayer = {
+export type PlayerWithItem = {
+  player: {
+    username: string;
+    image_url: string;
+  };
+  item: {
+    name: string;
+    rarity: number;
+    zone: string;
+  };
+};
+
+export type NewestPlayer = {
   username: string;
   image_url: string;
-  items: number;
-  wealth_index: number;
+  zone: string;
 };
 
 export type SpawnedItem = {
@@ -49,4 +60,6 @@ export type MetaResponse = {
   mostSpawned: SpawnedItem;
   leastSpawned: SpawnedItem;
   population: Population;
+  latestClaim: PlayerWithItem;
+  newestPlayer: NewestPlayer;
 };
