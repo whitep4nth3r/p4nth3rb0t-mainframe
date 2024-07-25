@@ -1,17 +1,31 @@
+import PantherworldItemModel, {
+  PantherworldItemData,
+} from "./../../data/models/PantherworldItem";
 import { FullTwitchUser } from "./../../data/types";
-import PantherworldItemModel from "../../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
+import PantherworldPlayerModel, {
+  PantherworldPlayerData,
+} from "../../data/models/PantherworldPlayer";
 import UserManager from "../../users/UserManager";
 import { MetaResponse, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
-  const mostRecentUpdatedItem = await PantherworldItemModel.findOne(
-    { userId: { $ne: null } },
-    { sort: { updatedAt: 1 } },
-    {
-      projection: { rarity: 1, name: 1, zone: 1, userId: 1 },
-    },
-  );
+  const mostRecentUpdatedItem = (
+    await PantherworldItemModel.aggregate([
+      { $match: { userId: { $ne: null } } }, // Filter documents where userId is not null
+      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
+      { $limit: 1 }, // Limit the result to 1 document
+      {
+        $project: {
+          // Specify the fields to include
+          _id: 0, // Exclude the _id field
+          rarity: 1,
+          name: 1,
+          zone: 1,
+          userId: 1,
+        },
+      },
+    ])
+  ).pop() as PantherworldItemData;
 
   const latestClaimAsTwitchUser: FullTwitchUser = await UserManager.getUserById(
     mostRecentUpdatedItem.userId,
@@ -30,15 +44,20 @@ export async function getMeta(): Promise<MetaResponse> {
   };
 
   // newest player
-  const mostRecentlyCreatedPlayer = await PantherworldPlayerModel.findOne(
-    {},
-    {
-      sort: { createdAt: 1 },
-    },
-    {
-      projection: { zone: 1, userId: 1 },
-    },
-  );
+  const mostRecentlyCreatedPlayer = (
+    await PantherworldPlayerModel.aggregate([
+      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
+      { $limit: 1 }, // Limit the result to 1 document
+      {
+        $project: {
+          // Specify the fields to include
+          _id: 0, // Exclude the _id field
+          zone: 1,
+          userId: 1,
+        },
+      },
+    ])
+  ).pop() as PantherworldPlayerData;
 
   const newestPlayerAsTwitchUser: FullTwitchUser =
     await UserManager.getUserById(mostRecentlyCreatedPlayer.userId);
