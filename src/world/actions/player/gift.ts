@@ -13,7 +13,7 @@ import {
   PlayerGiftPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
-import { getLocation } from "../../apiActions";
+import { getLocation } from "../../api/player/location";
 import { getRandomEntryAndModifiedArray } from "../../../utils/getRandomEntry";
 import { getCurrentChatters } from "../../../utils/twitchUtils";
 import { TwitchUser } from "../../../data/types";

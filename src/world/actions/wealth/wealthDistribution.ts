@@ -1,14 +1,9 @@
 import * as Sentry from "@sentry/node";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
 import { WorldState } from "../../state";
 import { throwItem } from "../player/throw";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
-
-type ItemForWealthIndex = {
-  _id: string;
-  count: number;
-  rarity: number;
-};
+import { ItemForWealthIndex } from "../../api/types";
+import { getAllItemsForPlayerToCalculateWealthIndex } from "../../api/player/allItems";
 
 // export async function getWorldWealthIndex(): Promise<number> {
 //   const items = await PantherworldItemModel.aggregate([
@@ -50,16 +45,7 @@ export async function wealthDistribution(
   userId: string,
   username: string,
 ): Promise<void> {
-  const items = await PantherworldItemModel.aggregate([
-    { $match: { userId: userId } },
-    {
-      $group: {
-        _id: "$name",
-        count: { $sum: 1 },
-        rarity: { $first: "$rarity" },
-      },
-    },
-  ]);
+  const items = await getAllItemsForPlayerToCalculateWealthIndex(userId);
 
   const wealthIndex = getWealthIndex(items);
   const dropProbability = calculateDropProbabilityFromWealthIndex(wealthIndex);

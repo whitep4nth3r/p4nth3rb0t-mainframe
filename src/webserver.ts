@@ -19,8 +19,10 @@ import {
   sendHypeTrainEndEvent,
   sendHypeTrainProgressEvent,
 } from "./events/twitch/hype";
-import { getFullInventory, getMeta } from "./world/apiActions";
+import { getFullInventory } from "./world/api/inventory";
+import { getMeta } from "./world/api/meta";
 import { validateTwitchSession } from "./utils/twitchUtils";
+import { getFullLeaderboard } from "./world/api/leaderboard";
 
 const accessTokenUtil = new AccessToken();
 
@@ -88,6 +90,14 @@ app.get(
     } else {
       return res.status(401).send();
     }
+  }),
+);
+
+app.get(
+  "/world/leaderboard/",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const leaderboard = await getFullLeaderboard();
+    return res.json({ leaderboard });
   }),
 );
 
