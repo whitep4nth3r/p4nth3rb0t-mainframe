@@ -6,7 +6,7 @@ import PantherworldPlayerModel, {
   PantherworldPlayerData,
 } from "../../data/models/PantherworldPlayer";
 import UserManager from "../../users/UserManager";
-import { MetaResponse, Population } from "./types";
+import { MetaResponse, Player, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
   const mostRecentUpdatedItem = (
@@ -62,7 +62,7 @@ export async function getMeta(): Promise<MetaResponse> {
   const newestPlayerAsTwitchUser: FullTwitchUser =
     await UserManager.getUserById(mostRecentlyCreatedPlayer.userId);
 
-  const newestPlayer = {
+  const newestPlayer: Player = {
     username: newestPlayerAsTwitchUser.display_name,
     image_url: newestPlayerAsTwitchUser.profile_image_url,
     zone: mostRecentlyCreatedPlayer.zone,

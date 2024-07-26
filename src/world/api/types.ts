@@ -1,4 +1,16 @@
-import { WorldItem } from "../items/all";
+export type WorldItem = {
+  name: string;
+  rarity: number;
+  onlyZone: string | null;
+};
+
+export type SpawnedItem = {
+  createdAt?: Date;
+  name: string;
+  number?: number;
+  rarity: number;
+  zone?: string;
+};
 
 export type ItemForWealthIndex = {
   _id: string;
@@ -6,14 +18,21 @@ export type ItemForWealthIndex = {
   rarity: number;
 };
 
-export type FullLeaderboardPlayer = {
+export type Player = {
   username: string;
-  items: number;
-  wealth_index: number;
+  image_url?: string;
+  items?: number;
+  wealth_index?: number;
+  zone?: string;
+};
+
+export type PlayerWithItem = {
+  player: Player;
+  item: SpawnedItem;
 };
 
 export type FullLeaderboardResponse = {
-  players: FullLeaderboardPlayer[];
+  players: Player[];
 };
 
 export type InventoryResponse = {
@@ -25,32 +44,6 @@ export type InventoryResponse = {
   players_in_zone: number;
 };
 
-export type PlayerWithItem = {
-  player: {
-    username: string;
-    image_url: string;
-  };
-  item: {
-    name: string;
-    rarity: number;
-    zone: string;
-  };
-};
-
-export type NewestPlayer = {
-  username: string;
-  image_url: string;
-  zone: string;
-};
-
-export type SpawnedItem = {
-  name: string;
-  number?: number;
-  zone?: string;
-  createdAt?: Date;
-  rarity: number;
-};
-
 export type Population = {
   [key: string]: number;
 };
@@ -60,6 +53,9 @@ export type MetaResponse = {
   mostSpawned: SpawnedItem;
   leastSpawned: SpawnedItem;
   population: Population;
-  latestClaim: PlayerWithItem;
-  newestPlayer: NewestPlayer;
+  latestClaim: {
+    player: Player;
+    item: SpawnedItem;
+  };
+  newestPlayer: Player;
 };

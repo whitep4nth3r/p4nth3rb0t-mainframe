@@ -11,12 +11,7 @@ import { Gems } from "./gems";
 import { Animal } from "./animal";
 import { Instruments } from "./instruments";
 import { Natural } from "./natural";
-
-export type WorldItem = {
-  rarity: number;
-  name: string;
-  onlyZone: string | null;
-};
+import { WorldItem } from "../api/types";
 
 export const WorldItems: WorldItem[] = [
   ...Animal,

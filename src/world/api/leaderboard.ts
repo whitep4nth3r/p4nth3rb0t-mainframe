@@ -1,9 +1,5 @@
 import * as Sentry from "@sentry/node";
-import {
-  FullLeaderboardResponse,
-  FullLeaderboardPlayer,
-  ItemForWealthIndex,
-} from "./types";
+import { FullLeaderboardResponse, Player, ItemForWealthIndex } from "./types";
 import PantherworldItemModel from "../../data/models/PantherworldItem";
 import PantherworldPlayerModel, {
   PantherworldPlayerData,
@@ -11,10 +7,7 @@ import PantherworldPlayerModel, {
 import { getAllItemsForPlayerToCalculateWealthIndex } from "./player/allItems";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
 
-function sortByWealthIndexDesc(
-  a: FullLeaderboardPlayer,
-  b: FullLeaderboardPlayer,
-) {
+function sortByWealthIndexDesc(a: Player, b: Player) {
   if (a.wealth_index > b.wealth_index) {
     return -1;
   }
@@ -35,7 +28,7 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
     { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
   ]);
 
-  const leaderboardPlayers: FullLeaderboardPlayer[] = [];
+  const leaderboardPlayers: Player[] = [];
 
   const promises = players.map(async (player) => {
     const allItems: ItemForWealthIndex[] =
@@ -49,7 +42,7 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
       username: dbPlayer.userDisplayName,
       items: player.itemCount,
       wealth_index: getWealthIndex(allItems),
-    } as FullLeaderboardPlayer);
+    } as Player);
   });
 
   await Promise.all(promises)

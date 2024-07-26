@@ -1,5 +1,5 @@
+import { WorldItem } from "../api/types";
 import { PantherworldZoneNames } from "../zones";
-import { WorldItem } from "./all";
 
 export const BeachItems: WorldItem[] = [
   {
