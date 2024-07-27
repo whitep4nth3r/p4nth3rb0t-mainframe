@@ -19,12 +19,15 @@ export async function movePlayer(
 
   if (user) {
     try {
+      const created = new Date();
+
       await PantherworldPlayerModel.updateOne(
         { userId: userId },
         {
           userId: userId,
           userDisplayName: user.display_name,
           zone: zone,
+          createdAt: created,
         },
         { upsert: true },
       );

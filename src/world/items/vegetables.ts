@@ -1,4 +1,4 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Vegetables: WorldItem[] = [
   {
