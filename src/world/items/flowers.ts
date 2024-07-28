@@ -7,6 +7,11 @@ export const Flowers: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 9,
+    name: "wild daffodil",
+    onlyZone: null,
+  },
+  {
     rarity: 10,
     name: "buttercup",
     onlyZone: null,

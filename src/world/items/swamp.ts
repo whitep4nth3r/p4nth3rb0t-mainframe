@@ -18,6 +18,11 @@ export const SwampItems: WorldItem[] = [
     onlyZone: PantherworldZoneNames.Swamp,
   },
   {
+    rarity: 9,
+    name: "irradiated green olive",
+    onlyZone: PantherworldZoneNames.Swamp,
+  },
+  {
     rarity: 10,
     name: "irradiated avocado",
     onlyZone: PantherworldZoneNames.Swamp,

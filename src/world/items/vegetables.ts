@@ -48,6 +48,11 @@ export const Vegetables: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 9,
+    name: "asparagus",
+    onlyZone: null,
+  },
+  {
     rarity: 10,
     name: "avocado",
     onlyZone: null,
