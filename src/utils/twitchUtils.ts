@@ -68,7 +68,7 @@ export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
 
   if (response) {
     const responseData = await response.json() as TwitchCurrentChattersResponse;
-console.log(responseData.data);
+
     return responseData.data as TwitchUser[];
   }
 
