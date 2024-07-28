@@ -234,8 +234,16 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
 export const sendPantherworldFeedEvent = async (message: string) => {
   if (feedChannel) {
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: "p4nth3r.world",
+        url: "https://p4nth3r.world/",
+      })
+      .setDescription(message)
+      .setColor("#84ae39");
+
     await feedChannel.send({
-      content: message,
+      embeds: [embed],
     });
   }
 };
