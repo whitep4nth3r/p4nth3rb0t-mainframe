@@ -9,6 +9,7 @@ import {
   PlayerMovePacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
+import { PantherworldEvent } from "../../api/types";
 
 export async function movePlayer(
   userId: string,
@@ -33,9 +34,13 @@ export async function movePlayer(
       );
 
       if (announceToChat) {
-        const message = `${config.BOT_PREFIX}➡️ ${user.display_name} moved to ${zone} zone`;
-        tmi.say(config.channel, message);
-        await sendPantherworldFeedEvent(message);
+        const message = `${user.display_name} moved to ${zone} zone`;
+        tmi.say(config.channel, `${config.BOT_PREFIX}➡️ ${message}`);
+        await sendPantherworldFeedEvent(
+          message,
+          PantherworldEvent.MOVE,
+          config.BOT_PREFIX,
+        );
       }
 
       const playerMoveEvent: PlayerMovePacket = {

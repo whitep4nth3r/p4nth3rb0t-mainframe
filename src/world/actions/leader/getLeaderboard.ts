@@ -4,6 +4,7 @@ import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import UserManager from "../../../users/UserManager";
+import { PantherworldEvent } from "../../api/types";
 
 export async function getLeaderboard(): Promise<void> {
   const query = await PantherworldItemModel.aggregate([
@@ -35,10 +36,15 @@ export async function getLeaderboard(): Promise<void> {
 
   Promise.all(promises)
     .then(async () => {
-      const message = `${config.BOT_PREFIX}${leaderboardInfo.join(", ")}`;
+      const message = `${leaderboardInfo.join(", ")}`;
 
-      tmi.say(config.channel, message);
-      await sendPantherworldFeedEvent(message);
+      tmi.say(config.channel, `${config.BOT_PREFIX}${message}`);
+      
+      await sendPantherworldFeedEvent(
+        message,
+        PantherworldEvent.LEADERBOARD,
+        config.BOT_PREFIX,
+      );
     })
     .catch((err) => {
       Sentry.captureException(err);
