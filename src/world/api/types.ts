@@ -59,3 +59,15 @@ export type MetaResponse = {
   };
   newestPlayer: Player;
 };
+
+export enum PantherworldEvent {
+  CLAIM = "claim",
+  THROW = "throw",
+  GIFT = "gift",
+  MOVE = "move",
+  SPAWN = "spawn",
+  RELEASE = "release",
+  LEADERBOARD = "leaderboard",
+  LIST_POPULATION = "list_population",
+  LOCK = "lock",
+}

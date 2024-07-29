@@ -11,7 +11,7 @@ import {
 import WebsocketServer from "../WebSocketServer";
 import { sendPantherworldFeedEvent } from "../discord";
 import { PantherworldZones } from "./zones";
-import { WorldItem } from "./api/types";
+import { PantherworldEvent, WorldItem } from "./api/types";
 
 export enum SpawnEventType {
   Follow = "Follow",
@@ -102,11 +102,15 @@ export async function spawn(event: EventData): Promise<void> {
 
   await saveItem(itemToSpawn.name, itemToSpawn.rarity, spawnZone.name);
 
-  const message = `${config.BOT_PREFIX}🌍 ${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
+  const message = `${itemToSpawn.name} spawned in the ${spawnZone.name} zone (rarity: ${itemToSpawn.rarity})`;
 
-  tmi.say(config.channel, message);
+  tmi.say(config.channel, `${config.BOT_PREFIX}🌍 ${message}`);
 
-  await sendPantherworldFeedEvent(message);
+  await sendPantherworldFeedEvent(
+    message,
+    PantherworldEvent.SPAWN,
+    config.BOT_PREFIX,
+  );
 
   const spawnEvent: ItemSpawnPacket = {
     event: MainframeEvent.itemSpawn,
