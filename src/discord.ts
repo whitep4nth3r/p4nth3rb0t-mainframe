@@ -267,7 +267,7 @@ export const sendPantherworldFeedEvent = async (
       .setAuthor({
         name: `${botPrefix}${EVENT_ICONs[type as string]} ${type.toUpperCase().replace("_", " ")}`,
       })
-      .setDescription(message)
+      .setDescription(message.split(",").join("\n"))
       .setColor(EVENT_COLORS[type as string]);
 
     await feedChannel.send({
