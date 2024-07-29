@@ -35,7 +35,9 @@ export async function movePlayer(
 
       if (announceToChat) {
         const message = `${user.display_name} moved to ${zone} zone`;
+        
         tmi.say(config.channel, `${config.BOT_PREFIX}➡️ ${message}`);
+
         await sendPantherworldFeedEvent(
           message,
           PantherworldEvent.MOVE,

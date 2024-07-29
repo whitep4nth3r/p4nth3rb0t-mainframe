@@ -271,7 +271,6 @@ export const sendPantherworldFeedEvent = async (
       .setColor(EVENT_COLORS[type as string]);
 
     await feedChannel.send({
-      content: message,
       embeds: [embed],
     });
   }
