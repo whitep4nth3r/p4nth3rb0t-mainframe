@@ -26,6 +26,7 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    streamerUserId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
     liveAnnouncementColorOnline: Discord.ColorResolvable;
@@ -85,6 +86,7 @@ const config: Config = {
   discord: {
     liveAnnouncementsChannelId: channels.announcements,
     liveAnnouncementsRoleId: "756956508234842145",
+    streamerUserId: "722393276438544404",
     liveAnnouncementColorOnline: "#84AE39",
     liveAnnouncementColorOffline: "#AE8439",
     liveAnnouncementImageSize: "1280x720",

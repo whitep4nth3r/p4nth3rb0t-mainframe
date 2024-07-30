@@ -276,6 +276,12 @@ export const sendPantherworldFeedEvent = async (
   }
 };
 
+export const sendStreamerAlertDirectMessage = async (message: string) => {
+  await discord.users.fetch(config.discord.streamerUserId).then(user => {
+    user.send(message);
+  }
+)};
+
 const buildDiscordEmbed = (
   online: boolean,
   userName: string,

@@ -15,8 +15,7 @@ import {
   UserAccessTokenResponse,
 } from "../data/types";
 import { URLSearchParams } from "url";
-// import { tmi } from "../tmi";
-// import { config } from "../config";
+import { sendStreamerAlertDirectMessage } from "../discord";
 
 export const USER_SCOPES: string[] = [
   "moderator:read:chatters",
@@ -69,11 +68,9 @@ export default class AccessToken {
       state: "random-uuid",
     });
 
-    // this causes an error right now...
-    // tmi.say(
-    //   config.channel,
-    //   `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`,
-    // );
+    await sendStreamerAlertDirectMessage(
+      `You need to (re)authorize me with Twitch: https://id.twitch.tv/oauth2/authorize?${params}`,
+    );
 
     console.log(
       `Please visit: https://id.twitch.tv/oauth2/authorize?${params}`,
