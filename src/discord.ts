@@ -277,7 +277,7 @@ export const sendPantherworldFeedEvent = async (
 };
 
 export const sendStreamerAlertDirectMessage = async (message: string) => {
-  await discord.users.fetch(config.discord.streamerUserId).then(user => {
+  await discord.users.fetch(config.discord.broadcasterUserId).then(user => {
     user.send(message);
   }
 )};
