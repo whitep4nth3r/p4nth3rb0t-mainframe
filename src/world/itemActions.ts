@@ -6,6 +6,7 @@ export async function saveItem(
   rarity: number,
   zone: string,
   cooked?: boolean,
+  userId?: string,
 ): Promise<void> {
   try {
     const newItemData = {
@@ -13,6 +14,7 @@ export async function saveItem(
       zone: zone,
       rarity: rarity,
       ...(cooked !== undefined && { cooked: cooked }),
+      ...(userId !== undefined && { userId: userId }),
     };
 
     const item = await PantherworldItemModel.create(newItemData);
