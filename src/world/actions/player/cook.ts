@@ -144,7 +144,7 @@ export async function cookItem(
     { $group: { _id: "$name", count: { $sum: 1 } } },
   ]);
 
-  // 1. check to see if user has all of the ingredients specified ✅
+  // check user has all of the ingredients specified
   for (let i = 0; i < ingredientList.length; i++) {
     if (allUserItems.some((item) => item._id === ingredientList[i]) === false) {
       tmi.say(
@@ -155,9 +155,7 @@ export async function cookItem(
     }
   }
 
-  // 2. check if recipe available
-  // ALWAYS JUST ONE RECIPE WITH THAT PRIMARY INGREDIENT
-  // Combos are created with the secondary items
+  // check if recipe with first ingredient is available
   const recipeMatch = findRecipe(ingredientList[0]);
 
   if (recipeMatch === null) {
@@ -168,7 +166,7 @@ export async function cookItem(
     return;
   }
 
-  // Check to see if any ingredients match secondary ✅
+  // check to see if any ingredients match secondary of that recipe
   const matchedSecondaryIngredients: WorldItem[] = findSecondaryIngredients(
     recipeMatch,
     ingredientList,
@@ -182,7 +180,7 @@ export async function cookItem(
     return;
   }
 
-  // Calculate the rarity of all ingredients (with some probability of a multiplier)
+  // calculate the rarity of all ingredients (with some probability of a multiplier)
   const combinedRarity = getCombinedRarity(ingredientList);
 
   // 30% chance of a multiplier
