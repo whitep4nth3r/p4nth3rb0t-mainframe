@@ -203,7 +203,7 @@ export async function cookItem(
 
   // delete all raw ingredients from user
   const promises = [];
-  for (let i = 1; i <= ingredientList.length; i++) {
+  for (let i = 0; i < ingredientList.length; i++) {
     promises.push(
       await PantherworldItemModel.deleteOne({
         name: ingredientList[i],
@@ -245,7 +245,8 @@ export async function cookItem(
       userId: userId,
     });
 
-    await saveItem(uniqueName, finalRarity, currentPlayer.zone, true);
+    await saveItem(uniqueName, finalRarity, currentPlayer.zone, true, userId);
+
     tmi.say(
       config.channel,
       `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName, finalRarity)}`,
