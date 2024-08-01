@@ -11,6 +11,12 @@ import { getRandomEntry } from "../../../utils/getRandomEntry";
 import { getWealthIndex } from "../wealth/wealthDistribution";
 import { saveItem } from "../../itemActions";
 import { sendPantherworldFeedEvent } from "../../../discord";
+import {
+  MainframeEvent,
+  PlayerCookFailPacket,
+  PlayerCookPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
+import WebsocketServer from "../../../WebSocketServer";
 
 // !cook green olive + fresh red chilli + fresh parsley
 
@@ -29,8 +35,12 @@ function getSpoiledMessage(username: string, ingredientList: string[]): string {
   return `@${username} your recipe spoiled! You lost ${ingredientList.join(", ")!}`;
 }
 
-function getCookedMessage(username: string, uniqueName: string): string {
-  return `@${username} cooked ${uniqueName}!`;
+function getCookedMessage(
+  username: string,
+  uniqueName: string,
+  rarity: number,
+): string {
+  return `@${username} cooked ${uniqueName} (rarity: ${rarity})!`;
 }
 
 function shuffle(array) {
@@ -176,7 +186,7 @@ export async function cookItem(
   const combinedRarity = getCombinedRarity(ingredientList);
 
   // 30% chance of a multiplier
-  const doMultiplier = Math.random() >= 0.3;
+  const doMultiplier = Math.random() >= 0.7;
 
   // multiplier is a random rarity from one of the ingredients
   const finalRarity = doMultiplier
@@ -220,6 +230,18 @@ export async function cookItem(
       PantherworldEvent.COOK_FAILED,
       config.BOT_PREFIX,
     );
+
+    const playerCookFailEvent: PlayerCookFailPacket = {
+      event: MainframeEvent.playerCookFail,
+      id: userId + "-" + Date.now(),
+      type: "cookfail",
+      data: {
+        username: username,
+        ingredientList: ingredientList,
+      },
+    };
+
+    WebsocketServer.sendData(playerCookFailEvent);
   } else {
     const currentPlayer = await PantherworldPlayerModel.findOne({
       userId: userId,
@@ -228,14 +250,26 @@ export async function cookItem(
     await saveItem(uniqueName, finalRarity, currentPlayer.zone, true);
     tmi.say(
       config.channel,
-      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName)}`,
+      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName, finalRarity)}`,
     );
 
     await sendPantherworldFeedEvent(
-      getCookedMessage(username, uniqueName),
+      getCookedMessage(username, uniqueName, finalRarity),
       PantherworldEvent.COOKED,
       config.BOT_PREFIX,
     );
-    // TODO: add websocket event
+
+    const playerCookEvent: PlayerCookPacket = {
+      event: MainframeEvent.playerCook,
+      id: userId + "-" + Date.now(),
+      type: "cook",
+      data: {
+        username: username,
+        recipe: uniqueName,
+        rarity: finalRarity,
+      },
+    };
+
+    WebsocketServer.sendData(playerCookEvent);
   }
 }
