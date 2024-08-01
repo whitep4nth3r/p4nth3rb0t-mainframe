@@ -1,3 +1,5 @@
+import { BeachItems } from "./beach";
+import { Geological } from "./geological";
 import { Vegetables } from "./vegetables";
 import { SwampItems } from "./swamp";
 import { UniversalItems } from "./universal";
@@ -9,19 +11,15 @@ import { Gems } from "./gems";
 import { Animal } from "./animal";
 import { Instruments } from "./instruments";
 import { Natural } from "./natural";
-
-export type WorldItem = {
-  rarity: number;
-  name: string;
-  onlyZone: string | null;
-  flavour?: string; //// Potential idea for naming recipes
-};
+import { WorldItem } from "../api/types";
 
 export const WorldItems: WorldItem[] = [
   ...Animal,
+  ...BeachItems,
   ...Flowers,
   ...Fruits,
   ...Gems,
+  ...Geological,
   ...Herbs,
   ...Instruments,
   ...Natural,

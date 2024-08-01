@@ -1,4 +1,4 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Instruments: WorldItem[] = [
   { rarity: 750, name: "wooden flute", onlyZone: null },

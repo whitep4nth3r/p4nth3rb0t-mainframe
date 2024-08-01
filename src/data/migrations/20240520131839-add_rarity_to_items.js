@@ -42,7 +42,7 @@ const catalogue = [
 ];
 
 module.exports = {
-  async up(db, client) {
+  async up(db) {
     function getRarity(name) {
       return catalogue.find((item) => item.name === name).rarity;
     }
@@ -60,7 +60,7 @@ module.exports = {
     }
   },
 
-  async down(db, client) {
+  async down(db) {
     await db
       .collection("pantherworlditems")
       .updateMany({}, { $unset: { rarity: "" } });

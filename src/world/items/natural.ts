@@ -1,4 +1,4 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Natural: WorldItem[] = [
   { rarity: 2, name: "wheat", onlyZone: null },

@@ -3,6 +3,7 @@ import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { capitalise } from "./utils";
+import { PantherworldEvent } from "../../api/types";
 
 export async function listPopulation(): Promise<void> {
   const zoneCounts = await PantherworldPlayerModel.aggregate([
@@ -27,6 +28,8 @@ export async function listPopulation(): Promise<void> {
   );
 
   await sendPantherworldFeedEvent(
-    `📊 Population: Total **${total}**,  ${discordReport}`,
+    `Population: Total **${total}**,  ${discordReport}`,
+    PantherworldEvent.LIST_POPULATION,
+    config.BOT_PREFIX,
   );
 }

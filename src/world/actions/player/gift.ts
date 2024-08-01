@@ -13,10 +13,11 @@ import {
   PlayerGiftPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
-import { getLocation } from "../../apiActions";
+import { getLocation } from "../../api/player/location";
 import { getRandomEntryAndModifiedArray } from "../../../utils/getRandomEntry";
 import { getCurrentChatters } from "../../../utils/twitchUtils";
 import { TwitchUser } from "../../../data/types";
+import { PantherworldEvent } from "../../api/types";
 
 function isUserIdInCurrentChatters(
   currentChatters: TwitchUser[],
@@ -81,13 +82,17 @@ export async function giftItem(
       zone: giverZone,
     });
 
-    if (allPlayersInGiverZone.length === 1) {
+    const allPlayersInGiverZoneMinusReceiver = allPlayersInGiverZone.filter(
+      (player) => player.userId !== giverId,
+    );
+
+    if (allPlayersInGiverZoneMinusReceiver.length === 0) {
       tmi.say(config.channel, nonEligibleMessage);
       return;
     } else {
       const randPlayer = getRandPlayerInSameZoneFromCurrentChatters(
         currentChatters,
-        allPlayersInGiverZone,
+        allPlayersInGiverZoneMinusReceiver,
       );
 
       if (randPlayer === null) {
@@ -106,6 +111,8 @@ export async function giftItem(
   }
 
   if (receiverAsUser.id === giverId) {
+    // we shouldn't get here now because we remove the giver from the players array
+    // but we'll leave it anyway
     return;
   }
 
@@ -128,11 +135,15 @@ export async function giftItem(
   )) as PantherworldItemDoc | null;
 
   if (itemUpdate !== null) {
-    const message = `${config.BOT_PREFIX}🎁 @${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
+    const message = `@${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
 
-    tmi.say(config.channel, message);
+    tmi.say(config.channel, `${config.BOT_PREFIX}🎁 ${message}`);
 
-    await sendPantherworldFeedEvent(message);
+    await sendPantherworldFeedEvent(
+      message,
+      PantherworldEvent.GIFT,
+      config.BOT_PREFIX,
+    );
 
     const playerGiftEvent: PlayerGiftPacket = {
       event: MainframeEvent.playerGift,

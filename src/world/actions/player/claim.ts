@@ -10,6 +10,8 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { WorldState } from "../../state";
+import { wealthDistribution } from "../wealth/wealthDistribution";
+import { PantherworldEvent } from "../../api/types";
 
 export async function claimItem(
   name: string,
@@ -73,11 +75,13 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `${username} claimed ${name} in the ${player.zone} zone`;
-
-          tmi.say(config.channel, `${config.BOT_PREFIX}🎒 @${message}`);
-
-          await sendPantherworldFeedEvent(`🎒 ${message}`);
+          const message = `@${username} claimed ${name} in the ${player.zone} zone`;
+          tmi.say(config.channel, `${config.BOT_PREFIX}🎒 ${message}`);
+          await sendPantherworldFeedEvent(
+            message,
+            PantherworldEvent.CLAIM,
+            config.BOT_PREFIX,
+          );
 
           const playerClaimEvent: PlayerClaimPacket = {
             event: MainframeEvent.playerClaim,
@@ -91,6 +95,8 @@ export async function claimItem(
           };
 
           WebsocketServer.sendData(playerClaimEvent);
+
+          await wealthDistribution(userId, username);
         }
       }
     }

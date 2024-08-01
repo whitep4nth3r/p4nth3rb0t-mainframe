@@ -1,9 +1,14 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Flowers: WorldItem[] = [
   {
     rarity: 8,
     name: "dandelion",
+    onlyZone: null,
+  },
+  {
+    rarity: 9,
+    name: "wild daffodil",
     onlyZone: null,
   },
   {

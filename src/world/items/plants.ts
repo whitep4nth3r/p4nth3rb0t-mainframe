@@ -1,6 +1,7 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Plants: WorldItem[] = [
+  { rarity: 9, name: "raw cotton", onlyZone: null },
   {
     rarity: 12,
     name: "three leaf clover",

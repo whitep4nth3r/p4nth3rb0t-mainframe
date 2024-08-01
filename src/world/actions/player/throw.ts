@@ -10,8 +10,9 @@ import {
   PlayerDropPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
+import { PantherworldEvent } from "../../api/types";
 
-export async function dropItem(
+export async function throwItem(
   item: string,
   userId: string,
   displayName: string,
@@ -33,11 +34,15 @@ export async function dropItem(
     )) as PantherworldItemDoc | null;
 
     if (itemUpdate !== null) {
-      const message = `${config.BOT_PREFIX}🫳 @${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
+      const message = `@${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
 
-      tmi.say(config.channel, message);
+      tmi.say(config.channel, `${config.BOT_PREFIX}🫳 ${message}`);
 
-      await sendPantherworldFeedEvent(message);
+      await sendPantherworldFeedEvent(
+        message,
+        PantherworldEvent.THROW,
+        config.BOT_PREFIX,
+      );
 
       const playerDropEvent: PlayerDropPacket = {
         event: MainframeEvent.playerDrop,
@@ -55,7 +60,7 @@ export async function dropItem(
     } else {
       tmi.say(
         config.channel,
-        `${config.BOT_PREFIX} @${displayName} nothing to drop!`,
+        `${config.BOT_PREFIX} @${displayName} nothing to throw!`,
       );
     }
   }

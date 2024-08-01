@@ -27,6 +27,6 @@ export async function getInventory(
 
   tmi.say(
     config.channel,
-    `${config.BOT_PREFIX}🎒 @${username}: you have ${total} ${itemString}. View your full inventory at https://p4nth3rworld.netlify.app/`,
+    `${config.BOT_PREFIX}🎒 @${username}: you have ${total} ${itemString}. View your full inventory at https://p4nth3r.world/`,
   );
 }

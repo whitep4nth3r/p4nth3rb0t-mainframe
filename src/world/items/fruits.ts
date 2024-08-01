@@ -1,4 +1,4 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Fruits: WorldItem[] = [
   {
@@ -49,6 +49,16 @@ export const Fruits: WorldItem[] = [
   {
     rarity: 4,
     name: "raspberry",
+    onlyZone: null,
+  },
+  {
+    rarity: 9,
+    name: "satsuma",
+    onlyZone: null,
+  },
+  {
+    rarity: 9,
+    name: "seasonal apple",
     onlyZone: null,
   },
   {

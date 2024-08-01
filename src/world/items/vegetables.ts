@@ -1,4 +1,4 @@
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const Vegetables: WorldItem[] = [
   {
@@ -45,6 +45,11 @@ export const Vegetables: WorldItem[] = [
   {
     rarity: 9,
     name: "green olive",
+    onlyZone: null,
+  },
+  {
+    rarity: 9,
+    name: "asparagus",
     onlyZone: null,
   },
   {

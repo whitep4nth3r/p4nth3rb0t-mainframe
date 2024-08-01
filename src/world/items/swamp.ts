@@ -1,5 +1,5 @@
 import { PantherworldZoneNames } from "../zones";
-import { WorldItem } from "./all";
+import { WorldItem } from "../api/types";
 
 export const SwampItems: WorldItem[] = [
   {
@@ -15,6 +15,11 @@ export const SwampItems: WorldItem[] = [
   {
     rarity: 4,
     name: "irradiated pineapple",
+    onlyZone: PantherworldZoneNames.Swamp,
+  },
+  {
+    rarity: 9,
+    name: "irradiated green olive",
     onlyZone: PantherworldZoneNames.Swamp,
   },
   {
