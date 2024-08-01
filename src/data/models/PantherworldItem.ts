@@ -18,6 +18,7 @@ export const PantherworldItemSchema: Schema = new mongoose.Schema(
     zone: { type: String, required: true },
     dropped: { type: Boolean, required: false },
     rarity: { type: Number, required: true },
+    cooked: { type: Boolean, required: false },
   },
   { timestamps: true },
 );

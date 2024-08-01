@@ -3,10 +3,21 @@ import {
   findRecipe,
   findSecondaryIngredients,
   getCombinedRarity,
+  makeUniqueRecipeName,
 } from "../actions/player/cook";
 import { WorldItems } from "../items/all";
 
 const MarinatedGreenOlives = FoodRecipes["Marinated green olives"];
+
+test("Make recipe name", () => {
+  const result = makeUniqueRecipeName(MarinatedGreenOlives, [
+    "fresh red chilli",
+    "garlic bulb",
+    "fresh parsely",
+  ]);
+
+  expect(typeof result).toBe("string");
+});
 
 test("Combined rarity", () => {
   const result = getCombinedRarity(["green olive", "fresh red chilli"]);

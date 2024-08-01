@@ -1,3 +1,4 @@
+import { Packet } from "@whitep4nth3r/p4nth3rb0t-types";
 import { Recipe, WorldItem } from "./../../api/types";
 import { WorldRecipes } from "../../recipes/all";
 import { getCommandFromMessage } from "../../../utils/commands";
@@ -6,6 +7,7 @@ import { config } from "../../../config";
 import { tmi } from "../../../tmi";
 import { WorldItems } from "../../items/all";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
+import { getWealthIndex } from "../wealth/wealthDistribution";
 
 export function getIngredientsFromCraftCommand(message: string) {
   const command = getCommandFromMessage(message);
@@ -14,14 +16,54 @@ export function getIngredientsFromCraftCommand(message: string) {
   return ingredientsList.split("+").map((item) => item.trim());
 }
 
-// this should say can cook
-// !craft green olive + garlic bulb + fresh basil
-
-// not cook
-// !craft green olive + emerald
-
 function getCannotCookMsg(username) {
   return `❌ @${username} cannot cook!`;
+}
+
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    const randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
+export function makeUniqueRecipeName(
+  recipe: Recipe,
+  ingredientList: string[],
+): string {
+  const secondaryIngredients = [];
+
+  recipe.ingredients.secondary.forEach((item) => {
+    if (ingredientList.includes(item.name)) {
+      secondaryIngredients.push(item);
+    }
+  });
+
+  const flavours = secondaryIngredients.map((item) =>
+    getRandomEntry(item.flavours),
+  );
+
+  const uniqueFlavours = flavours.filter(
+    (item, index) => flavours.indexOf(item) === index,
+  );
+
+  const shuffledUnique = shuffle(uniqueFlavours);
+
+  const endWord = getRandomEntry(recipe.names);
+
+  return `${shuffledUnique.join(" ")} ${recipe.ingredients.primary.name} ${endWord}`;
 }
 
 export function getCombinedRarity(ingredientList: string[]) {
@@ -71,7 +113,6 @@ export async function cookItem(
   username: string,
 ): Promise<void> {
   const ingredientList = getIngredientsFromCraftCommand(recipe);
-  console.log(ingredientList);
 
   const allUserItems = await PantherworldItemModel.aggregate([
     // Match documents with a specific userId
@@ -130,12 +171,19 @@ export async function cookItem(
     : combinedRarity;
 
   // calculate name
+  const uniqueName = makeUniqueRecipeName(recipeMatch, ingredientList);
 
-  /**
-   * 3.
-   * PROBABILITY OF SPOILING (maybe based on wealth index)
-   * // apply wealth distribution
-   * 5. save in DB
-   * 6. send relevant tmi.say and discord messages and websocket event
-   */
+  // 10% probability of spoiling if wealth index > 50000
+  // all items get DESTROYED
+  const userWealthIndex = getWealthIndex(allUserItems);
+  const mightSpoil = userWealthIndex > 50000;
+  const willSpoil = mightSpoil && Math.random() >= 0.1;
+
+  if (willSpoil) {
+    // delete all ingredients from user
+    // send spoil message
+  } else {
+    // save item as cooked = true in DB
+    //send relevant tmi.say and discord messages and websocket event
+  }
 }
