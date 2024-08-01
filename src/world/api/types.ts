@@ -2,7 +2,7 @@ export type WorldItem = {
   name: string;
   rarity: number;
   onlyZone: string | null;
-  flavours?: string[]; //// Potential idea for naming recipes
+  flavours?: string[];
 };
 
 export type SpawnedItem = {
