@@ -2,7 +2,7 @@ export type WorldItem = {
   name: string;
   rarity: number;
   onlyZone: string | null;
-  flavour?: string; //// Potential idea for naming recipes
+  flavours?: string[]; //// Potential idea for naming recipes
 };
 
 export type SpawnedItem = {
@@ -72,3 +72,13 @@ export enum PantherworldEvent {
   LIST_POPULATION = "list_population",
   LOCK = "lock",
 }
+
+export type Recipe = {
+  title: string;
+  description: string;
+  names: string[];
+  ingredients: {
+    primary: WorldItem;
+    secondary: WorldItem[];
+  };
+};
