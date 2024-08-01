@@ -63,6 +63,8 @@ export type MetaResponse = {
 
 export enum PantherworldEvent {
   CLAIM = "claim",
+  COOK_FAILED = "cook_failed",
+  COOKED = "cooked",
   THROW = "throw",
   GIFT = "gift",
   MOVE = "move",

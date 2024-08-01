@@ -235,6 +235,8 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
 
 const EVENT_COLORS = {
   [PantherworldEvent.CLAIM]: "#ffffff",
+  [PantherworldEvent.COOKED]: "#a3e635",
+  [PantherworldEvent.COOK_FAILED]: "#ff0000",
   [PantherworldEvent.THROW]: "#fc814a",
   [PantherworldEvent.GIFT]: "#fc814a",
   [PantherworldEvent.MOVE]: "#0E0016",
@@ -245,8 +247,10 @@ const EVENT_COLORS = {
   [PantherworldEvent.LOCK]: "#0E0016",
 };
 
-const EVENT_ICONs = {
+const EVENT_ICONS = {
   [PantherworldEvent.CLAIM]: "🎒",
+  [PantherworldEvent.COOKED]: "🍳",
+  [PantherworldEvent.COOK_FAILED]: "🤮",
   [PantherworldEvent.THROW]: "🫳",
   [PantherworldEvent.GIFT]: "🎁",
   [PantherworldEvent.MOVE]: "➡️",
@@ -265,7 +269,7 @@ export const sendPantherworldFeedEvent = async (
   if (feedChannel) {
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: `${botPrefix}${EVENT_ICONs[type as string]} ${type.toUpperCase().replace("_", " ")}`,
+        name: `${botPrefix}${EVENT_ICONS[type as string]} ${type.toUpperCase().replace("_", " ")}`,
       })
       .setDescription(message.split(",").join("\n"))
       .setColor(EVENT_COLORS[type as string]);

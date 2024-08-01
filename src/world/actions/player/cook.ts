@@ -1,13 +1,18 @@
-import { Packet } from "@whitep4nth3r/p4nth3rb0t-types";
-import { Recipe, WorldItem } from "./../../api/types";
+import * as Sentry from "@sentry/node";
+import { PantherworldEvent, Recipe, WorldItem } from "./../../api/types";
 import { WorldRecipes } from "../../recipes/all";
 import { getCommandFromMessage } from "../../../utils/commands";
 import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
 import { config } from "../../../config";
 import { tmi } from "../../../tmi";
 import { WorldItems } from "../../items/all";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
 import { getWealthIndex } from "../wealth/wealthDistribution";
+import { saveItem } from "../../itemActions";
+import { sendPantherworldFeedEvent } from "../../../discord";
+
+// !cook green olive + fresh red chilli + fresh parsley
 
 export function getIngredientsFromCraftCommand(message: string) {
   const command = getCommandFromMessage(message);
@@ -16,8 +21,16 @@ export function getIngredientsFromCraftCommand(message: string) {
   return ingredientsList.split("+").map((item) => item.trim());
 }
 
-function getCannotCookMsg(username) {
-  return `❌ @${username} cannot cook!`;
+function getCannotCookMsg(username: string): string {
+  return `@${username} cannot cook!`;
+}
+
+function getSpoiledMessage(username: string, ingredientList: string[]): string {
+  return `@${username} your recipe spoiled! You lost ${ingredientList.join(", ")!}`;
+}
+
+function getCookedMessage(username: string, uniqueName: string): string {
+  return `@${username} cooked ${uniqueName}!`;
 }
 
 function shuffle(array) {
@@ -126,7 +139,7 @@ export async function cookItem(
     if (allUserItems.some((item) => item._id === ingredientList[i]) === false) {
       tmi.say(
         config.channel,
-        `${config.BOT_PREFIX}${getCannotCookMsg(username)}`,
+        `${config.BOT_PREFIX}❌ ${getCannotCookMsg(username)}`,
       );
       return;
     }
@@ -173,17 +186,56 @@ export async function cookItem(
   // calculate name
   const uniqueName = makeUniqueRecipeName(recipeMatch, ingredientList);
 
-  // 10% probability of spoiling if wealth index > 50000
+  // 10% probability of spoiling for all
+  // 25% probabilty of spoiling if wealth index > 50000
   // all items get DESTROYED
   const userWealthIndex = getWealthIndex(allUserItems);
-  const mightSpoil = userWealthIndex > 50000;
-  const willSpoil = mightSpoil && Math.random() >= 0.1;
+  const willSpoil =
+    userWealthIndex > 50000 ? Math.random() >= 0.75 : Math.random() >= 0.9;
+
+  // delete all raw ingredients from user
+  const promises = [];
+  for (let i = 1; i <= ingredientList.length; i++) {
+    promises.push(
+      await PantherworldItemModel.deleteOne({
+        name: ingredientList[i],
+        userId: userId,
+      }),
+    );
+  }
+
+  await Promise.all(promises)
+    .then(() => console.log("deleted"))
+    .catch((err) => {
+      Sentry.captureException(err);
+    });
 
   if (willSpoil) {
-    // delete all ingredients from user
-    // send spoil message
+    tmi.say(
+      config.channel,
+      `${config.BOT_PREFIX}🤮 ${getSpoiledMessage(username, ingredientList)}`,
+    );
+    await sendPantherworldFeedEvent(
+      getSpoiledMessage(username, ingredientList),
+      PantherworldEvent.COOK_FAILED,
+      config.BOT_PREFIX,
+    );
   } else {
-    // save item as cooked = true in DB
-    //send relevant tmi.say and discord messages and websocket event
+    const currentPlayer = await PantherworldPlayerModel.findOne({
+      userId: userId,
+    });
+
+    await saveItem(uniqueName, finalRarity, currentPlayer.zone, true);
+    tmi.say(
+      config.channel,
+      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName)}`,
+    );
+
+    await sendPantherworldFeedEvent(
+      getCookedMessage(username, uniqueName),
+      PantherworldEvent.COOKED,
+      config.BOT_PREFIX,
+    );
+    // TODO: add websocket event
   }
 }

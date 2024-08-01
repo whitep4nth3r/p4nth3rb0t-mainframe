@@ -5,13 +5,17 @@ export async function saveItem(
   name: string,
   rarity: number,
   zone: string,
+  cooked?: boolean,
 ): Promise<void> {
   try {
-    const item = await PantherworldItemModel.create({
+    const newItemData = {
       name: name,
       zone: zone,
       rarity: rarity,
-    });
+      ...(cooked !== undefined && { cooked: cooked }),
+    };
+
+    const item = await PantherworldItemModel.create(newItemData);
     console.log(`${item.name} in ${item.zone} saved (rarity: ${rarity})`);
   } catch (error) {
     Sentry.captureException(error);
