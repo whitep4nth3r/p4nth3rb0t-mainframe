@@ -3,6 +3,7 @@ export type WorldItem = {
   rarity: number;
   onlyZone: string | null;
   flavours?: string[];
+  cooked?: boolean;
 };
 
 export type SpawnedItem = {
