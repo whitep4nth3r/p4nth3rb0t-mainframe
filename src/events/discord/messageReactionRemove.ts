@@ -39,6 +39,6 @@ discord.on(
       return;
     }
 
-    guild.members.cache.get(user.id)?.roles.remove(reactionRole.role_id);
+    await guild.members.cache.get(user.id)?.roles.remove(reactionRole.role_id);
   },
 );

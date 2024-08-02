@@ -133,7 +133,7 @@ tmi.on(
           type: SpawnEventType.Sub,
           data: { username: recipientUserName },
         });
-        sendSubEvent(
+        await sendSubEvent(
           userstate["user-id"] as string,
           recipientUserName,
           userstate["id"] as string,
@@ -161,7 +161,7 @@ tmi.on(
         data: { username: userstate["display-name"] as string },
       });
 
-      sendSubEvent(
+      await sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,
         userstate["id"] as string,
@@ -189,7 +189,7 @@ tmi.on(
         type: SpawnEventType.Sub,
         data: { username: doubleUsername },
       });
-      sendSubEvent(
+      await sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,
         userstate["id"] as string,

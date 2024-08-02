@@ -1,4 +1,5 @@
 import "./env";
+
 import * as Sentry from "@sentry/node";
 import Database from "./data/database";
 
@@ -6,8 +7,9 @@ import { webServer } from "./webserver";
 import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
-import { testConfig } from "./../testConfig";
+import { testConfig } from "../testConfig";
 import { announce } from "./utils/twitchUtils";
+import { TwitchAnnouncementColor } from "./data/types";
 
 import "./webhooks";
 
@@ -18,11 +20,10 @@ import "./events/twitch/raids_incoming";
 import "./events/twitch/cheers";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";
-import { TwitchAnnouncementColor } from "./data/types";
 
 Database.connect();
 
-async function run() {
+(async () => {
   try {
     webServer.listen(process.env.PORT || 8999, () => {
       console.log(
@@ -50,11 +51,9 @@ async function run() {
 
     // Bot is online 🔥
     if (process.env.NODE_ENV !== "development") {
-      announce(announceMessage, TwitchAnnouncementColor.Primary);
+      await announce(announceMessage, TwitchAnnouncementColor.Primary);
     }
   } catch (error) {
     Sentry.captureException(error);
   }
-}
-
-run();
+})();

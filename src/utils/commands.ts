@@ -7,7 +7,7 @@ import {
   sendWeatherTrailEvent,
   sendYeetEvent,
   sendImageDropEvent,
-} from "./../actions/drop";
+} from "../actions/drop";
 import { ChatUserstate } from "tmi.js";
 import { sendShoutoutEvent } from "../events/twitch/shoutout";
 import { sendRaidEvent } from "../events/twitch/raids_outgoing";
@@ -20,7 +20,7 @@ import {
 } from "../events/twitch/backseat";
 import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
-import { megaTimeOut } from "./../events/twitch/megatimeout";
+import { megaTimeOut } from "../events/twitch/megatimeout";
 import { announce } from "./twitchUtils";
 import { WorldCommands, WorldLeaderCommands } from "../world/commands";
 
@@ -40,53 +40,53 @@ export const ExclusiveCommands: Commands = {
     await megaTimeOut();
   },
   "!raid": async (tags, message) => {
-    sendRaidEvent(tags["id"] as string, message);
+    await sendRaidEvent(tags["id"] as string, message);
   },
   ...WorldLeaderCommands,
 };
 
 export const BroadcasterCommands: Commands = {
   "!freeze": async () => {
-    announce("p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
+    await announce("p4nth3rRAID [DEFENCES UP] p4nth3rRAID");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = true;
     // clear chat
-    tmi.say(config.channel, "/clear");
+    await tmi.say(config.channel, "/clear");
     // activate sub only
-    tmi.say(config.channel, "/subscribers");
-    sendClearBackSeatEvent();
-    sendFreezeEvent();
+    await tmi.say(config.channel, "/subscribers");
+    await sendClearBackSeatEvent();
+    await sendFreezeEvent();
   },
   "!unfreeze": async () => {
-    announce("p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
+    await announce("p4nth3rMAGIC [DEFENCES DOWN] p4nth3rMAGIC");
     // toggle FREEZE_MODE
     config.FREEZE_MODE = false;
     // deactivate sub only
-    tmi.say(config.channel, "/subscribersoff");
+    await tmi.say(config.channel, "/subscribersoff");
   },
   "!start-trail": async () => {
     if (!config.FREEZE_MODE) {
-      sendWeatherTrailEvent(true);
+      await sendWeatherTrailEvent(true);
     }
   },
   "!end-trail": async () => {
     if (!config.FREEZE_MODE) {
-      sendWeatherTrailEvent(false);
+      await sendWeatherTrailEvent(false);
     }
   },
   "!so": async (tags, message) => {
     if (!config.FREEZE_MODE) {
-      sendShoutoutEvent(tags["id"] as string, message);
+      await sendShoutoutEvent(tags["id"] as string, message);
     }
   },
   "!merch": async (tags) => {
     if (!config.FREEZE_MODE) {
-      sendMerchEvent(tags["id"] as string);
+      await sendMerchEvent(tags["id"] as string);
     }
   },
   "!theclaw": async () => {
     if (!config.FREEZE_MODE) {
-      sendTheClawEvent();
+      await sendTheClawEvent();
     }
   },
 };
@@ -94,20 +94,20 @@ export const BroadcasterCommands: Commands = {
 export const ChatCommands: Commands = {
   "!raidcall": async () => {
     if (!config.FREEZE_MODE) {
-      tmi.say(
+      await tmi.say(
         config.channel,
         "p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP PANTHER RAID!!! p4nth3rRAID p4nth3rHYPE p4nth3rUP",
       );
     }
   },
   "!nobs": async () => {
-    sendClearBackSeatEvent();
+    await sendClearBackSeatEvent();
   },
   "!bs": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       const username = getRestOfMessage(message)[0];
       if (username !== undefined) {
-        sendBackseatEvent(username.replace("@", "").toLowerCase());
+        await sendBackseatEvent(username.replace("@", "").toLowerCase());
       }
     }
   },
@@ -116,7 +116,7 @@ export const ChatCommands: Commands = {
       if (Giveaway.inProgress()) {
         Giveaway.enter(tags.username as string);
       } else {
-        tmi.say(config.channel, Giveaway.getInactiveMessage());
+        await tmi.say(config.channel, Giveaway.getInactiveMessage());
       }
     }
   },
@@ -142,7 +142,7 @@ export const ChatCommands: Commands = {
       }
 
       if (getRestOfMessage(message)[0] === "me") {
-        sendDropUserEvent(tags["user-id"] as string, tags["id"] as string);
+        await sendDropUserEvent(tags["user-id"] as string, tags["id"] as string);
       }
     }
   },
@@ -181,29 +181,29 @@ export const ChatCommands: Commands = {
       const userToYeet = getRestOfMessage(message);
 
       if (userToYeet[0] === "me" && tags["display-name"]) {
-        sendYeetEvent(tags["display-name"], tags["id"] as string);
+        await sendYeetEvent(tags["display-name"], tags["id"] as string);
       } else if (userToYeet.length === 1) {
-        sendYeetEvent(userToYeet[0].replace("@", ""), tags["id"] as string);
+        await sendYeetEvent(userToYeet[0].replace("@", ""), tags["id"] as string);
       }
     }
   },
   "!checkmark": async (tags) => {
     if (!config.FREEZE_MODE) {
-      sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
+      await sendImageDropEvent(ImageDrops.Partner, tags["id"] as string);
     }
   },
   "!spooky": async (tags) => {
     if (!config.FREEZE_MODE) {
-      sendImageDropEvent(ImageDrops.Spooky, tags["id"] as string);
+      await sendImageDropEvent(ImageDrops.Spooky, tags["id"] as string);
     }
   },
   "!theclaw": async (tags) => {
     if (!config.FREEZE_MODE) {
-      announce(
+      await announce(
         "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
         TwitchAnnouncementColor.Purple,
       );
-      sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
+      await sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
   ...WorldCommands,

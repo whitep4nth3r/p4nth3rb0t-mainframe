@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import AccessToken from "../classes/AccessToken";
-import { TwitchChannel, TeamResponse, TeamMembers } from "../data/types";
+import { TeamMembers, TeamResponse, TwitchChannel, TwitchChannelResponse } from "../data/types";
 import { config } from "../config";
 
 const accessTokenUtil = new AccessToken();
@@ -19,8 +19,12 @@ export default class Team {
 
     if (accessTokenData) {
       try {
+        const params = new URLSearchParams({
+          "broadcaster_id": broadcasterId,
+        });
+
         const response = await fetch(
-          `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
+          `https://api.twitch.tv/helix/channels?${params}`,
           {
             method: "GET",
             headers: {
@@ -30,8 +34,10 @@ export default class Team {
           },
         );
 
-        if (response.ok) {
-          return (await response.json()) as TwitchChannel;
+        if (response && response.ok) {
+          const responseData = await response.json() as TwitchChannelResponse;
+
+          return responseData.data[0];
         }
       } catch (error) {
         Sentry.captureException(error);
@@ -50,8 +56,12 @@ export default class Team {
 
     if (accessTokenData) {
       try {
+        const params = new URLSearchParams({
+          "name": config.team.name,
+        });
+
         const response = await fetch(
-          `https://api.twitch.tv/helix/teams?name=${config.team.name}`,
+          `https://api.twitch.tv/helix/teams?${params}`,
           {
             method: "GET",
             headers: {

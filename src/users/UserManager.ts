@@ -35,8 +35,12 @@ export default class UserManager {
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
+      const params = new URLSearchParams({
+        "login": login,
+      });
+
       const response = await fetch(
-        `https://api.twitch.tv/helix/users?login=${login}`,
+        `https://api.twitch.tv/helix/users?${params}`,
         {
           method: "GET",
           headers: {
@@ -91,8 +95,12 @@ export default class UserManager {
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
+      const params = new URLSearchParams({
+        "id": userId,
+      });
+
       const response = await fetch(
-        `https://api.twitch.tv/helix/users?id=${userId}`,
+        `https://api.twitch.tv/helix/users?${params}`,
         {
           method: "GET",
           headers: {

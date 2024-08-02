@@ -85,10 +85,10 @@ tmi.on(
 
         switch (rewardName) {
           case "numeronym":
-            sendNumeronymEvent(true);
+            await sendNumeronymEvent(true);
 
             setTimeout(async () => {
-              sendNumeronymEvent(false);
+              await sendNumeronymEvent(false);
             }, 300000);
             break;
           case "first":

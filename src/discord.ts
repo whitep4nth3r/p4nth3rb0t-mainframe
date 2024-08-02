@@ -78,7 +78,7 @@ export const createTechHelpThread = async (
     if (liveStream !== null) {
       const vod = await fetchVideoByUserId(config.broadcaster.user_id);
       if (vod !== null) {
-        const streamStartTime = new Date(liveStream.data.started_at);
+        const streamStartTime = new Date(liveStream.data[0].started_at);
         const now = new Date();
 
         const vodLink = `https://www.twitch.tv/videos/${
@@ -106,7 +106,7 @@ export const createTechHelpThread = async (
           reason: "TTS redemption on whitep4nth3r's stream",
         });
 
-        tmi.say(
+        await tmi.say(
           config.channel,
           `Thanks @${twitchUsername}! Your question has been posted to The Claw Discord for discussion. View it here: https://discord.com/channels/${newHelpPost.guildId}/${newHelpPost.id}`,
         );
@@ -127,9 +127,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         streamInfo.broadcaster_user_id,
       );
 
-      const videoTitle = stream !== null ? stream.data.title : "";
-      const videoThumbnailUrl = stream !== null ? stream.data.thumbnail_url : "";
-      const category = stream !== null ? stream.data.game_name : "";
+      const videoTitle = stream !== null ? stream.data[0].title : "";
+      const videoThumbnailUrl = stream !== null ? stream.data[0].thumbnail_url : "";
+      const category = stream !== null ? stream.data[0].game_name : "";
 
       const embed = buildDiscordEmbed(
         true,
