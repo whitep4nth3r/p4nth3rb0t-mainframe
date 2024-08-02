@@ -12,6 +12,7 @@ export type SpawnedItem = {
   number?: number;
   rarity: number;
   zone?: string;
+  cooked?: boolean;
 };
 
 export type ItemForWealthIndex = {
@@ -59,7 +60,10 @@ export type MetaResponse = {
     player: Player;
     item: SpawnedItem;
   };
-  newestPlayer: Player;
+  latestCook: {
+    player: Player;
+    item: SpawnedItem;
+  };
 };
 
 export type RecipeMeta = {
