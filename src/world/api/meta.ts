@@ -94,6 +94,11 @@ export async function getMeta(): Promise<MetaResponse> {
 
   // most and least spawned
   const spawnedItems = await PantherworldItemModel.aggregate([
+    {
+      $match: {
+        cooked: null,
+      },
+    },
     // Group documents by name, count the number of items in each group
     {
       $group: {
