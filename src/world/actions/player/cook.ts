@@ -73,17 +73,20 @@ export function makeUniqueRecipeName(
   });
 
   const flavours = secondaryIngredients.map((item) => {
-    getRandomEntry(item.flavours);
+    if (item.flavours.length > 0) {
+      return getRandomEntry(item.flavours);
+    }
   });
 
-  const uniqueFlavours = flavours.filter(
-    (item, index) => flavours.indexOf(item) === index,
-  );
+  let shuffledUnique = [];
 
-  const shuffledUnique = shuffle(uniqueFlavours);
+  if (flavours.length > 0) {
+    const uniqueFlavoursSet = new Set(flavours);
+    const uniqueFlavours = Array.from(uniqueFlavoursSet) as any[];
+    shuffledUnique = shuffle(uniqueFlavours);
+  }
 
   const endWord = getRandomEntry(recipe.names);
-
   return `${shuffledUnique.join(" ")} ${recipe.ingredients.primary.name} ${endWord}`;
 }
 
@@ -194,12 +197,12 @@ export async function cookItem(
   // calculate name
   const uniqueName = makeUniqueRecipeName(recipeMatch, ingredientList);
 
-  // 10% probability of spoiling for all
+  // 5% probability of spoiling for all
   // 25% probabilty of spoiling if wealth index > 50000
   // all items get DESTROYED
   const userWealthIndex = getWealthIndex(allUserItems);
   const willSpoil =
-    userWealthIndex > 50000 ? Math.random() >= 0.75 : Math.random() >= 0.9;
+    userWealthIndex > 50000 ? Math.random() >= 0.75 : Math.random() >= 0.95;
 
   // delete all raw ingredients from user
   const promises = [];
