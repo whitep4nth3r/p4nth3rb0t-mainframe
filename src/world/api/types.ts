@@ -2,6 +2,7 @@ export type WorldItem = {
   name: string;
   rarity: number;
   onlyZone: string | null;
+  flavours?: string[];
 };
 
 export type SpawnedItem = {
@@ -60,8 +61,17 @@ export type MetaResponse = {
   newestPlayer: Player;
 };
 
+export type RecipeMeta = {
+  title: string;
+  description: string;
+};
+
+export type RecipesResponse = RecipeMeta[];
+
 export enum PantherworldEvent {
   CLAIM = "claim",
+  COOK_FAILED = "cook_failed",
+  COOKED = "cooked",
   THROW = "throw",
   GIFT = "gift",
   MOVE = "move",
@@ -71,3 +81,13 @@ export enum PantherworldEvent {
   LIST_POPULATION = "list_population",
   LOCK = "lock",
 }
+
+export type Recipe = {
+  title: string;
+  description: string;
+  names: string[];
+  ingredients: {
+    primary: WorldItem;
+    secondary: WorldItem[];
+  };
+};

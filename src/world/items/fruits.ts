@@ -10,6 +10,7 @@ export const Fruits: WorldItem[] = [
     rarity: 1,
     name: "tomato",
     onlyZone: null,
+    flavours: ["sweet", "tomatoey", "tangy", "juicy", "fresh", "rich"],
   },
   {
     rarity: 2,
