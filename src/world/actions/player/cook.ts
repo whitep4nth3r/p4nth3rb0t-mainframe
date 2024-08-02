@@ -37,8 +37,14 @@ function getCookedMessage(
   username: string,
   uniqueName: string,
   rarity: number,
+  unmatchedSecondaryIngredients?: string[],
 ): string {
-  return `@${username} cooked ${uniqueName} (rarity: ${rarity})!`;
+  const unmatchedMessage =
+    unmatchedSecondaryIngredients.length > 0
+      ? ` and lost ${unmatchedSecondaryIngredients.join(" ,")}`
+      : "";
+
+  return `@${username} cooked ${uniqueName} (rarity: ${rarity})${unmatchedMessage}!`;
 }
 
 function shuffle(array) {
@@ -114,6 +120,28 @@ export function findRecipe(ingredient: string): Recipe | null {
   return foundRecipe;
 }
 
+export function findUnmatchedSecondaryIngredients(
+  recipeMatch: Recipe,
+  ingredientList: string[],
+): string[] {
+  const unmatched = [];
+
+  ingredientList.forEach((ingredient) => {
+    const isInSecondaryList = recipeMatch.ingredients.secondary.find(
+      (item) => item.name === ingredient,
+    );
+
+    if (
+      isInSecondaryList === undefined &&
+      ingredient !== recipeMatch.ingredients.primary.name
+    ) {
+      unmatched.push(ingredient);
+    }
+  });
+
+  return unmatched;
+}
+
 export function findSecondaryIngredients(
   recipeMatch: Recipe,
   ingredientList: string[],
@@ -174,6 +202,9 @@ export async function cookItem(
     recipeMatch,
     ingredientList,
   );
+
+  const unmatchedSecondaryIngredients: string[] =
+    findUnmatchedSecondaryIngredients(recipeMatch, ingredientList);
 
   if (matchedSecondaryIngredients.length === 0) {
     tmi.say(
@@ -252,11 +283,16 @@ export async function cookItem(
 
     tmi.say(
       config.channel,
-      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName, finalRarity)}`,
+      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName, finalRarity, unmatchedSecondaryIngredients)}`,
     );
 
     await sendPantherworldFeedEvent(
-      getCookedMessage(username, uniqueName, finalRarity),
+      getCookedMessage(
+        username,
+        uniqueName,
+        finalRarity,
+        unmatchedSecondaryIngredients,
+      ),
       PantherworldEvent.COOKED,
       config.BOT_PREFIX,
     );
@@ -269,6 +305,7 @@ export async function cookItem(
         username: username,
         recipe: uniqueName,
         rarity: finalRarity,
+        lost: unmatchedSecondaryIngredients,
       },
     };
 

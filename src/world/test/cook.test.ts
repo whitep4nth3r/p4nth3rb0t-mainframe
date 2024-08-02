@@ -2,6 +2,7 @@ import { FoodRecipes } from "./../recipes/food";
 import {
   findRecipe,
   findSecondaryIngredients,
+  findUnmatchedSecondaryIngredients,
   getCombinedRarity,
   makeUniqueRecipeName,
   getIngredientsFromCraftCommand,
@@ -33,6 +34,16 @@ test("Find marinated green olive recipe", () => {
 test("Return null for no recipe", () => {
   const result = findRecipe("not a thing");
   expect(result).toStrictEqual(null);
+});
+
+test("Find unmatched secondary ingredients with positive result", () => {
+  const result = findUnmatchedSecondaryIngredients(MarinatedGreenOlives, [
+    "green olive",
+    "fresh parsley",
+    "parsnip",
+  ]);
+
+  expect(result).toStrictEqual(["parsnip"]);
 });
 
 test("Find secondary ingredients with positive result", () => {
