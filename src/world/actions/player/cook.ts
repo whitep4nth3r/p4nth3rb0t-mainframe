@@ -18,8 +18,6 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebsocketServer from "../../../WebSocketServer";
 
-// !cook green olive + fresh red chilli + fresh parsley
-
 export function getIngredientsFromCraftCommand(message: string) {
   const command = getCommandFromMessage(message);
   const ingredientsList = message.replace(command, "");
@@ -74,9 +72,11 @@ export function makeUniqueRecipeName(
     }
   });
 
-  const flavours = secondaryIngredients.map((item) =>
-    getRandomEntry(item.flavours),
-  );
+  const flavours = secondaryIngredients.map((item) => {
+    if (item.flavours.length > 0) {
+      getRandomEntry(item.flavours);
+    }
+  });
 
   const uniqueFlavours = flavours.filter(
     (item, index) => flavours.indexOf(item) === index,
@@ -129,6 +129,8 @@ export function findSecondaryIngredients(
 
   return matched;
 }
+
+// !cook green olive + fresh red chilli + fresh parsley
 
 export async function cookItem(
   recipe: string,

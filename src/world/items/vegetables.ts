@@ -5,6 +5,7 @@ export const Vegetables: WorldItem[] = [
     rarity: 1,
     name: "carrot",
     onlyZone: null,
+    flavours: ["sweet", "mild", "crisp"],
   },
   {
     rarity: 1,
@@ -66,6 +67,7 @@ export const Vegetables: WorldItem[] = [
     rarity: 12,
     name: "generic mushroom",
     onlyZone: null,
+    flavours: ["mushroomy"],
   },
   {
     rarity: 16,
@@ -81,5 +83,35 @@ export const Vegetables: WorldItem[] = [
     rarity: 60,
     name: "cob of corn",
     onlyZone: null,
+  },
+  {
+    rarity: 820,
+    name: "celery stick",
+    onlyZone: null,
+    flavours: ["fresh"],
+  },
+  {
+    rarity: 860,
+    name: "chestnut mushroom",
+    onlyZone: null,
+    flavours: ["earthy", "bold", "robust", "nutty", "umami", "rich"],
+  },
+  {
+    rarity: 900,
+    name: "white onion",
+    onlyZone: null,
+    flavours: ["fresh", "tangy", "zingy"],
+  },
+  {
+    rarity: 1210,
+    name: "red onion",
+    onlyZone: null,
+    flavours: ["mild", "earthy", "sweet"],
+  },
+  {
+    rarity: 1740,
+    name: "shallot",
+    onlyZone: null,
+    flavours: ["premium", "nutty"],
   },
 ];

@@ -23,6 +23,7 @@ import { getFullInventory } from "./world/api/inventory";
 import { getMeta } from "./world/api/meta";
 import { validateTwitchSession } from "./utils/twitchUtils";
 import { getFullLeaderboard } from "./world/api/leaderboard";
+import { getRecipes } from "./world/api/recipes";
 
 const accessTokenUtil = new AccessToken();
 
@@ -90,6 +91,14 @@ app.get(
     } else {
       return res.status(401).send();
     }
+  }),
+);
+
+app.get(
+  "/world/recipes/",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const recipes = getRecipes();
+    return res.json({ recipes });
   }),
 );
 

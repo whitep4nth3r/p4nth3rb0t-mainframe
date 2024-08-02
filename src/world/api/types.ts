@@ -61,6 +61,13 @@ export type MetaResponse = {
   newestPlayer: Player;
 };
 
+export type RecipeMeta = {
+  title: string;
+  description: string;
+};
+
+export type RecipesResponse = RecipeMeta[];
+
 export enum PantherworldEvent {
   CLAIM = "claim",
   COOK_FAILED = "cook_failed",
