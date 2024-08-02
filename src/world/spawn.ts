@@ -3,7 +3,7 @@ import { getRandomEntry } from "../utils/getRandomEntry";
 import { saveItem } from "./itemActions";
 import { tmi } from "../tmi";
 import { WorldItems } from "./items/all";
-import type { WorldItem } from "./items/all";
+
 import {
   MainframeEvent,
   ItemSpawnPacket,
@@ -11,6 +11,7 @@ import {
 import WebsocketServer from "../WebSocketServer";
 import { sendPantherworldFeedEvent } from "../discord";
 import { PantherworldZones } from "./zones";
+import { WorldItem } from "./api/types";
 
 export enum SpawnEventType {
   Follow = "Follow",

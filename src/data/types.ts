@@ -9,6 +9,10 @@ export interface TwitchChannel {
   title: string;
 }
 
+export interface TwitchChannelResponse {
+  data: TwitchChannel[];
+}
+
 export interface TwitchUser {
   user_id: string;
   user_name: string;
@@ -123,17 +127,13 @@ export interface MyBadges extends Badges {
   founder?: string;
 }
 
-export interface GameByIdResponse {
-  name: string;
-}
-
 export interface TwitchVideo {
   data: {
     id: string;
     thumbnail_url: string;
     duration: string;
     title: string;
-  }
+  };
 }
 
 export interface StreamInfo {
@@ -146,20 +146,22 @@ export interface StreamInfo {
 }
 
 export interface StreamByBroadcasterIdResponse {
-  data: {
-    id: string;
-    user_id: string;
-    user_name: string;
-    game_id: string;
-    game_name: string;
-    type: string;
-    title: string;
-    viewer_count: number;
-    started_at: string;
-    language: string;
-    thumbnail_url: string;
-    tag_ids: string[];
-  }
+  data: [
+    {
+      id: string;
+      user_id: string;
+      user_name: string;
+      game_id: string;
+      game_name: string;
+      type: string;
+      title: string;
+      viewer_count: number;
+      started_at: string;
+      language: string;
+      thumbnail_url: string;
+      tag_ids: string[];
+    },
+  ];
 }
 
 export enum ImageDrops {
@@ -197,13 +199,4 @@ export interface TwitchModeratorsResponse {
 
 export interface TwitchCurrentChattersResponse {
   data: TwitchUser[];
-}
-
-export interface TwitchGameResponse {
-  data: {
-    id: string;
-    name: string;
-    box_art_url: string;
-    igdb_id: "string"
-  }
 }

@@ -45,7 +45,7 @@ const sendTailwindEvent = async (user_id: string) => {
       config.broadcaster.user_id,
     );
     if (liveStream !== null) {
-      const streamStartTime = new Date(liveStream.data.started_at).valueOf();
+      const streamStartTime = new Date(liveStream.data[0].started_at).valueOf();
       const now = new Date().valueOf();
 
       const timeInMs = now - streamStartTime;
@@ -69,7 +69,7 @@ const sendTailwindEvent = async (user_id: string) => {
           },
         };
 
-        announce(
+        await announce(
           `It took ${timeToSend} for @${user.login} to say tailwind Kappa`,
           TwitchAnnouncementColor.Blue,
         );
@@ -174,7 +174,7 @@ tmi.on(
     deletedMessage: string,
     tags: ChatUserstate,
   ) => {
-    sendDeletedMessageEvent(tags["target-msg-id"]);
+    await sendDeletedMessageEvent(tags["target-msg-id"]);
   },
 );
 
@@ -256,7 +256,7 @@ tmi.on(
       if (message === "!reset") {
         teamMembersGreeted.splice(0, teamMembersGreeted.length);
         tailwind_found = false;
-        tmi.say(
+        await tmi.say(
           config.channel,
           `${config.team.displayName} greetings cache and time to tailwind boolean has been reset. Current length of cache is ${teamMembersGreeted.length}.`,
         );
@@ -265,15 +265,15 @@ tmi.on(
       if (message === Giveaway.commands.announce && !config.FREEZE_MODE) {
         Giveaway.announce();
 
-        tmi.say(config.channel, Giveaway.getAnnounceMessage());
+        await tmi.say(config.channel, Giveaway.getAnnounceMessage());
       }
 
       if (message === Giveaway.commands.open && !config.FREEZE_MODE) {
         if (Giveaway.isOpen) {
-          tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
+          await tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
         } else {
           Giveaway.open();
-          announce(
+          await announce(
             "p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW",
             TwitchAnnouncementColor.Primary,
           );
@@ -282,7 +282,7 @@ tmi.on(
 
       if (message === Giveaway.commands.close && !config.FREEZE_MODE) {
         Giveaway.close();
-        announce(
+        await announce(
           "p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW",
           TwitchAnnouncementColor.Primary,
         );
@@ -316,12 +316,13 @@ tmi.on(
           possibleTeamMember.user_id,
         );
 
-        tmi.say(
+        await tmi.say(
           config.channel,
           Team.getWelcomeMessage(teamMemberChannel as TwitchChannel),
         );
+
         teamMembersGreeted.push(possibleTeamMember);
-        sendteamMemberJoinEvent(possibleTeamMember);
+        await sendteamMemberJoinEvent(possibleTeamMember);
       }
     }
 
@@ -356,7 +357,7 @@ tmi.on(
 
         if (!tailwind_found && message.toLowerCase().includes("tailwind")) {
           tailwind_found = true;
-          sendTailwindEvent(tags["user-id"] as string);
+          await sendTailwindEvent(tags["user-id"] as string);
         }
 
         if (user) {

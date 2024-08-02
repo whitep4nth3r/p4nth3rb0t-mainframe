@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import AccessToken from "./classes/AccessToken";
+import { URLSearchParams } from "url";
 import { config } from "./config";
 import {
   TeamMembers,
@@ -11,9 +12,6 @@ import {
 import Team from "./users/Team";
 
 const accessTokenUtil = new AccessToken();
-
-//TODO: do not run if process.env.TWITCH_API_CALLBACK_URL is unavailable
-
 const eventSubApiUrl = "https://api.twitch.tv/helix/eventsub/subscriptions";
 
 async function getAllSubscriptions(): Promise<
@@ -32,7 +30,7 @@ async function getAllSubscriptions(): Promise<
         },
       });
       if (response.ok) {
-        return (await response.json()) as EventSubscriptionResponse;
+        return await response.json() as EventSubscriptionResponse;
       }
     } catch (err) {
       Sentry.captureException(err);
@@ -45,7 +43,11 @@ async function deleteSubscription(id: string) {
   const accessTokenData = await accessTokenUtil.get();
   if (accessTokenData) {
     try {
-      await fetch(`${eventSubApiUrl}?id=${id}`, {
+      const params = new URLSearchParams({
+        "id": id,
+      });
+
+      await fetch(`${eventSubApiUrl}?${params}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${accessTokenData.accessToken}`,

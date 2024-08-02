@@ -128,3 +128,5 @@ NOTES.md
 
 # Sentry Auth Token
 .sentryclirc
+# Sentry Config File
+.sentryclirc

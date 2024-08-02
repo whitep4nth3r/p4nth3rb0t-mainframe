@@ -120,10 +120,9 @@ export default class AccessToken {
 
     try {
       const response = await this.fetch();
-      console.log(response);
 
       if (response) {
-        const accessToken = await this.set(response);
+        await this.set(response);
         return this.get();
       }
     } catch (error) {
@@ -139,10 +138,9 @@ export default class AccessToken {
    *
    * "This approach works, but we recommend your document interface not extend Document. Using extends Document makes it difficult for Mongoose to infer which properties are present on query filters, lean documents, and other cases."
    * But how else would one interact with AccessTokenDoc unless it extends the Document signature?
-   * */
-
+   */
   async set(data: AccessTokenResponse): Promise<AccessTokenDoc | any> {
-    const setAccessToken = await AccessTokenModel.updateOne(
+    return AccessTokenModel.updateOne(
       {},
       {
         accessToken: data.access_token,
@@ -152,9 +150,8 @@ export default class AccessToken {
       },
       { upsert: true },
     );
-
-    return setAccessToken;
   }
+
   async setUserAccessToken(
     data: UserAccessTokenResponse,
   ): Promise<UserAccessTokenDoc | null> {
