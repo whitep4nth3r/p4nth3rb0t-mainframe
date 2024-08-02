@@ -82,7 +82,7 @@ export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
     const params = new URLSearchParams({
       "first": "1000",
       "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.bot.user_id,
+      "moderator_id": config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -125,7 +125,7 @@ export const timeoutUserFor60Seconds = async (
   await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
       "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.bot.user_id,
+      "moderator_id": config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -209,7 +209,7 @@ export const announce = async (
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
       "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.bot.user_id,
+      "moderator_id": config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -238,7 +238,7 @@ export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
     const params = new URLSearchParams({
       "from_broadcaster_id": config.broadcaster.user_id,
       "to_broadcaster_id": toBroadcasterId,
-      "moderator_id": config.bot.user_id,
+      "moderator_id": config.broadcaster.user_id,
     });
 
     return await fetch(`https://api.twitch.tv/helix/chat/shoutouts?${params}`,
