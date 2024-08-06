@@ -16,6 +16,7 @@ import {
 } from "./utils/twitchUtils";
 import type { StreamInfo } from "./data/types";
 import { spawn, SpawnEventType } from "./world/spawn";
+import { PantherworldEvent } from "./world/api/types";
 
 const getTwitchVodTimestampInSeconds = (
   date_now: Date,
@@ -232,10 +233,49 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
   }
 };
 
-export const sendPantherworldFeedEvent = async (message: string) => {
+const EVENT_COLORS = {
+  [PantherworldEvent.CLAIM]: "#ffffff",
+  [PantherworldEvent.COOKED]: "#a3e635",
+  [PantherworldEvent.COOK_FAILED]: "#ff0000",
+  [PantherworldEvent.THROW]: "#fc814a",
+  [PantherworldEvent.GIFT]: "#fc814a",
+  [PantherworldEvent.MOVE]: "#0E0016",
+  [PantherworldEvent.SPAWN]: "#F0047F",
+  [PantherworldEvent.RELEASE]: "#fc814a",
+  [PantherworldEvent.LEADERBOARD]: "#0E0016",
+  [PantherworldEvent.LIST_POPULATION]: "#0E0016",
+  [PantherworldEvent.LOCK]: "#0E0016",
+};
+
+const EVENT_ICONS = {
+  [PantherworldEvent.CLAIM]: "🎒",
+  [PantherworldEvent.COOKED]: "🍳",
+  [PantherworldEvent.COOK_FAILED]: "🤮",
+  [PantherworldEvent.THROW]: "🫳",
+  [PantherworldEvent.GIFT]: "🎁",
+  [PantherworldEvent.MOVE]: "➡️",
+  [PantherworldEvent.SPAWN]: "🌎",
+  [PantherworldEvent.RELEASE]: "🎁",
+  [PantherworldEvent.LEADERBOARD]: "🏆",
+  [PantherworldEvent.LIST_POPULATION]: "📊",
+  [PantherworldEvent.LOCK]: "🔒",
+};
+
+export const sendPantherworldFeedEvent = async (
+  message: string,
+  type: PantherworldEvent,
+  botPrefix: string,
+) => {
   if (feedChannel) {
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: `${botPrefix}${EVENT_ICONS[type as string]} ${type.toUpperCase().replace("_", " ")}`,
+      })
+      .setDescription(message.split(",").join("\n"))
+      .setColor(EVENT_COLORS[type as string]);
+
     await feedChannel.send({
-      content: message,
+      embeds: [embed],
     });
   }
 };

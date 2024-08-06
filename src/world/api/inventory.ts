@@ -17,6 +17,7 @@ export async function getFullInventory(
       $group: {
         _id: "$name",
         rarity: { $first: "$rarity" },
+        cooked: { $first: "$cooked" },
         count: { $sum: 1 },
       },
     },
@@ -28,6 +29,7 @@ export async function getFullInventory(
         name: "$_id",
         count: 1,
         rarity: 1,
+        cooked: 1,
       },
     },
 

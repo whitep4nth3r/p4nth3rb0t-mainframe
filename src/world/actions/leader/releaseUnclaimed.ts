@@ -10,6 +10,7 @@ import {
   MainframeEvent,
   ReleaseUnclaimedPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
+import { PantherworldEvent } from "../../api/types";
 
 export async function releaseUnclaimed(): Promise<void> {
   const randomZone = getRandomEntry(PantherworldZones);
@@ -29,7 +30,6 @@ export async function releaseUnclaimed(): Promise<void> {
     const message = `${config.BOT_PREFIX}🪹 There are no unclaimed items in the ${randomZone.name} zone!`;
 
     tmi.say(config.channel, message);
-    await sendPantherworldFeedEvent(message);
   } else {
     WorldState.ITEMS_RELEASED = true;
     WorldState.RELEASE_ZONE = randomZone.name;
@@ -38,10 +38,15 @@ export async function releaseUnclaimed(): Promise<void> {
       .map((item) => `${item.count} ${item._id}`)
       .join(", ");
 
-    const message = `${config.BOT_PREFIX}📦 World items released in the ${randomZone.name} zone! Items available: ${itemList}`;
+    const message = `World items released in the ${randomZone.name} zone! Items available: ${itemList}`;
 
-    tmi.say(config.channel, message);
-    await sendPantherworldFeedEvent(message);
+    tmi.say(config.channel, `${config.BOT_PREFIX}📦 ${message}`);
+
+    await sendPantherworldFeedEvent(
+      message,
+      PantherworldEvent.RELEASE,
+      config.BOT_PREFIX,
+    );
 
     const releaseUnclaimedEvent: ReleaseUnclaimedPacket = {
       event: MainframeEvent.releaseUnclaimed,
@@ -58,9 +63,15 @@ export async function releaseUnclaimed(): Promise<void> {
     setTimeout(async () => {
       WorldState.ITEMS_RELEASED = false;
       WorldState.RELEASE_ZONE = null;
-      const message = `${config.BOT_PREFIX}🔒 All items locked!`;
-      tmi.say(config.channel, message);
-      await sendPantherworldFeedEvent(message);
+      const message = `All items locked!`;
+      
+      tmi.say(config.channel, `${config.BOT_PREFIX}🔒 ${message}`);
+
+      await sendPantherworldFeedEvent(
+        message,
+        PantherworldEvent.LOCK,
+        config.BOT_PREFIX,
+      );
     }, 60000);
   }
 }

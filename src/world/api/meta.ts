@@ -2,16 +2,14 @@ import PantherworldItemModel, {
   PantherworldItemData,
 } from "./../../data/models/PantherworldItem";
 import { FullTwitchUser } from "./../../data/types";
-import PantherworldPlayerModel, {
-  PantherworldPlayerData,
-} from "../../data/models/PantherworldPlayer";
+import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
 import UserManager from "../../users/UserManager";
-import { MetaResponse, Player, Population } from "./types";
+import { MetaResponse, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
   const mostRecentUpdatedItem = (
     await PantherworldItemModel.aggregate([
-      { $match: { userId: { $ne: null } } }, // Filter documents where userId is not null
+      { $match: { userId: { $ne: null }, cooked: null } }, // Filter documents where userId is not null and item not cooked
       { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
       { $limit: 1 }, // Limit the result to 1 document
       {
@@ -43,29 +41,38 @@ export async function getMeta(): Promise<MetaResponse> {
     },
   };
 
-  // newest player
-  const mostRecentlyCreatedPlayer = (
-    await PantherworldPlayerModel.aggregate([
-      { $sort: { createdAt: -1 } }, // Sort documents by updatedAt in descending order
+  // most recent cook
+  const mostRecentCook = (
+    await PantherworldItemModel.aggregate([
+      { $match: { userId: { $ne: null }, cooked: true } }, // Filter documents where userId is not null and item cooked
+      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
       { $limit: 1 }, // Limit the result to 1 document
       {
         $project: {
           // Specify the fields to include
           _id: 0, // Exclude the _id field
+          rarity: 1,
+          name: 1,
           zone: 1,
           userId: 1,
         },
       },
     ])
-  ).pop() as PantherworldPlayerData;
+  ).pop() as PantherworldItemData;
 
-  const newestPlayerAsTwitchUser: FullTwitchUser =
-    await UserManager.getUserById(mostRecentlyCreatedPlayer.userId);
+  const mostRecentCookAsTwitchUser: FullTwitchUser =
+    await UserManager.getUserById(mostRecentCook.userId);
 
-  const newestPlayer: Player = {
-    username: newestPlayerAsTwitchUser.display_name,
-    image_url: newestPlayerAsTwitchUser.profile_image_url,
-    zone: mostRecentlyCreatedPlayer.zone,
+  const latestCook = {
+    player: {
+      username: mostRecentCookAsTwitchUser.display_name,
+      image_url: mostRecentCookAsTwitchUser.profile_image_url,
+    },
+    item: {
+      name: mostRecentCook.name,
+      rarity: mostRecentCook.rarity,
+      zone: mostRecentCook.zone,
+    },
   };
 
   //population
@@ -87,6 +94,11 @@ export async function getMeta(): Promise<MetaResponse> {
 
   // most and least spawned
   const spawnedItems = await PantherworldItemModel.aggregate([
+    {
+      $match: {
+        cooked: null,
+      },
+    },
     // Group documents by name, count the number of items in each group
     {
       $group: {
@@ -101,6 +113,7 @@ export async function getMeta(): Promise<MetaResponse> {
   ]);
 
   return {
+    latestCook: latestCook,
     latestSpawned: {
       name: recentItem[0].name,
       zone: recentItem[0].zone,
@@ -119,6 +132,5 @@ export async function getMeta(): Promise<MetaResponse> {
     },
     population,
     latestClaim,
-    newestPlayer,
   };
 }

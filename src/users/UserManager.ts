@@ -54,7 +54,7 @@ export default class UserManager {
         const responseData = await response.json() as TwitchUserResponse;
 
         if (responseData.data.length === 0) {
-          tmi.say(config.channel, "User not found, @whitep4nth3r made a typo");
+          tmi.say(config.channel, "User not found, try again!");
           return undefined;
         }
 

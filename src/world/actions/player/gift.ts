@@ -17,6 +17,7 @@ import { getLocation } from "../../api/player/location";
 import { getRandomEntryAndModifiedArray } from "../../../utils/getRandomEntry";
 import { getCurrentChatters } from "../../../utils/twitchUtils";
 import { TwitchUser } from "../../../data/types";
+import { PantherworldEvent } from "../../api/types";
 
 function isUserIdInCurrentChatters(
   currentChatters: TwitchUser[],
@@ -134,11 +135,15 @@ export async function giftItem(
   )) as PantherworldItemDoc | null;
 
   if (itemUpdate !== null) {
-    const message = `${config.BOT_PREFIX}🎁 @${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
+    const message = `@${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
 
-    tmi.say(config.channel, message);
+    tmi.say(config.channel, `${config.BOT_PREFIX}🎁 ${message}`);
 
-    await sendPantherworldFeedEvent(message);
+    await sendPantherworldFeedEvent(
+      message,
+      PantherworldEvent.GIFT,
+      config.BOT_PREFIX,
+    );
 
     const playerGiftEvent: PlayerGiftPacket = {
       event: MainframeEvent.playerGift,

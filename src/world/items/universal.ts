@@ -7,6 +7,11 @@ export const UniversalItems: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 9,
+    name: "wooden bowl",
+    onlyZone: null,
+  },
+  {
     rarity: 10,
     name: "croissant",
     onlyZone: null,
