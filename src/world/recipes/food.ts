@@ -4,6 +4,9 @@ import { UniversalItems } from "./../items/universal";
 import { Herbs } from "../items/herbs";
 import { Recipe } from "../api/types";
 import { Fruits } from "../items/fruits";
+import { Legumes } from "../items/legumes";
+import { Spices } from "../items/spices";
+import { BeachItems } from "../items/beach";
 
 export const FoodRecipes: Record<string, Recipe> = {
   "Marinated green olives": {
@@ -29,6 +32,8 @@ export const FoodRecipes: Record<string, Recipe> = {
         Herbs.find((item) => item.name === "garlic bulb"),
         Herbs.find((item) => item.name === "fresh green chilli"),
         Herbs.find((item) => item.name === "fresh red chilli"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
       ],
     },
   },
@@ -46,6 +51,7 @@ export const FoodRecipes: Record<string, Recipe> = {
         Natural.find((item) => item.name === "chestnut"),
         Natural.find((item) => item.name === "walnut"),
         Natural.find((item) => item.name === "pecan nut"),
+        BeachItems.find((item) => item.name === "sea salt"),
       ],
     },
   },
@@ -79,6 +85,36 @@ export const FoodRecipes: Record<string, Recipe> = {
         Vegetables.find((item) => item.name === "shallot"),
         Herbs.find((item) => item.name === "fresh green chilli"),
         Herbs.find((item) => item.name === "fresh red chilli"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Red lentil concoction": {
+    title: "Red lentil concoction",
+    description: "Mix red lentils with vegetables, herbs, spices and love.",
+    names: ["daal", "stew", "hot pot", "curry"],
+    ingredients: {
+      primary: Legumes.find((item) => item.name === "red lentils"),
+      secondary: [
+        Fruits.find((item) => item.name === "tomato"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "red onion"),
+        Vegetables.find((item) => item.name === "shallot"),
+        Vegetables.find((item) => item.name === "red bell pepper"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Herbs.find((item) => item.name === "fresh coriander"),
+        Herbs.find((item) => item.name === "fresh ginger"),
+        Spices.find((item) => item.name === "turmeric root"),
+        Spices.find((item) => item.name === "cumin seeds"),
+        Spices.find((item) => item.name === "cardamom pods"),
+        Spices.find((item) => item.name === "cinnamon stick"),
+        Spices.find((item) => item.name === "cloves"),
+        Spices.find((item) => item.name === "whole nutmeg"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
       ],
     },
   },

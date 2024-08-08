@@ -12,6 +12,8 @@ import { Animal } from "./animal";
 import { Instruments } from "./instruments";
 import { Natural } from "./natural";
 import { WorldItem } from "../api/types";
+import { Legumes } from "./legumes";
+import { Spices } from "./spices";
 
 export const WorldItems: WorldItem[] = [
   ...Animal,
@@ -22,8 +24,10 @@ export const WorldItems: WorldItem[] = [
   ...Geological,
   ...Herbs,
   ...Instruments,
+  ...Legumes,
   ...Natural,
   ...Plants,
+  ...Spices,
   ...SwampItems,
   ...UniversalItems,
   ...Vegetables,
