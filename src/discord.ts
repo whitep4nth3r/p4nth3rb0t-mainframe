@@ -261,6 +261,20 @@ const EVENT_ICONS = {
   [PantherworldEvent.LOCK]: "🔒",
 };
 
+function formatPantherworldDiscordMessage(
+  type: PantherworldEvent,
+  message: string,
+): string {
+  switch (type) {
+    case PantherworldEvent.RELEASE:
+      // eslint-disable-next-line no-case-declarations
+      const newMessage = message.split(":").join("\n");
+      return newMessage.split(",").join("\n");
+    default:
+      return message;
+  }
+}
+
 export const sendPantherworldFeedEvent = async (
   message: string,
   type: PantherworldEvent,
@@ -271,7 +285,7 @@ export const sendPantherworldFeedEvent = async (
       .setAuthor({
         name: `${botPrefix}${EVENT_ICONS[type as string]} ${type.toUpperCase().replace("_", " ")}`,
       })
-      .setDescription(message.split(",").join("\n"))
+      .setDescription(formatPantherworldDiscordMessage(type, message))
       .setColor(EVENT_COLORS[type as string]);
 
     await feedChannel.send({
