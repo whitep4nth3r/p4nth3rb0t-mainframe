@@ -18,6 +18,7 @@ import { getRandomEntryAndModifiedArray } from "../../../utils/getRandomEntry";
 import { getCurrentChatters } from "../../../utils/twitchUtils";
 import { TwitchUser } from "../../../data/types";
 import { PantherworldEvent } from "../../api/types";
+import { wealthDistribution } from "../wealth/wealthDistribution";
 
 function isUserIdInCurrentChatters(
   currentChatters: TwitchUser[],
@@ -159,5 +160,11 @@ export async function giftItem(
     };
 
     WebsocketServer.sendData(playerGiftEvent);
+
+    // attempt wealth distribution on recipient
+    await wealthDistribution(
+      receiverAsUser.display_name,
+      receiverAsUser.user_id,
+    );
   }
 }
