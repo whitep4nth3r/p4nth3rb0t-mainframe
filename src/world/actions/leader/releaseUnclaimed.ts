@@ -12,8 +12,11 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { PantherworldEvent } from "../../api/types";
 
-export async function releaseUnclaimed(): Promise<void> {
-  const randomZone = getRandomEntry(PantherworldZones);
+export async function releaseUnclaimed(zoneName?: string): Promise<void> {
+  const randomZone =
+    zoneName !== undefined
+      ? PantherworldZones.find((fullZone) => fullZone.name === zoneName)
+      : getRandomEntry(PantherworldZones);
 
   const unclaimed = await PantherworldItemModel.aggregate([
     // Match documents with a null userId and random zone name
@@ -64,7 +67,7 @@ export async function releaseUnclaimed(): Promise<void> {
       WorldState.ITEMS_RELEASED = false;
       WorldState.RELEASE_ZONE = null;
       const message = `All items locked!`;
-      
+
       tmi.say(config.channel, `${config.BOT_PREFIX}🔒 ${message}`);
 
       await sendPantherworldFeedEvent(
