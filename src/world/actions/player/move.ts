@@ -60,7 +60,7 @@ export async function movePlayer(
       WebsocketServer.sendData(playerMoveEvent);
 
       // 15% chance of spawning an item
-      const willSpawn = Math.random() > 1;
+      const willSpawn = Math.random() > 0.85;
 
       if (willSpawn) {
         await spawn({
