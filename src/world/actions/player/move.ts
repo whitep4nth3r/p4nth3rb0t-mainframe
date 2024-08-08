@@ -10,6 +10,8 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { PantherworldEvent } from "../../api/types";
+import { spawn, SpawnEventType } from "../../spawn";
+import { releaseUnclaimed } from "../leader/releaseUnclaimed";
 
 export async function movePlayer(
   userId: string,
@@ -35,7 +37,7 @@ export async function movePlayer(
 
       if (announceToChat) {
         const message = `${user.display_name} moved to ${zone} zone`;
-        
+
         tmi.say(config.channel, `${config.BOT_PREFIX}➡️ ${message}`);
 
         await sendPantherworldFeedEvent(
@@ -56,6 +58,23 @@ export async function movePlayer(
       };
 
       WebsocketServer.sendData(playerMoveEvent);
+
+      // 15% chance of spawning an item
+      const willSpawn = Math.random() > 1;
+
+      if (willSpawn) {
+        await spawn({
+          type: SpawnEventType.Move,
+          data: { username: user.display_name },
+        });
+      } else {
+        // if no spawn, 15% probability of release
+        const willRelease = Math.random() > 0.85;
+
+        if (willRelease) {
+          await releaseUnclaimed(zone);
+        }
+      }
     } catch (error) {
       Sentry.captureException(error);
     }
