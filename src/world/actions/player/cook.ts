@@ -169,8 +169,8 @@ export async function cookItem(
   const ingredientList = getIngredientsFromCraftCommand(recipe);
 
   const allUserItems = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId
-    { $match: { userId: userId } },
+    // Match documents with a specific userId, not used, not spoiled
+    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
     // Group documents by name, count the number of items in each group
     { $group: { _id: "$name", count: { $sum: 1 } } },
   ]);
@@ -229,30 +229,28 @@ export async function cookItem(
   const uniqueName = makeUniqueRecipeName(recipeMatch, ingredientList);
 
   // 5% probability of spoiling for all
-  // 25% probabilty of spoiling if wealth index > 50000
+  // 25% probability of spoiling if wealth index > 50000
   // all items get DESTROYED
   const userWealthIndex = getWealthIndex(allUserItems);
   const willSpoil =
     userWealthIndex > 50000 ? Math.random() >= 0.75 : Math.random() >= 0.95;
 
-  // delete all raw ingredients from user
-  const promises = [];
-  for (let i = 0; i < ingredientList.length; i++) {
-    promises.push(
-      await PantherworldItemModel.deleteOne({
-        name: ingredientList[i],
-        userId: userId,
-      }),
-    );
-  }
-
-  await Promise.all(promises)
-    .then(() => console.log("deleted"))
-    .catch((err) => {
-      Sentry.captureException(err);
-    });
+  const itemUpdates = [];
 
   if (willSpoil) {
+    // set all raw ingredients from user to spoiled
+    for (let i = 0; i < ingredientList.length; i++) {
+      itemUpdates.push(
+        await PantherworldItemModel.updateOne(
+          {
+            name: ingredientList[i],
+            userId: userId,
+          },
+          { spoiled: true },
+        ),
+      );
+    }
+
     tmi.say(
       config.channel,
       `${config.BOT_PREFIX}🤮 ${getSpoiledMessage(username, ingredientList)}`,
@@ -275,6 +273,19 @@ export async function cookItem(
 
     WebsocketServer.sendData(playerCookFailEvent);
   } else {
+    // set all raw ingredients from user to used
+    for (let i = 0; i < ingredientList.length; i++) {
+      itemUpdates.push(
+        await PantherworldItemModel.updateOne(
+          {
+            name: ingredientList[i],
+            userId: userId,
+          },
+          { used: true },
+        ),
+      );
+    }
+
     const currentPlayer = await PantherworldPlayerModel.findOne({
       userId: userId,
     });
@@ -311,4 +322,11 @@ export async function cookItem(
 
     WebsocketServer.sendData(playerCookEvent);
   }
+
+  // update items in DB
+  await Promise.all(itemUpdates)
+    .then(() => console.log("updated items"))
+    .catch((err) => {
+      Sentry.captureException(err);
+    });
 }
