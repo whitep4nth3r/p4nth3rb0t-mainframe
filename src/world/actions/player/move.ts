@@ -173,10 +173,9 @@ export async function movePlayer(
   moveToZone: string,
   announceToChat: boolean = true,
 ): Promise<void> {
-  const playerFind: any = (await PantherworldPlayerModel.findOne(
-    { userId: userId },
-    { returnDocument: "after" },
-  )) as PantherworldPlayerDoc | null;
+  const playerFind = await PantherworldPlayerModel.findOne({
+    userId: userId,
+  });
 
   if (playerFind !== null) {
     await dealWithExistingPlayer(playerFind, moveToZone);
