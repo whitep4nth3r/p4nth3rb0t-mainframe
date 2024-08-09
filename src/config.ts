@@ -25,6 +25,7 @@ interface Config {
   };
   teamWelcomeMessage: (channel: TwitchChannel) => string;
   discord: {
+    broadcasterUserId: string;
     liveAnnouncementsChannelId: string;
     liveAnnouncementsRoleId: string;
     liveAnnouncementColorOnline: Discord.ColorResolvable;
@@ -32,6 +33,7 @@ interface Config {
     liveAnnouncementImageSize: string;
     techHelpChannelId: string;
     p4nth3rworldChannelId: string;
+    modChannelId: string;
     reactionRole: DiscordReactionRole[];
   };
   moodRedemptions: {
@@ -82,6 +84,7 @@ const config: Config = {
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
+    broadcasterUserId: "722393276438544404",
     liveAnnouncementsChannelId: "770041334534635520",
     liveAnnouncementsRoleId: "756956508234842145",
     liveAnnouncementColorOnline: "#84AE39",
@@ -89,6 +92,7 @@ const config: Config = {
     liveAnnouncementImageSize: "1280x720",
     techHelpChannelId: "1006450043089326201",
     p4nth3rworldChannelId: "1233405365392117791",
+    modChannelId: "749651628067651674",
     reactionRole: [
       {
         role_id: "756956508234842145",

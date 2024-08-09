@@ -3,6 +3,9 @@ import UserManager from "./users/UserManager";
 import { tmi } from "./tmi";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   EmbedBuilder,
   escapeMarkdown,
   GatewayIntentBits,
@@ -44,6 +47,7 @@ const TWITCH_TTS_TAG_ID = "1186989607770923129";
 
 let announcementsChannel: TextChannel;
 let feedChannel: TextChannel;
+let modChannel: TextChannel;
 let helpChannel: ForumChannel;
 
 import "./events/discord/messageReactionAdd";
@@ -60,12 +64,38 @@ discord.on("ready", async () => {
     config.discord.p4nth3rworldChannelId,
   )) as TextChannel;
 
+  modChannel = (await discord.channels.fetch(
+    config.discord.modChannelId,
+  )) as TextChannel;
+
   helpChannel = (await discord.channels.fetch(
     config.discord.techHelpChannelId,
   )) as ForumChannel;
 });
 
 const POST_TITLE_CHAR_LIMIT = 100;
+
+export const sendModChannelAuthorizeMessage = async (url: string) => {
+  const autorizeButton = new ButtonBuilder()
+    .setLabel("Authorize with Twitch")
+    .setStyle(ButtonStyle.Link)
+    .setURL(url);
+
+  const row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(autorizeButton);
+
+  const embed = new EmbedBuilder()
+    .setTitle("ACTION REQUIRED")
+    .setDescription(`You need to authorize ${config.bot.user_name} with Twitch`)
+    .setColor("#FF0000")
+    .setTimestamp();
+
+  await modChannel.send({
+    content: `<@${config.discord.broadcasterUserId}>`,
+    components: [row],
+    embeds: [embed],
+  });
+};
 
 export const createTechHelpThread = async (
   twitchUsername: string,
