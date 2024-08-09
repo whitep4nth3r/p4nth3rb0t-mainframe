@@ -76,13 +76,13 @@ discord.on("ready", async () => {
 const POST_TITLE_CHAR_LIMIT = 100;
 
 export const sendModChannelAuthorizeMessage = async (url: string) => {
-  const autorizeButton = new ButtonBuilder()
+  const authorizeButton = new ButtonBuilder()
     .setLabel("Authorize with Twitch")
     .setStyle(ButtonStyle.Link)
     .setURL(url);
 
   const row = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(autorizeButton);
+    .addComponents(authorizeButton);
 
   const embed = new EmbedBuilder()
     .setTitle("ACTION REQUIRED")
