@@ -62,8 +62,10 @@ async function sendWebsocketEvent(
 async function announceMove(
   displayName: string,
   moveToZone: string,
+  delayInMs?: number,
 ): Promise<void> {
-  const message = `${displayName} moved to ${moveToZone} zone`;
+  const delayString = delayInMs !== undefined ? ` in ${delayInMs}ms` : "";
+  const message = `${displayName} moved to ${moveToZone} zone${delayString}`;
 
   tmi.say(config.channel, `${config.BOT_PREFIX}➡️ ${message}`);
 
@@ -118,7 +120,7 @@ async function dealWithExistingPlayer(
       { returnDocument: "after" },
     );
 
-    await announceMove(player.userDisplayName, moveToZone);
+    await announceMove(player.userDisplayName, moveToZone, delayInMs);
     await sendWebsocketEvent(player.userId, player.userDisplayName, moveToZone);
     await runSpawnAndReleaseCheck(player.userDisplayName, moveToZone);
   }, delayInMs);
