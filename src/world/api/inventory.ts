@@ -9,8 +9,8 @@ export async function getFullInventory(
   userId: string,
 ): Promise<InventoryResponse> {
   const items = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId
-    { $match: { userId: userId } },
+    // Match documents with a specific userId, not spoiled, not used
+    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
 
     // Group documents by name, count the number of items in each group
     {
