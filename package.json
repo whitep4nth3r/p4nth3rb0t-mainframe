@@ -1,11 +1,11 @@
 {
   "name": "p4nth3rb0t-mainframe",
   "private": true,
-  "version": "1.0.149",
+  "version": "1.0.150",
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
-    "test:craft": "jest -- -t 'craft'",
+    "test:move": "jest -- -t 'move'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
     "dev": "node-dev --notify=false src/app.ts",
