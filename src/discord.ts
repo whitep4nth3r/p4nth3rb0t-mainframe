@@ -229,6 +229,11 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       embeds: [embed],
     });
 
+    await spawn({
+      type: SpawnEventType.StreamOffline,
+      data: { username: user.display_name },
+    });
+
     await DiscordAnnouncementModel.deleteOne({ memberId: member_id });
   }
 };

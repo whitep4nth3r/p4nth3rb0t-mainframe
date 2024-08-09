@@ -20,7 +20,9 @@ export enum SpawnEventType {
   Sub = "Sub",
   Raid = "raid",
   Hype = "hype",
+  StreamOffline = "streamoffline",
   StreamOnline = "streamonline",
+  Move = "move",
 }
 
 export type EventData =
@@ -30,6 +32,8 @@ export type EventData =
   | { type: SpawnEventType.Sub; data: { username: string } }
   | { type: SpawnEventType.Hype; data: { level: number } }
   | { type: SpawnEventType.StreamOnline; data: { username: string } }
+  | { type: SpawnEventType.StreamOffline; data: { username: string } }
+  | { type: SpawnEventType.Move; data: { username: string } }
   | { type: SpawnEventType.Raid; data: { raiders: number } };
 
 function calculateEventRarity(event: EventData): number {
@@ -44,6 +48,10 @@ function calculateEventRarity(event: EventData): number {
       return event.data.username.length;
     case SpawnEventType.Raid:
       return event.data.raiders;
+    case SpawnEventType.Move:
+      return event.data.username.length * 50;
+    case SpawnEventType.StreamOffline:
+      return event.data.username.length * 35;
     case SpawnEventType.StreamOnline:
       return event.data.username.length * 20;
     case SpawnEventType.Hype:

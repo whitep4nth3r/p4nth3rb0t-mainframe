@@ -33,6 +33,12 @@ export const BeachItems: WorldItem[] = [
     onlyZone: PantherworldZoneNames.Beach,
   },
   {
+    rarity: 200,
+    name: "sea salt",
+    onlyZone: PantherworldZoneNames.Beach,
+    flavours: ["salty"],
+  },
+  {
     rarity: 300,
     name: "anemone",
     onlyZone: PantherworldZoneNames.Beach,

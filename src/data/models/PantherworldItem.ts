@@ -19,6 +19,8 @@ export const PantherworldItemSchema: Schema = new mongoose.Schema(
     dropped: { type: Boolean, required: false },
     rarity: { type: Number, required: true },
     cooked: { type: Boolean, required: false },
+    used: { type: Boolean, required: false },
+    spoiled: { type: Boolean, required: false },
   },
   { timestamps: true },
 );

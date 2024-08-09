@@ -85,6 +85,18 @@ export const Vegetables: WorldItem[] = [
     onlyZone: null,
   },
   {
+    rarity: 204,
+    name: "green bell pepper",
+    onlyZone: null,
+    flavours: ["bitter", "tangy", "sour"],
+  },
+  {
+    rarity: 204,
+    name: "red bell pepper",
+    onlyZone: null,
+    flavours: ["sweet"],
+  },
+  {
     rarity: 820,
     name: "celery stick",
     onlyZone: null,
