@@ -1,5 +1,4 @@
 import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
-import { channels } from "./maps/discord/channels";
 import Discord from "discord.js";
 
 interface Config {
@@ -83,7 +82,7 @@ const config: Config = {
     | They were last seen streaming ${channel.title} in ${channel.game_name} p4nth3rPEWPEW`;
   },
   discord: {
-    liveAnnouncementsChannelId: channels.announcements,
+    liveAnnouncementsChannelId: "770041334534635520",
     liveAnnouncementsRoleId: "756956508234842145",
     liveAnnouncementColorOnline: "#84AE39",
     liveAnnouncementColorOffline: "#AE8439",
