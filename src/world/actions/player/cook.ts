@@ -41,7 +41,7 @@ function getCookedMessage(
 ): string {
   const unmatchedMessage =
     unmatchedSecondaryIngredients.length > 0
-      ? ` and lost ${unmatchedSecondaryIngredients.join(" ,")}`
+      ? ` and lost ${unmatchedSecondaryIngredients.join(", ")}`
       : "";
 
   return `@${username} cooked ${uniqueName} (rarity: ${rarity})${unmatchedMessage}!`;
