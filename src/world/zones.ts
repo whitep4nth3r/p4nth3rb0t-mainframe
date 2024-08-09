@@ -7,23 +7,52 @@ export enum PantherworldZoneNames {
   Swamp = "swamp",
 }
 
-export const PantherworldZones = [
+type _Zone = {
+  name: string;
+  nearbyZones: string[];
+};
+
+export const PantherworldZones: _Zone[] = [
   {
     name: PantherworldZoneNames.Beach,
+    nearbyZones: [
+      PantherworldZoneNames.City,
+      PantherworldZoneNames.Swamp,
+      PantherworldZoneNames.Forest,
+    ],
   },
   {
     name: PantherworldZoneNames.City,
+    nearbyZones: [
+      PantherworldZoneNames.Desert,
+      PantherworldZoneNames.Swamp,
+      PantherworldZoneNames.Beach,
+    ],
   },
   {
     name: PantherworldZoneNames.Forest,
+    nearbyZones: [
+      PantherworldZoneNames.City,
+      PantherworldZoneNames.Swamp,
+      PantherworldZoneNames.Beach,
+    ],
   },
   {
     name: PantherworldZoneNames.Mountain,
+    nearbyZones: [PantherworldZoneNames.Forest],
   },
   {
     name: PantherworldZoneNames.Desert,
+    nearbyZones: [PantherworldZoneNames.City],
   },
-  { name: PantherworldZoneNames.Swamp },
+  {
+    name: PantherworldZoneNames.Swamp,
+    nearbyZones: [
+      PantherworldZoneNames.City,
+      PantherworldZoneNames.Forest,
+      PantherworldZoneNames.Beach,
+    ],
+  },
 ];
 
 export function isValidPantherworldZone(input: string): boolean {

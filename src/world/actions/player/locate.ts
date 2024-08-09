@@ -9,6 +9,7 @@ export async function locatePlayer(
   const entry = await PantherworldPlayerModel.findOne({
     userId: userId,
   });
+
   if (entry) {
     tmi.say(
       config.channel,
