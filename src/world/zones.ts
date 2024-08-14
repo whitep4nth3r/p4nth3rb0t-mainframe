@@ -35,6 +35,7 @@ export const PantherworldZones: _Zone[] = [
       PantherworldZoneNames.City,
       PantherworldZoneNames.Swamp,
       PantherworldZoneNames.Beach,
+      PantherworldZoneNames.Mountain,
     ],
   },
   {
