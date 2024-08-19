@@ -1,7 +1,35 @@
+export enum ItemCategory {
+  ALIVE = "alive",
+  ANIMAL = "animal",
+  BERRY = "berry",
+  CITRUS = "citrus",
+  CLASSIFIED = "classified",
+  DAIRY = "dairy",
+  DEAD = "dead",
+  EGG = "egg",
+  FEATHER = "feather",
+  FRUIT = "fruit",
+  GEMSTONE = "gemstone",
+  GRAIN = "grain",
+  HERB = "herb",
+  LEGUME = "legume",
+  MINERAL = "mineral",
+  MUSICAL_INSTRUMENT = "musical instrument",
+  NUT = "nut",
+  PASTRY = "pastry",
+  PLANT = "plant",
+  SEED = "seed",
+  SPICE = "spice",
+  TOOL = "tool",
+  VEGETABLE = "vegetable",
+  WOOD = "wood",
+}
+
 export type WorldItem = {
   name: string;
   rarity: number;
   onlyZone: string | null;
+  categories: ItemCategory[];
   flavours?: string[];
   cooked?: boolean;
 };
@@ -81,6 +109,7 @@ export enum PantherworldEvent {
   GIFT = "gift",
   MOVE = "move",
   SPAWN = "spawn",
+  SCANNED = "scanned",
   RELEASE = "release",
   LEADERBOARD = "leaderboard",
   LIST_POPULATION = "list_population",
