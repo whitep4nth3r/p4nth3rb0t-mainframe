@@ -22,7 +22,13 @@ function sortByWealthIndexDesc(a: Player, b: Player) {
 export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
   //  [{ _id: '1069819703', itemCount: 1 }]
   const players = await PantherworldItemModel.aggregate([
-    { $match: { userId: { $ne: null } } },
+    {
+      $match: {
+        userId: { $ne: null },
+        used: { $ne: true },
+        spoiled: { $ne: true },
+      },
+    },
 
     // Group documents by userId, count the number of items in each group
     { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
