@@ -1,7 +1,7 @@
 {
   "name": "p4nth3rb0t-mainframe",
   "private": true,
-  "version": "1.0.152",
+  "version": "1.0.153",
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
