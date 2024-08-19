@@ -6,6 +6,11 @@ import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
 import { sendPantherworldFeedEvent } from "../../../discord";
+import {
+  MainframeEvent,
+  PlayerScannedPacket,
+} from "@whitep4nth3r/p4nth3rb0t-types";
+import WebsocketServer from "../../../WebSocketServer";
 
 export function getFullItemsFromDBAggregate(dbItems: any[]): WorldItem[] {
   const itemNames = dbItems.map((item) => item._id);
@@ -78,4 +83,20 @@ export async function scanZone(
     PantherworldEvent.SCANNED,
     config.BOT_PREFIX,
   );
+
+  let totalCount = 0;
+  itemsInDb.forEach((item) => (totalCount += item.count));
+
+  const playerCookEvent: PlayerScannedPacket = {
+    event: MainframeEvent.playerScanned,
+    id: userId + "-" + Date.now(),
+    type: "cook",
+    data: {
+      zone: zone,
+      username: username,
+      count: totalCount,
+    },
+  };
+
+  WebsocketServer.sendData(playerCookEvent);
 }

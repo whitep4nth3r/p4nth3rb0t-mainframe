@@ -246,7 +246,7 @@ const EVENT_COLORS = {
   [PantherworldEvent.GIFT]: "#fc814a",
   [PantherworldEvent.MOVE]: "#0E0016",
   [PantherworldEvent.SPAWN]: "#F0047F",
-  [PantherworldEvent.SCANNED]: "#22d3ee",
+  [PantherworldEvent.SCANNED]: "#38bdf8",
   [PantherworldEvent.RELEASE]: "#fc814a",
   [PantherworldEvent.LEADERBOARD]: "#0E0016",
   [PantherworldEvent.LIST_POPULATION]: "#0E0016",
