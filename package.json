@@ -1,11 +1,11 @@
 {
   "name": "p4nth3rb0t-mainframe",
   "private": true,
-  "version": "1.0.152",
+  "version": "1.0.157",
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
-    "test:move": "jest -- -t 'move'",
+    "test:scan": "jest -- -t 'scan'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
     "dev": "node-dev --notify=false src/app.ts",
@@ -27,7 +27,7 @@
     "@types/tmi.js": "^1.8.4",
     "@types/websocket": "^1.0.6",
     "@types/ws": "^8.5.5",
-    "@whitep4nth3r/p4nth3rb0t-types": "^1.1.11",
+    "@whitep4nth3r/p4nth3rb0t-types": "^1.1.13",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "discord.js": "^14.13.0",

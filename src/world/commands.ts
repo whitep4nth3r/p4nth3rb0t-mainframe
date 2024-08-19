@@ -13,6 +13,7 @@ import { getLeaderboard } from "./actions/leader/getLeaderboard";
 import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
 import { cookItem } from "./actions/player/cook";
+import { scanZone } from "./actions/player/scan";
 
 export const WorldLeaderCommands = {
   "!release": async () => {
@@ -158,6 +159,13 @@ export const WorldCommands = {
       const userId = tags["user-id"];
       const username = tags["display-name"];
       await cookItem(message, userId, username);
+    }
+  },
+  "!scan": async (tags) => {
+    if (!config.FREEZE_MODE) {
+      const userId = tags["user-id"];
+      const username = tags["display-name"];
+      await scanZone(userId, username);
     }
   },
 };

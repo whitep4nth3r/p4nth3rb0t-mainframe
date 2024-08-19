@@ -245,6 +245,9 @@ export async function cookItem(
           {
             name: ingredientList[i],
             userId: userId,
+            used: { $ne: true },
+            spoiled: { $ne: true },
+            cooked: { $ne: true },
           },
           { spoiled: true },
         ),
@@ -280,6 +283,9 @@ export async function cookItem(
           {
             name: ingredientList[i],
             userId: userId,
+            used: { $ne: true },
+            spoiled: { $ne: true },
+            cooked: { $ne: true },
           },
           { used: true },
         ),
@@ -323,9 +329,8 @@ export async function cookItem(
     WebsocketServer.sendData(playerCookEvent);
   }
 
-  // update items in DB
   await Promise.all(itemUpdates)
-    .then(() => console.log("updated items"))
+    .then(() => console.log("updated all items"))
     .catch((err) => {
       Sentry.captureException(err);
     });
