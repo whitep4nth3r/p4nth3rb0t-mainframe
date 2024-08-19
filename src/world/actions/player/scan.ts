@@ -1,10 +1,11 @@
 import { getPlayerZoneString } from "./locate";
 import PantherworldItemModel from "../../../data/models/PantherworldItem";
 import { WorldItems } from "../../items/all";
-import { WorldItem } from "../../api/types";
+import { PantherworldEvent, WorldItem } from "../../api/types";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
+import { sendPantherworldFeedEvent } from "../../../discord";
 
 export function getFullItemsFromDBAggregate(dbItems: any[]): WorldItem[] {
   const itemNames = dbItems.map((item) => item._id);
@@ -16,7 +17,7 @@ export function getCountOfDbItemByName(name: string, dbItems: any[]): number {
   return dbItems.find((item) => item._id === name).count;
 }
 
-function getStringListOfAvailableKeyValuePairs(keyValuePairs: {}): string {
+function getStringListOfAvailableKeyValuePairs(keyValuePairs: object): string {
   const list = [];
 
   for (const [key, value] of Object.entries(keyValuePairs)) {
@@ -68,8 +69,13 @@ export async function scanZone(
     }
   });
 
-  tmi.say(
-    config.channel,
-    `${config.BOT_PREFIX}👀 @${username} scanned ${zone} zone and observed: ${getStringListOfAvailableKeyValuePairs(deDupedList)} items`,
+  const scannedMessage = `@${username} scanned ${zone} zone and observed: ${getStringListOfAvailableKeyValuePairs(deDupedList)} items`;
+
+  tmi.say(config.channel, `${config.BOT_PREFIX}👀 ${scannedMessage}`);
+
+  await sendPantherworldFeedEvent(
+    scannedMessage,
+    PantherworldEvent.SCANNED,
+    config.BOT_PREFIX,
   );
 }

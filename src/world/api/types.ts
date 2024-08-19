@@ -109,6 +109,7 @@ export enum PantherworldEvent {
   GIFT = "gift",
   MOVE = "move",
   SPAWN = "spawn",
+  SCANNED = "scanned",
   RELEASE = "release",
   LEADERBOARD = "leaderboard",
   LIST_POPULATION = "list_population",

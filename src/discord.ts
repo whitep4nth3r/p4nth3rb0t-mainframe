@@ -246,6 +246,7 @@ const EVENT_COLORS = {
   [PantherworldEvent.GIFT]: "#fc814a",
   [PantherworldEvent.MOVE]: "#0E0016",
   [PantherworldEvent.SPAWN]: "#F0047F",
+  [PantherworldEvent.SCANNED]: "#22d3ee",
   [PantherworldEvent.RELEASE]: "#fc814a",
   [PantherworldEvent.LEADERBOARD]: "#0E0016",
   [PantherworldEvent.LIST_POPULATION]: "#0E0016",
@@ -260,6 +261,7 @@ const EVENT_ICONS = {
   [PantherworldEvent.GIFT]: "🎁",
   [PantherworldEvent.MOVE]: "➡️",
   [PantherworldEvent.SPAWN]: "🌎",
+  [PantherworldEvent.SCANNED]: "👀",
   [PantherworldEvent.RELEASE]: "🎁",
   [PantherworldEvent.LEADERBOARD]: "🏆",
   [PantherworldEvent.LIST_POPULATION]: "📊",
@@ -272,6 +274,7 @@ function formatPantherworldDiscordMessage(
 ): string {
   switch (type) {
     case PantherworldEvent.RELEASE:
+    case PantherworldEvent.SCANNED:
       // eslint-disable-next-line no-case-declarations
       const newMessage = message.split(":").join("\n");
       return newMessage.split(",").join("\n");
