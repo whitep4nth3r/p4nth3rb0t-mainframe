@@ -6,10 +6,9 @@ export async function getInventory(
   userId: string,
   username: string,
 ): Promise<void> {
-  // TODO - simplify query?
   const items = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId
-    { $match: { userId: userId } },
+    // Match documents with a specific userId, not used, not spoiled
+    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
 
     // Group documents by name, count the number of items in each group
     { $group: { _id: "$name", count: { $sum: 1 } } },
