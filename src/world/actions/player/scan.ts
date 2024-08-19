@@ -90,7 +90,7 @@ export async function scanZone(
   const playerCookEvent: PlayerScannedPacket = {
     event: MainframeEvent.playerScanned,
     id: userId + "-" + Date.now(),
-    type: "cook",
+    type: "scanned",
     data: {
       zone: zone,
       username: username,
