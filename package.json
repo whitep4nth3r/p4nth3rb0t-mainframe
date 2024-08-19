@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
-    "test:move": "jest -- -t 'move'",
+    "test:scan": "jest -- -t 'scan'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
     "dev": "nodemon",
