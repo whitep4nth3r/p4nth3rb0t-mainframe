@@ -79,7 +79,7 @@ export function makeUniqueRecipeName(
   });
 
   const flavours = secondaryIngredients.map((item) => {
-    if (item.flavours.length > 0) {
+    if (item.flavours && item.flavours.length > 0) {
       return getRandomEntry(item.flavours);
     }
   });
