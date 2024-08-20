@@ -64,6 +64,7 @@ export async function claimItem(
         return;
       } else {
         // user can claim item
+
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -91,6 +92,7 @@ export async function claimItem(
               username: username,
               zone: player.zone,
               item: name,
+              rarity: firstClaimableItem.rarity,
             },
           };
 
