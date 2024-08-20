@@ -76,7 +76,7 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `@${username} claimed ${name} in the ${player.zone} zone`;
+          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})`;
           tmi.say(config.channel, `${config.BOT_PREFIX}🎒 ${message}`);
           await sendPantherworldFeedEvent(
             message,
