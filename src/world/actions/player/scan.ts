@@ -53,6 +53,14 @@ export async function scanZone(
   // get user's current zone
   const zone = await getPlayerZoneString(userId);
 
+  if (zone === null) {
+    tmi.say(
+      config.channel,
+      `${config.BOT_PREFIX}👀 @${username} cannot scan when not in p4nth3rworld. Use !move [zone] to land.`,
+    );
+    return;
+  }
+
   // look up all unclaimed items in current zone from DB
   const itemsInDb = await PantherworldItemModel.aggregate([
     { $match: { userId: null, zone: zone } },
