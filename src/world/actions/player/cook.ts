@@ -17,6 +17,7 @@ import {
   PlayerCookPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebsocketServer from "../../../WebSocketServer";
+import { getAllItemsForPlayer } from "../../api/player/allItems";
 
 export function getIngredientsFromCraftCommand(message: string) {
   const command = getCommandFromMessage(message);
@@ -168,12 +169,7 @@ export async function cookItem(
 ): Promise<void> {
   const ingredientList = getIngredientsFromCraftCommand(recipe);
 
-  const allUserItems = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId, not used, not spoiled
-    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
-    // Group documents by name, count the number of items in each group
-    { $group: { _id: "$name", count: { $sum: 1 } } },
-  ]);
+  const allUserItems = await getAllItemsForPlayer(userId);
 
   // check user has all of the ingredients specified
   for (let i = 0; i < ingredientList.length; i++) {

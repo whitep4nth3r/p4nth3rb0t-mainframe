@@ -4,7 +4,7 @@ import PantherworldItemModel from "../../data/models/PantherworldItem";
 import PantherworldPlayerModel, {
   PantherworldPlayerData,
 } from "../../data/models/PantherworldPlayer";
-import { getAllItemsForPlayerToCalculateWealthIndex } from "./player/allItems";
+import { getAllItemsForPlayer } from "./player/allItems";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
 
 function sortByWealthIndexDesc(a: Player, b: Player) {
@@ -37,8 +37,9 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
   const leaderboardPlayers: Player[] = [];
 
   const promises = players.map(async (player) => {
-    const allItems: ItemForWealthIndex[] =
-      await getAllItemsForPlayerToCalculateWealthIndex(player._id);
+    const allItems: ItemForWealthIndex[] = await getAllItemsForPlayer(
+      player._id,
+    );
 
     const dbPlayer = (await PantherworldPlayerModel.findOne({
       userId: player._id,

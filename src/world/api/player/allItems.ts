@@ -1,11 +1,11 @@
 import PantherworldItemModel from "../../../data/models/PantherworldItem";
 import type { ItemForWealthIndex } from "../types";
 
-export async function getAllItemsForPlayerToCalculateWealthIndex(
+export async function getAllItemsForPlayer(
   userId: string,
 ): Promise<ItemForWealthIndex[]> {
   const allItems = await PantherworldItemModel.aggregate([
-    { $match: { userId: userId } },
+    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
     {
       $group: {
         _id: "$name",
