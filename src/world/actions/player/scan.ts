@@ -29,7 +29,7 @@ function getStringListOfAvailableKeyValuePairs(keyValuePairs: object): string {
     list.push(`${value} ${key}`);
   }
 
-  return list.join(", ");
+  return list.length > 0 ? list.join(", ") : "no";
 }
 
 // not tested because of random key generation
