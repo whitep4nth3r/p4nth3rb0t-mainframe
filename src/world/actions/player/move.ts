@@ -104,7 +104,13 @@ async function dealWithExistingPlayer(
 
   // we movin'
   const allItems = await PantherworldItemModel.aggregate([
-    { $match: { userId: player.userId } },
+    {
+      $match: {
+        userId: player.userId,
+        used: { $ne: true },
+        spoiled: { $ne: true },
+      },
+    },
     { $count: "total" },
   ]);
 

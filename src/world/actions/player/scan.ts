@@ -29,7 +29,7 @@ function getStringListOfAvailableKeyValuePairs(keyValuePairs: object): string {
     list.push(`${value} ${key}`);
   }
 
-  return list.join(", ");
+  return list.length > 0 ? list.join(", ") : "no";
 }
 
 // not tested because of random key generation
@@ -52,6 +52,14 @@ export async function scanZone(
 ): Promise<void> {
   // get user's current zone
   const zone = await getPlayerZoneString(userId);
+
+  if (zone === null) {
+    tmi.say(
+      config.channel,
+      `${config.BOT_PREFIX}👀 @${username} cannot scan when not in p4nth3rworld. Use !move [zone] to land.`,
+    );
+    return;
+  }
 
   // look up all unclaimed items in current zone from DB
   const itemsInDb = await PantherworldItemModel.aggregate([

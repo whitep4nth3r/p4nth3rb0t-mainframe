@@ -3,7 +3,7 @@ import { WorldState } from "../../state";
 import { throwItem } from "../player/throw";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
 import { ItemForWealthIndex } from "../../api/types";
-import { getAllItemsForPlayerToCalculateWealthIndex } from "../../api/player/allItems";
+import { getAllItemsForPlayer } from "../../api/player/allItems";
 
 // export async function getWorldWealthIndex(): Promise<number> {
 //   const items = await PantherworldItemModel.aggregate([
@@ -45,7 +45,7 @@ export async function wealthDistribution(
   userId: string,
   username: string,
 ): Promise<void> {
-  const items = await getAllItemsForPlayerToCalculateWealthIndex(userId);
+  const items = await getAllItemsForPlayer(userId);
 
   const wealthIndex = getWealthIndex(items);
   const dropProbability = calculateDropProbabilityFromWealthIndex(wealthIndex);
