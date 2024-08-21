@@ -14,7 +14,7 @@ import {
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { PantherworldEvent } from "../../api/types";
 import { spawn, SpawnEventType } from "../../spawn";
-import { releaseUnclaimed } from "../leader/releaseUnclaimed";
+// import { releaseUnclaimed } from "../leader/releaseUnclaimed";
 import { PantherworldZones } from "../../zones";
 
 const ITEMS_PER_MS = 250;
