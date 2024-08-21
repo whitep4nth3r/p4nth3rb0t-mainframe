@@ -262,7 +262,7 @@ const EVENT_ICONS = {
   [PantherworldEvent.MOVE]: "➡️",
   [PantherworldEvent.SPAWN]: "🌎",
   [PantherworldEvent.SCANNED]: "👀",
-  [PantherworldEvent.RELEASE]: "🎁",
+  [PantherworldEvent.RELEASE]: "📦",
   [PantherworldEvent.LEADERBOARD]: "🏆",
   [PantherworldEvent.LIST_POPULATION]: "📊",
   [PantherworldEvent.LOCK]: "🔒",
