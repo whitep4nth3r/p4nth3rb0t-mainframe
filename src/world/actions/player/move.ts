@@ -19,10 +19,7 @@ import { PantherworldZones } from "../../zones";
 
 const ITEMS_PER_MS = 250;
 
-async function runSpawnAndReleaseCheck(
-  userDisplayName: string,
-  moveToZone: string,
-): Promise<void> {
+async function runSpawnAndReleaseCheck(userDisplayName: string): Promise<void> {
   // 15% chance of spawning an item
   const willSpawn = Math.random() > 0.85;
 
@@ -31,14 +28,15 @@ async function runSpawnAndReleaseCheck(
       type: SpawnEventType.Move,
       data: { username: userDisplayName },
     });
-  } else {
-    // if no spawn, 15% probability of release
-    const willRelease = Math.random() > 0.85;
-
-    if (willRelease) {
-      await releaseUnclaimed(moveToZone);
-    }
   }
+  // else {
+  //   // if no spawn, 15% probability of release
+  //   const willRelease = Math.random() > 0.85;
+
+  //   if (willRelease) {
+  //     await releaseUnclaimed(moveToZone);
+  //   }
+  // }
 }
 
 async function sendWebsocketEvent(
