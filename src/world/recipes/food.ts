@@ -161,7 +161,7 @@ export const FoodRecipes: Record<string, Recipe> = {
     title: "Clam chowder",
     description:
       "Combine a clam shell with other shellfish, sea salt and fresh herbs and vegetables for a hearty seaside-inspired chowder.",
-    names: ["chowder"],
+    names: ["chowder", "soup", "broth", "stew", "bisque"],
     ingredients: {
       primary: BeachItems.find((item) => item.name === "clam shell"),
       secondary: [
