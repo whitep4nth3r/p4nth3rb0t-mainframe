@@ -118,8 +118,8 @@ export const FoodRecipes: Record<string, Recipe> = {
       ],
     },
   },
-  "Mashed Avocado (aka guacamole)": {
-    title: "Avocado",
+  "Mashed avocado (aka guacamole)": {
+    title: "Mashed avocado (aka guacamole)",
     description:
       "Try adding various herbs, spices, fruits, citrus or maybe even something from the sea to a delicious avocado.",
     names: [
@@ -154,6 +154,32 @@ export const FoodRecipes: Record<string, Recipe> = {
         Fruits.find((item) => item.name === "mango chunk"),
         Fruits.find((item) => item.name === "whole mango"),
         Spices.find((item) => item.name === "black pepper"),
+      ],
+    },
+  },
+  "Clam chowder": {
+    title: "Clam chowder",
+    description:
+      "Combine a clam shell with other shellfish, sea salt and fresh herbs and vegetables for a hearty seaside-inspired chowder.",
+    names: ["chowder"],
+    ingredients: {
+      primary: BeachItems.find((item) => item.name === "clam shell"),
+      secondary: [
+        BeachItems.find((item) => item.name === "sea salt"),
+        BeachItems.find((item) => item.name === "whelk shell"),
+        BeachItems.find((item) => item.name === "mussel shell"),
+        Vegetables.find((item) => item.name === "white potato"),
+        Vegetables.find((item) => item.name === "sweet potato"),
+        Vegetables.find((item) => item.name === "yam"),
+        Vegetables.find((item) => item.name === "carrot"),
+        Vegetables.find((item) => item.name === "parsnip"),
+        Vegetables.find((item) => item.name === "cabbage"),
+        Vegetables.find((item) => item.name === "spring onions"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "celery stick"),
+        Vegetables.find((item) => item.name === "radish"),
+        Vegetables.find((item) => item.name === "chestnut mushroom"),
+        Vegetables.find((item) => item.name === "shallot"),
       ],
     },
   },
