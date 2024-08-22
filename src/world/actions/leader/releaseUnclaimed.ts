@@ -4,7 +4,7 @@ import { config } from "../../../config";
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { WorldState } from "../../state";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
-import { PantherworldZones } from "../../zones";
+import { PantherworldZones, Zone } from "../../zones";
 import WebsocketServer from "../../../WebSocketServer";
 import {
   MainframeEvent,
@@ -33,7 +33,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
     const message = `${config.BOT_PREFIX}🪹 There are no unclaimed items in the ${randomZone.name} zone!`;
 
     tmi.say(config.channel, message);
-  } else {
+  } else if (!zoneContainsActiveRelease(randomZone)) {
     WorldState.RELEASE_ZONES.push(randomZone)
     const itemList = unclaimed
       .map((item) => `${item.count} ${item._id}`)
@@ -74,3 +74,8 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
     }, 60000);
   }
 }
+
+function zoneContainsActiveRelease(randomZone: Zone): boolean {
+  return WorldState.RELEASE_ZONES.find((z) => z === randomZone) !== undefined
+}
+
