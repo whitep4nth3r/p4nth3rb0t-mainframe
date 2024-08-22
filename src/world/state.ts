@@ -1,8 +1,7 @@
-import { PantherworldZoneNames } from "./zones";
+import { PantherworldZoneNames, Zone } from "./zones";
 
 interface WORLD_STATE {
-  ITEMS_RELEASED: number;
-  RELEASE_ZONE: keyof typeof PantherworldZoneNames | null;
+  RELEASE_ZONES: Zone[];
   WEALTH_THRESHOLDS: {
     min: number;
     max: number;
@@ -10,8 +9,7 @@ interface WORLD_STATE {
 }
 
 export const WorldState: WORLD_STATE = {
-  ITEMS_RELEASED: 0,
-  RELEASE_ZONE: null,
+  RELEASE_ZONES: [],
   WEALTH_THRESHOLDS: {
     min: 1000,
     max: 500000,

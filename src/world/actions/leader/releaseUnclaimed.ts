@@ -34,9 +34,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
 
     tmi.say(config.channel, message);
   } else {
-    WorldState.ITEMS_RELEASED++;
-    WorldState.RELEASE_ZONE = randomZone.name;
-
+    WorldState.RELEASE_ZONES.push(randomZone)
     const itemList = unclaimed
       .map((item) => `${item.count} ${item._id}`)
       .join(", ");
@@ -64,9 +62,8 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
     WebsocketServer.sendData(releaseUnclaimedEvent);
 
     setTimeout(async () => {
-      WorldState.ITEMS_RELEASED--;
-      WorldState.RELEASE_ZONE = null;
-      const message = `All items locked!`;
+      let zone = WorldState.RELEASE_ZONES.shift();
+      const message = `Released items in the ${zone.name} locked!`;
       tmi.say(config.channel, `${config.BOT_PREFIX}🔒 ${message}`);
 
       await sendPantherworldFeedEvent(

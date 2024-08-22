@@ -18,9 +18,9 @@ export async function claimItem(
   userId: string,
   username: string,
 ): Promise<void> {
-  let items;
+  let items = [];
 
-  if (WorldState.ITEMS_RELEASED === 0) {
+  if (WorldState.RELEASE_ZONES.length === 0) {
     // claimable items are those spawned or dropped < 1 minute ago
     const oneMinuteAgo = new Date(Date.now() - 1000 * 60);
 
@@ -29,10 +29,13 @@ export async function claimItem(
       $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
-    items = await PantherworldItemModel.find({
-      name: name,
-      userId: null,
-      zone: WorldState.RELEASE_ZONE,
+    WorldState.RELEASE_ZONES.forEach(async (releaseZone) => {
+      let zoneItems = await PantherworldItemModel.find({
+        name: name,
+        userId: null,
+        zone: releaseZone.name,
+      });
+      items.push(...zoneItems);
     });
   }
 
