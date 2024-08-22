@@ -62,7 +62,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
     WebsocketServer.sendData(releaseUnclaimedEvent);
 
     setTimeout(async () => {
-      let zone = WorldState.RELEASE_ZONES.shift();
+      const zone = WorldState.RELEASE_ZONES.shift();
       const message = `Released items in the ${zone.name} locked!`;
       tmi.say(config.channel, `${config.BOT_PREFIX}🔒 ${message}`);
 
@@ -75,7 +75,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
   }
 }
 
-function zoneContainsActiveRelease(randomZone: Zone): boolean {
+export function zoneContainsActiveRelease(randomZone: Zone): boolean {
   return WorldState.RELEASE_ZONES.find((z) => z === randomZone) !== undefined
 }
 
