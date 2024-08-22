@@ -34,7 +34,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
 
     tmi.say(config.channel, message);
   } else {
-    WorldState.ITEMS_RELEASED = true;
+    WorldState.ITEMS_RELEASED++;
     WorldState.RELEASE_ZONE = randomZone.name;
 
     const itemList = unclaimed
@@ -64,7 +64,7 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
     WebsocketServer.sendData(releaseUnclaimedEvent);
 
     setTimeout(async () => {
-      WorldState.ITEMS_RELEASED = false;
+      WorldState.ITEMS_RELEASED--;
       WorldState.RELEASE_ZONE = null;
       const message = `All items locked!`;
       tmi.say(config.channel, `${config.BOT_PREFIX}🔒 ${message}`);

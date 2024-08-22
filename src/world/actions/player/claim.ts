@@ -20,7 +20,7 @@ export async function claimItem(
 ): Promise<void> {
   let items;
 
-  if (WorldState.ITEMS_RELEASED === false) {
+  if (WorldState.ITEMS_RELEASED === 0) {
     // claimable items are those spawned or dropped < 1 minute ago
     const oneMinuteAgo = new Date(Date.now() - 1000 * 60);
 
