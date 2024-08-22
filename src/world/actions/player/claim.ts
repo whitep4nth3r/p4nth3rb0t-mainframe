@@ -64,6 +64,7 @@ export async function claimItem(
         return;
       } else {
         // user can claim item
+
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -75,7 +76,7 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `@${username} claimed ${name} in the ${player.zone} zone`;
+          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})`;
           tmi.say(config.channel, `${config.BOT_PREFIX}🎒 ${message}`);
           await sendPantherworldFeedEvent(
             message,
@@ -91,6 +92,7 @@ export async function claimItem(
               username: username,
               zone: player.zone,
               item: name,
+              rarity: firstClaimableItem.rarity,
             },
           };
 

@@ -14,15 +14,12 @@ import {
 import { sendPantherworldFeedEvent } from "../../../discord";
 import { PantherworldEvent } from "../../api/types";
 import { spawn, SpawnEventType } from "../../spawn";
-import { releaseUnclaimed } from "../leader/releaseUnclaimed";
+// import { releaseUnclaimed } from "../leader/releaseUnclaimed";
 import { PantherworldZones } from "../../zones";
 
 const ITEMS_PER_MS = 250;
 
-async function runSpawnAndReleaseCheck(
-  userDisplayName: string,
-  moveToZone: string,
-): Promise<void> {
+async function runSpawnCheck(userDisplayName: string): Promise<void> {
   // 15% chance of spawning an item
   const willSpawn = Math.random() > 0.85;
 
@@ -31,13 +28,6 @@ async function runSpawnAndReleaseCheck(
       type: SpawnEventType.Move,
       data: { username: userDisplayName },
     });
-  } else {
-    // if no spawn, 15% probability of release
-    const willRelease = Math.random() > 0.85;
-
-    if (willRelease) {
-      await releaseUnclaimed(moveToZone);
-    }
   }
 }
 
@@ -128,7 +118,7 @@ async function dealWithExistingPlayer(
 
     await announceMove(player.userDisplayName, moveToZone, delayInMs);
     await sendWebsocketEvent(player.userId, player.userDisplayName, moveToZone);
-    await runSpawnAndReleaseCheck(player.userDisplayName, moveToZone);
+    await runSpawnCheck(player.userDisplayName);
   }, delayInMs);
 }
 
@@ -165,10 +155,7 @@ async function dealWithNewPlayer(
           moveToZone,
         );
 
-        await runSpawnAndReleaseCheck(
-          newPlayerInsert.userDisplayName,
-          moveToZone,
-        );
+        await runSpawnCheck(newPlayerInsert.userDisplayName);
       }
     } catch (error) {
       Sentry.captureException(error);
