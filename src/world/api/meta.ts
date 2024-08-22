@@ -13,8 +13,8 @@ export async function getMeta(): Promise<MetaResponse> {
         $match: {
           userId: { $ne: null },
           used: { $ne: true },
-          spoiled: { $nd: true },
-          cooked: { $nd: true },
+          spoiled: { $ne: true },
+          cooked: { $ne: true },
         },
       },
       { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
