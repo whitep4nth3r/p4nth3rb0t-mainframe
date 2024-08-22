@@ -1,3 +1,4 @@
+import { BeachItems } from "./../items/beach";
 import { Vegetables } from "./../items/vegetables";
 import { Natural } from "./../items/natural";
 import { UniversalItems } from "./../items/universal";
@@ -6,7 +7,6 @@ import { Recipe } from "../api/types";
 import { Fruits } from "../items/fruits";
 import { Legumes } from "../items/legumes";
 import { Spices } from "../items/spices";
-import { BeachItems } from "../items/beach";
 
 export const FoodRecipes: Record<string, Recipe> = {
   "Marinated green olives": {
@@ -115,6 +115,71 @@ export const FoodRecipes: Record<string, Recipe> = {
         Spices.find((item) => item.name === "whole nutmeg"),
         Spices.find((item) => item.name === "black pepper"),
         BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Mashed avocado (aka guacamole)": {
+    title: "Mashed avocado (aka guacamole)",
+    description:
+      "Try adding various herbs, spices, fruits, citrus or maybe even something from the sea to a delicious avocado.",
+    names: [
+      "guacamole",
+      "guac",
+      "fancy mash",
+      "mash",
+      "dip",
+      "molido",
+      "salsa",
+      "röra",
+    ],
+    ingredients: {
+      primary: Vegetables.find((item) => item.name === "avocado"),
+      secondary: [
+        Vegetables.find((item) => item.name === "black olive"),
+        Vegetables.find((item) => item.name === "spring onions"),
+        Vegetables.find((item) => item.name === "watercress"),
+        Vegetables.find((item) => item.name === "red onion"),
+        BeachItems.find((item) => item.name === "crab claw"),
+        BeachItems.find((item) => item.name === "lobster claw"),
+        BeachItems.find((item) => item.name === "sea salt"),
+        Herbs.find((item) => item.name === "fresh thyme"),
+        Herbs.find((item) => item.name === "fresh ginger"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Herbs.find((item) => item.name === "fresh parsley"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Fruits.find((item) => item.name === "tomato"),
+        Fruits.find((item) => item.name === "lemon"),
+        Fruits.find((item) => item.name === "lime"),
+        Fruits.find((item) => item.name === "mango chunk"),
+        Fruits.find((item) => item.name === "whole mango"),
+        Spices.find((item) => item.name === "black pepper"),
+      ],
+    },
+  },
+  "Clam chowder": {
+    title: "Clam chowder",
+    description:
+      "Combine a clam shell with other shellfish, sea salt and fresh herbs and vegetables for a hearty seaside-inspired chowder.",
+    names: ["chowder", "soup", "broth", "stew", "bisque"],
+    ingredients: {
+      primary: BeachItems.find((item) => item.name === "clam shell"),
+      secondary: [
+        BeachItems.find((item) => item.name === "sea salt"),
+        BeachItems.find((item) => item.name === "whelk shell"),
+        BeachItems.find((item) => item.name === "mussel shell"),
+        Vegetables.find((item) => item.name === "white potato"),
+        Vegetables.find((item) => item.name === "sweet potato"),
+        Vegetables.find((item) => item.name === "yam"),
+        Vegetables.find((item) => item.name === "carrot"),
+        Vegetables.find((item) => item.name === "parsnip"),
+        Vegetables.find((item) => item.name === "cabbage"),
+        Vegetables.find((item) => item.name === "spring onions"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "celery stick"),
+        Vegetables.find((item) => item.name === "radish"),
+        Vegetables.find((item) => item.name === "chestnut mushroom"),
+        Vegetables.find((item) => item.name === "shallot"),
       ],
     },
   },
