@@ -29,7 +29,7 @@ export async function claimItem(
       $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
-    WorldState.RELEASE_ZONES.forEach(async (releaseZone) => {
+    const futures = WorldState.RELEASE_ZONES.map(async (releaseZone) => {
       let zoneItems = await PantherworldItemModel.find({
         name: name,
         userId: null,
@@ -37,6 +37,7 @@ export async function claimItem(
       });
       items.push(...zoneItems);
     });
+    await Promise.all(futures);
   }
 
   if (items.length === 0) {
