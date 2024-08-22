@@ -69,6 +69,10 @@ export async function claimItem(
       } else {
         // user can claim item
 
+        // 5% chance of getting a bonus item
+        const willGetBonus = Math.random() > 0.95;
+
+        // claim original item
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -80,7 +84,21 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})`;
+          const bonusMessage = willGetBonus
+            ? `, and got a bonus ${name}! 🎉`
+            : "";
+
+          if (willGetBonus) {
+            await PantherworldItemModel.create({
+              name: firstClaimableItem.name,
+              userId: userId,
+              zone: firstClaimableItem.zone,
+              rarity: firstClaimableItem.rarity,
+            });
+          }
+
+          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})${bonusMessage}`;
+
           tmi.say(config.channel, `${config.BOT_PREFIX}🎒 ${message}`);
           await sendPantherworldFeedEvent(
             message,
