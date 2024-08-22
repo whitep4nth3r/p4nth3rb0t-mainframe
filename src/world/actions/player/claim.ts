@@ -29,15 +29,15 @@ export async function claimItem(
       $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
-    const futures = WorldState.RELEASE_ZONES.map(async (releaseZone) => {
-      let zoneItems = await PantherworldItemModel.find({
+    const itemQueries = WorldState.RELEASE_ZONES.map(async (releaseZone) => {
+      const zoneItems = await PantherworldItemModel.find({
         name: name,
         userId: null,
         zone: releaseZone.name,
       });
       items.push(...zoneItems);
     });
-    await Promise.all(futures);
+    await Promise.all(itemQueries);
   }
 
   if (items.length === 0) {
