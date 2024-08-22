@@ -9,7 +9,14 @@ import { MetaResponse, Population } from "./types";
 export async function getMeta(): Promise<MetaResponse> {
   const mostRecentUpdatedItem = (
     await PantherworldItemModel.aggregate([
-      { $match: { userId: { $ne: null }, cooked: null } }, // Filter documents where userId is not null and item not cooked
+      {
+        $match: {
+          userId: { $ne: null },
+          used: { $ne: true },
+          spoiled: { $nd: true },
+          cooked: { $nd: true },
+        },
+      },
       { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
       { $limit: 1 }, // Limit the result to 1 document
       {
