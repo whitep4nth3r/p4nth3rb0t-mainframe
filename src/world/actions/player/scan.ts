@@ -33,7 +33,7 @@ function getStringListOfAvailableKeyValuePairs(keyValuePairs: object): string {
 }
 
 // not tested because of random key generation
-export function getCategoryCountKeyValuePairs(fullWorldItems, dbQueryItems) {
+export function getCategoryCountKeyValuePairs(fullWorldItems: WorldItem[], dbQueryItems) {
   const keyValuePairs = fullWorldItems.map((item) => {
     return {
       [getRandomEntry(item.categories)]: getCountOfDbItemByName(

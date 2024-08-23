@@ -7,12 +7,12 @@ export enum PantherworldZoneNames {
   Swamp = "swamp",
 }
 
-type _Zone = {
+export type Zone = {
   name: string;
   nearbyZones: string[];
 };
 
-export const PantherworldZones: _Zone[] = [
+export const PantherworldZones: Zone[] = [
   {
     name: PantherworldZoneNames.Beach,
     nearbyZones: [
