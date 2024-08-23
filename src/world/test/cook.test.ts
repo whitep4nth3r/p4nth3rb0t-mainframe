@@ -8,6 +8,8 @@ import {
   getIngredientsFromCraftCommand,
 } from "../actions/player/cook";
 import { WorldItems } from "../items/all";
+import { Vegetables } from "../items/vegetables";
+import { Herbs } from "../items/herbs";
 const MarinatedGreenOlives = FoodRecipes["Marinated green olives"];
 
 test("Make recipe name", () => {
@@ -21,7 +23,10 @@ test("Make recipe name", () => {
 });
 
 test("Combined rarity", () => {
-  const result = getCombinedRarity(["green olive", "fresh red chilli"]);
+  const result = getCombinedRarity([
+    Vegetables.find((item) => item.name === "green olive"),
+    Herbs.find((item) => item.name === "fresh red chilli"),
+  ]);
 
   expect(result).toStrictEqual(109);
 });

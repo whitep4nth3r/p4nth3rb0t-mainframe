@@ -18,9 +18,9 @@ export async function claimItem(
   userId: string,
   username: string,
 ): Promise<void> {
-  let items;
+  let items = [];
 
-  if (WorldState.ITEMS_RELEASED === false) {
+  if (WorldState.RELEASE_ZONES.length === 0) {
     // claimable items are those spawned or dropped < 1 minute ago
     const oneMinuteAgo = new Date(Date.now() - 1000 * 60);
 
@@ -29,11 +29,15 @@ export async function claimItem(
       $or: [{ createdAt: { $gt: oneMinuteAgo } }, { dropped: true }],
     });
   } else {
-    items = await PantherworldItemModel.find({
-      name: name,
-      userId: null,
-      zone: WorldState.RELEASE_ZONE,
+    const itemQueries = WorldState.RELEASE_ZONES.map(async (releaseZone) => {
+      const zoneItems = await PantherworldItemModel.find({
+        name: name,
+        userId: null,
+        zone: releaseZone.name,
+      });
+      items.push(...zoneItems);
     });
+    await Promise.all(itemQueries);
   }
 
   if (items.length === 0) {
@@ -65,6 +69,10 @@ export async function claimItem(
       } else {
         // user can claim item
 
+        // 5% chance of getting a bonus item
+        const willGetBonus = Math.random() > 0.95;
+
+        // claim original item
         const updatedItem = await PantherworldItemModel.updateOne(
           {
             _id: firstClaimableItem._id,
@@ -76,7 +84,21 @@ export async function claimItem(
         );
 
         if (updatedItem.modifiedCount === 1) {
-          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})`;
+          const bonusMessage = willGetBonus
+            ? `, and got a bonus ${name}! 🎉`
+            : "";
+
+          if (willGetBonus) {
+            await PantherworldItemModel.create({
+              name: firstClaimableItem.name,
+              userId: userId,
+              zone: firstClaimableItem.zone,
+              rarity: firstClaimableItem.rarity,
+            });
+          }
+
+          const message = `@${username} claimed ${name} in the ${player.zone} zone (rarity: ${firstClaimableItem.rarity})${bonusMessage}`;
+
           tmi.say(config.channel, `${config.BOT_PREFIX}🎒 ${message}`);
           await sendPantherworldFeedEvent(
             message,

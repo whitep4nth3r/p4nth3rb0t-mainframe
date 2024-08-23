@@ -97,11 +97,11 @@ export function makeUniqueRecipeName(
   return `${shuffledUnique.join(" ")} ${recipe.ingredients.primary.name} ${endWord}`;
 }
 
-export function getCombinedRarity(ingredientList: string[]) {
+export function getCombinedRarity(ingredientList: WorldItem[]) {
   let combinedRarity = 0;
 
   WorldItems.forEach((item) => {
-    if (ingredientList.includes(item.name)) {
+    if (ingredientList.find((ingredient) => item.name === ingredient.name)) {
       combinedRarity += item.rarity;
     }
   });
@@ -211,7 +211,7 @@ export async function cookItem(
   }
 
   // calculate the rarity of all ingredients (with some probability of a multiplier)
-  const combinedRarity = getCombinedRarity(ingredientList);
+  const combinedRarity = getCombinedRarity(matchedSecondaryIngredients);
 
   // 30% chance of a multiplier
   const doMultiplier = Math.random() >= 0.7;
