@@ -28,7 +28,7 @@ export const WorldLeaderCommands = {
       data: { username: "whitep4nth3rskjdfsdkjfhskdjfh" },
     });
   },
-  "!mfe": async () => {
+  "!demo": async () => {
     const events: EventData[] = [
       {
         type: SpawnEventType.StreamOnline,
