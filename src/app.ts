@@ -1,8 +1,8 @@
 import "./env";
 
 import * as Sentry from "@sentry/node";
-import Database from "./data/database";
 
+import { database } from "./data/database";
 import { webServer } from "./webserver";
 import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
@@ -21,10 +21,14 @@ import "./events/twitch/cheers";
 import "./events/twitch/redemptions";
 import "./events/twitch/moods";
 
-Database.connect();
-
 (async () => {
   try {
+    await database.initialize().then(() => {
+      console.log("📒 Database connection has been established successfully")
+    }).catch((error) => {
+      console.error("Unable to connect to the database:", error)
+    });
+
     webServer.listen(process.env.PORT || 8999, () => {
       console.log(
         `p4nth3rb0t mainframe started on port ${

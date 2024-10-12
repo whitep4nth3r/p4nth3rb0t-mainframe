@@ -1,7 +1,8 @@
 import * as Sentry from "@sentry/node";
 import UserManager from "./users/UserManager";
 import { tmi } from "./tmi";
-import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
+import { database } from "./data/database";
+import { DiscordAnnouncement } from "./data/entities/DiscordAnnouncementEntity";
 import Discord, {
   ActionRowBuilder,
   ButtonBuilder,
@@ -20,6 +21,8 @@ import {
 import type { StreamInfo } from "./data/types";
 import { spawn, SpawnEventType } from "./world/spawn";
 import { PantherworldEvent } from "./world/api/types";
+
+const discordAnnouncementRepository = database.getRepository(DiscordAnnouncement);
 
 const getTwitchVodTimestampInSeconds = (
   date_now: Date,
@@ -178,8 +181,10 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
           ? `<@&${config.discord.liveAnnouncementsRoleId}> `
           : "";
 
-      const existing = await DiscordAnnouncementModel.findOne({
-        streamId: streamInfo.id,
+      const existing = await discordAnnouncementRepository.findOne({
+        where: {
+          streamId: streamInfo.id,
+        }
       });
       let message;
       if (existing) {
@@ -206,16 +211,13 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         data: { username: user.display_name },
       });
 
-      await DiscordAnnouncementModel.updateOne(
-        { memberId: streamInfo.broadcaster_user_id },
-        {
-          memberId: streamInfo.broadcaster_user_id,
-          messageId: message.id,
-          streamId: streamInfo.id,
-          category: category,
-        },
-        { upsert: true },
-      );
+      const discordAnnouncement = new DiscordAnnouncement();
+      discordAnnouncement.memberId = streamInfo.broadcaster_user_id;
+      discordAnnouncement.messageId = message.id;
+      discordAnnouncement.streamId = streamInfo.id;
+      discordAnnouncement.category = category;
+
+      await discordAnnouncementRepository.save(discordAnnouncement);
     }
   }
 };
@@ -227,8 +229,10 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
     return;
   }
 
-  const saved_message = await DiscordAnnouncementModel.findOne({
-    memberId: member_id,
+  const saved_message = await discordAnnouncementRepository.findOne({
+    where: {
+      memberId: member_id,
+    }
   });
 
   if (!saved_message) {
@@ -264,7 +268,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       data: { username: user.display_name },
     });
 
-    await DiscordAnnouncementModel.deleteOne({ memberId: member_id });
+    await discordAnnouncementRepository.delete({memberId: member_id});
   }
 };
 

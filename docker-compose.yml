@@ -1,22 +1,21 @@
-version: "3"
 services:
-  mongo:
-    container_name: p4nth3rb0t-mongo
-    image: mongo
+  postgres:
+    container_name: p4nth3rb0t-postgres
+    image: postgres
     restart: always
     ports:
-      - 27017:27017
+      - "5432:5432"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: p4nth3rb0t
-      MONGO_INITDB_ROOT_PASSWORD: supersecretpassword
+      POSTGRES_USER: p4nth3rb0t
+      POSTGRES_PASSWORD: supersecretpassword
 
-  mongo-express:
-    container_name: p4nth3rb0t-mongo-express
-    image: mongo-express
+  postgres-web:
+    container_name: p4nth3rb0t-postgres-web
+    image: sosedoff/pgweb
     restart: always
+    depends_on:
+      - postgres
     ports:
-      - 8081:8081
+      - "5055:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://p4nth3rb0t:supersecretpassword@mongo:27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: p4nth3rb0t
-      ME_CONFIG_MONGODB_ADMINPASSWORD: supersecretpassword
+      DATABASE_URL: postgres://p4nth3rb0t:supersecretpassword@postgres:5432/p4nth3rb0t?sslmode=disable

@@ -1,20 +1,16 @@
-import mongoose from "mongoose";
+import { config } from "dotenv";
+import { DataSource } from "typeorm";
 
-const conn_string = process.env.DB_CONN_STRING;
+// This is here because we don't have environment variables from the project on the CLI
+config();
 
-const connect = () => {
-  if (conn_string) {
-    mongoose
-      .connect(conn_string, {
-        authSource: "admin",
-      })
-      .then(() => {
-        console.log("🧁 Database connected!");
-      })
-      .catch((e) => {
-        console.error("Connection error", e.message);
-      });
-  }
-};
-
-export default { connect };
+export const database = new DataSource({
+  url: process.env.DATABASE_URL,
+  type: "postgres",
+  synchronize: false,
+  useUTC: true,
+  logging: process.env.NODE_ENV !== "production" ? ["error"] : false,
+  logger: "advanced-console",
+  entities: ["./src/data/entities/*.ts"],
+  migrations: ["./migrations/*.ts"],
+});

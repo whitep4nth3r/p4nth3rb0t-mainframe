@@ -1,9 +1,10 @@
-import { FullTwitchUser, TwitchAnnouncementColor } from "./../../data/types";
+import { FullTwitchUser, TwitchAnnouncementColor } from "../../data/types";
 import * as Sentry from "@sentry/node";
 import WebsocketServer from "../../WebSocketServer";
 import { config } from "../../config";
 import UserManager from "../../users/UserManager";
-import TwitchFollowerModel from "../../data/models/TwitchFollower";
+import { database } from "../../data/database";
+import { TwitchFollower } from "../../data/entities/TwitchFollowerEntity";
 import { announce } from "../../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
@@ -12,12 +13,16 @@ import { getRandomEntry } from "../../utils/getRandomEntry";
 import { PantherworldZones } from "../../world/zones";
 import { movePlayer } from "../../world/actions/player/move";
 
+const twitchFollowerRepository = database.getRepository(TwitchFollower);
+
 export const sendBroadcasterFollowEvent = async (
   followerName: string,
   followerUserId: string,
 ) => {
-  const existingFollower = await TwitchFollowerModel.findOne({
-    userId: followerUserId,
+  const existingFollower = await twitchFollowerRepository.findOne({
+    where: {
+      userId: followerUserId,
+    },
   });
 
   if (existingFollower) {
@@ -72,14 +77,11 @@ export const sendBroadcasterFollowEvent = async (
           }, 3500);
         }
 
-        await TwitchFollowerModel.updateOne(
-          { userId: followerUserId },
-          {
-            userId: followerUserId,
-            userDisplayName: followerName,
-          },
-          { upsert: true },
-        );
+        const newFollower = new TwitchFollower();
+        newFollower.userId = followerUserId;
+        newFollower.userDisplayName = followerName;
+
+        await twitchFollowerRepository.save(newFollower);
       } catch (error) {
         Sentry.captureException(error);
       }

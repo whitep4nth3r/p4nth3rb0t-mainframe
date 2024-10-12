@@ -1,13 +1,8 @@
 import * as Sentry from "@sentry/node";
-import AccessTokenModel, {
-  AccessTokenDoc,
-  AccessTokenData,
-} from "../data/models/AccessToken";
-import AuthCodeModel from "../data/models/AuthCode";
-import UserAccessTokenModel, {
-  UserAccessTokenDoc,
-  UserAccessTokenData,
-} from "../data/models/UserAccessToken";
+import { database } from "../data/database";
+import { AccessToken as AccessTokenEntity } from "../data/entities/AccessTokenEntity";
+import { UserAccessToken } from "../data/entities/UserAccessTokenEntity";
+import { AuthCode } from "../data/entities/AuthCodeEntity";
 import {
   AccessTokenResponse,
   AuthCodeResponse,
@@ -27,9 +22,13 @@ export const USER_SCOPES: string[] = [
   "channel:read:hype_train",
 ];
 
+const accessTokenRepository = database.getRepository(AccessTokenEntity);
+const userAccessTokenRepository = database.getRepository(UserAccessToken);
+const authCodeRepository = database.getRepository(AuthCode);
+
 export default class AccessToken {
-  async getUserAccessToken(): Promise<UserAccessTokenData | undefined> {
-    const cachedToken = await UserAccessTokenModel.findOne();
+  async getUserAccessToken(): Promise<UserAccessToken | undefined> {
+    const cachedToken = await userAccessTokenRepository.findOneBy({});
 
     if (cachedToken) {
       if (
@@ -39,18 +38,18 @@ export default class AccessToken {
         return cachedToken;
       } else {
         // Since the cached token has incorrect scope we need to clear it
-        await UserAccessTokenModel.deleteOne();
+        await userAccessTokenRepository.remove(cachedToken);
         await this.announceMissingAuthCode();
       }
     } else {
-      const authCode = await AuthCodeModel.findOne();
+      const authCode = await authCodeRepository.findOneBy({});
       if (!authCode) {
         await this.announceMissingAuthCode();
       } else {
         const token = await this.fetchUserAccessToken(authCode.code);
         if (token) {
           await this.setUserAccessToken(token);
-          return (await UserAccessTokenModel.findOne()) || undefined;
+          return await userAccessTokenRepository.findOneBy({});
         } else {
           await this.announceMissingAuthCode();
         }
@@ -76,9 +75,7 @@ export default class AccessToken {
     );
   }
 
-  async refreshUserAccessToken(
-    accessTokenData: UserAccessTokenData,
-  ): Promise<boolean> {
+  async refreshUserAccessToken(accessTokenData: UserAccessToken): Promise<boolean> {
     try {
       const params = {
         grant_type: "refresh_token",
@@ -90,9 +87,9 @@ export default class AccessToken {
         return true;
       } else {
         // Most likely, Twitch did not accept the refresh token so should clear it
-        const deleteResult = await UserAccessTokenModel.deleteOne();
+        await userAccessTokenRepository.remove(accessTokenData);
         console.log(
-          `Failed to refresh token. Cleared token from db: ${deleteResult}`,
+          `Failed to refresh token. The token is deleted from db.`
         );
       }
     } catch (error: any) {
@@ -101,15 +98,9 @@ export default class AccessToken {
     return false;
   }
 
-  /**
-   * Returns an existing valid access token
-   * or fetches a new one
-   **/
-  async get(): Promise<AccessTokenData | undefined> {
-    const getAccessToken = await AccessTokenModel.findOne();
-
-    const isValid =
-      getAccessToken && (await this.checkExistsAndValid(getAccessToken));
+  async get(): Promise<AccessTokenEntity | undefined> {
+    const getAccessToken = await accessTokenRepository.findOneBy({});
+    const isValid = getAccessToken && await this.checkExistsAndValid(getAccessToken);
 
     if (getAccessToken && isValid) {
       return getAccessToken;
@@ -120,70 +111,61 @@ export default class AccessToken {
 
       if (response) {
         await this.set(response);
+
         return this.get();
       }
     } catch (error) {
-      console.log(error);
+      Sentry.captureException(error);
     }
   }
 
-  /**
-   * 15/05/2020
-   * Added | any to method signature due to mongoose update getting confused
-   * Here's some reading about mongoose and TS: https://mongoosejs.com/docs/typescript.html
-   * It recommends:
-   *
-   * "This approach works, but we recommend your document interface not extend Document. Using extends Document makes it difficult for Mongoose to infer which properties are present on query filters, lean documents, and other cases."
-   * But how else would one interact with AccessTokenDoc unless it extends the Document signature?
-   */
-  async set(data: AccessTokenResponse): Promise<AccessTokenDoc | any> {
-    return AccessTokenModel.updateOne(
-      {},
-      {
-        accessToken: data.access_token,
-        tokenType: data.token_type,
-        expiresIn: data.expires_in,
-        updatedAt: Math.floor(Date.now() / 1000),
-      },
-      { upsert: true },
-    );
+  async set(data: AccessTokenResponse): Promise<AccessTokenEntity> {
+    let accessToken = await accessTokenRepository.findOneBy({});
+
+    if (!accessToken) {
+      accessToken = accessTokenRepository.create();
+    }
+
+    accessToken.accessToken = data.access_token;
+    accessToken.tokenType = data.token_type;
+    accessToken.expiresIn = data.expires_in;
+
+    return accessTokenRepository.save(accessToken);
   }
 
-  async setUserAccessToken(
-    data: UserAccessTokenResponse,
-  ): Promise<UserAccessTokenDoc | null> {
-    await UserAccessTokenModel.updateOne(
-      {},
-      {
-        accessToken: data.access_token,
-        refreshToken: data.refresh_token,
-        tokenType: data.token_type,
-        expiresIn: data.expires_in,
-        scope: data.scope,
-        updatedAt: Math.floor(Date.now() / 1000),
-      },
-      { upsert: true },
-    );
+  async setUserAccessToken(data: UserAccessTokenResponse): Promise<UserAccessToken> {
+    let userAccessToken = await userAccessTokenRepository.findOneBy({});
+    if (!userAccessToken) {
+      userAccessToken = userAccessTokenRepository.create();
+    }
 
-    return UserAccessTokenModel.findOne();
+    userAccessToken.accessToken = data.access_token;
+    userAccessToken.refreshToken = data.refresh_token;
+    userAccessToken.tokenType = data.token_type;
+    userAccessToken.expiresIn = data.expires_in;
+    userAccessToken.scope = data.scope;
+
+    return userAccessTokenRepository.save(userAccessToken);
   }
 
-  async setAuthCode(data: AuthCodeResponse): Promise<void> {
-    await AuthCodeModel.updateOne(
-      {},
-      {
-        code: data.code,
-        scope: data.scope,
-      },
-      { upsert: true },
-    );
+  async setAuthCode(data: AuthCodeResponse): Promise<AuthCode> {
+    let authCode = await authCodeRepository.findOneBy({});
+    if (!authCode) {
+      authCode = authCodeRepository.create();
+    }
+
+    authCode.code = data.code;
+    authCode.scope = data.scope;
+    authCode.updatedAt = new Date();
+
+    return authCodeRepository.save(authCode);
   }
 
-  async checkExistsAndValid(accessToken: AccessTokenData): Promise<boolean> {
+  async checkExistsAndValid(accessToken: AccessTokenEntity): Promise<boolean> {
     const { updatedAt, expiresIn } = accessToken;
     const timeNow = Math.floor(Date.now() / 1000);
 
-    return updatedAt + expiresIn > timeNow;
+    return updatedAt.getTime() / 1000 + expiresIn > timeNow;
   }
 
   async fetch(): Promise<AccessTokenResponse | undefined> {
@@ -212,20 +194,17 @@ export default class AccessToken {
     return undefined;
   }
 
-  async fetchUserAccessToken(
-    code: string,
-  ): Promise<UserAccessTokenResponse | undefined> {
+  async fetchUserAccessToken(code: string): Promise<UserAccessTokenResponse | undefined> {
     const params = {
       code: code,
       grant_type: "authorization_code",
       redirect_uri: process.env.AUTH_REDIRECT_URL,
     };
+
     return this.invokeTokenEndpoint(params);
   }
 
-  async invokeTokenEndpoint(
-    params: any,
-  ): Promise<UserAccessTokenResponse | undefined> {
+  async invokeTokenEndpoint(params: any): Promise<UserAccessTokenResponse | undefined> {
     const urlParams = new URLSearchParams({
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
