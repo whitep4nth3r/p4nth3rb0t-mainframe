@@ -45,8 +45,8 @@ export const sendBackseatEvent = async (username: string) => {
     }
   } else {
     console.log("Known chatters: " + currentChatters);
-    sendClearBackSeatEvent();
-    tmi.say(
+    await sendClearBackSeatEvent();
+    await tmi.say(
       config.channel,
       "p4nth3rPEWPEW PLEASE HOLD. The backseater you requested is not registered in the chat yet. PLEASE HOLD. p4nth3rPEWPEW",
     );

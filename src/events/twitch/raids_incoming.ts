@@ -36,8 +36,8 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 
       setTimeout(async () => {
         // this will trigger twitch guru stream clips
-        tmi.say(config.channel, `!so ${user.login}`);
-        sendShoutoutEvent(user.id, `!so ${user.login}`);
+        await tmi.say(config.channel, `!so ${user.login}`);
+        await sendShoutoutEvent(user.id, `!so ${user.login}`);
       }, 5000);
 
       const spawnAmount = Math.round(raiderCount / 4) > 26 ? 25 : raiderCount;

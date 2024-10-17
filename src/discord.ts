@@ -3,6 +3,9 @@ import UserManager from "./users/UserManager";
 import { tmi } from "./tmi";
 import DiscordAnnouncementModel from "./data/models/DiscordAnnouncement";
 import Discord, {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   EmbedBuilder,
   escapeMarkdown,
   GatewayIntentBits,
@@ -44,6 +47,7 @@ const TWITCH_TTS_TAG_ID = "1186989607770923129";
 
 let announcementsChannel: TextChannel;
 let feedChannel: TextChannel;
+let modChannel: TextChannel;
 let helpChannel: ForumChannel;
 
 import "./events/discord/messageReactionAdd";
@@ -60,12 +64,38 @@ discord.on("ready", async () => {
     config.discord.p4nth3rworldChannelId,
   )) as TextChannel;
 
+  modChannel = (await discord.channels.fetch(
+    config.discord.modChannelId,
+  )) as TextChannel;
+
   helpChannel = (await discord.channels.fetch(
     config.discord.techHelpChannelId,
   )) as ForumChannel;
 });
 
 const POST_TITLE_CHAR_LIMIT = 100;
+
+export const sendModChannelAuthorizeMessage = async (url: string) => {
+  const authorizeButton = new ButtonBuilder()
+    .setLabel("Authorize with Twitch")
+    .setStyle(ButtonStyle.Link)
+    .setURL(url);
+
+  const row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(authorizeButton);
+
+  const embed = new EmbedBuilder()
+    .setTitle("ACTION REQUIRED")
+    .setDescription(`You need to authorize ${config.bot.user_name} with Twitch`)
+    .setColor("#FF0000")
+    .setTimestamp();
+
+  await modChannel.send({
+    content: `<@${config.discord.broadcasterUserId}>`,
+    components: [row],
+    embeds: [embed],
+  });
+};
 
 export const createTechHelpThread = async (
   twitchUsername: string,
@@ -79,11 +109,11 @@ export const createTechHelpThread = async (
     if (liveStream !== null) {
       const vod = await fetchVideoByUserId(config.broadcaster.user_id);
       if (vod !== null) {
-        const streamStartTime = new Date(liveStream.started_at);
+        const streamStartTime = new Date(liveStream.data[0].started_at);
         const now = new Date();
 
         const vodLink = `https://www.twitch.tv/videos/${
-          vod.id
+          vod.data.id
         }?t=${getTwitchVodTimestampInSeconds(now, streamStartTime)}`;
 
         const postTitle =
@@ -107,7 +137,7 @@ export const createTechHelpThread = async (
           reason: "TTS redemption on whitep4nth3r's stream",
         });
 
-        tmi.say(
+        await tmi.say(
           config.channel,
           `Thanks @${twitchUsername}! Your question has been posted to The Claw Discord for discussion. View it here: https://discord.com/channels/${newHelpPost.guildId}/${newHelpPost.id}`,
         );
@@ -128,9 +158,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         streamInfo.broadcaster_user_id,
       );
 
-      const videoTitle = stream !== null ? stream.title : "";
-      const videoThumbnailUrl = stream !== null ? stream.thumbnail_url : "";
-      const category = stream !== null ? stream.game_name : "";
+      const videoTitle = stream !== null ? stream.data[0].title : "";
+      const videoThumbnailUrl = stream !== null ? stream.data[0].thumbnail_url : "";
+      const category = stream !== null ? stream.data[0].game_name : "";
 
       const embed = buildDiscordEmbed(
         true,
@@ -217,11 +247,11 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       user.login,
       user.display_name,
       user.profile_image_url,
-      video.title,
-      video.thumbnail_url,
-      `Finished streaming • Streamed for ${video.duration}`,
+      video.data.title,
+      video.data.thumbnail_url,
+      `Finished streaming • Streamed for ${video.data.duration}`,
       saved_message.category,
-      video.id,
+      video.data.id,
     );
 
     await message.edit({

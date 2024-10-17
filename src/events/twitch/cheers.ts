@@ -46,7 +46,7 @@ tmi.on("cheer", async (channel: string, userstate: ChatUserstate) => {
       data: { bits: Number(userstate["bits"]) },
     });
 
-    sendCheerEvent(
+    await sendCheerEvent(
       userstate["bits"] as string,
       userstate["id"] as string,
       userstate["username"] as string,

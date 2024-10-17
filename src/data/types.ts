@@ -9,6 +9,10 @@ export interface TwitchChannel {
   title: string;
 }
 
+export interface TwitchChannelResponse {
+  data: TwitchChannel[];
+}
+
 export interface TwitchUser {
   user_id: string;
   user_name: string;
@@ -123,15 +127,13 @@ export interface MyBadges extends Badges {
   founder?: string;
 }
 
-export interface GameByIdResponse {
-  name: string;
-}
-
 export interface TwitchVideo {
-  id: string;
-  thumbnail_url: string;
-  duration: string;
-  title: string;
+  data: {
+    id: string;
+    thumbnail_url: string;
+    duration: string;
+    title: string;
+  };
 }
 
 export interface StreamInfo {
@@ -144,18 +146,22 @@ export interface StreamInfo {
 }
 
 export interface StreamByBroadcasterIdResponse {
-  id: string;
-  user_id: string;
-  user_name: string;
-  game_id: string;
-  game_name: string;
-  type: string;
-  title: string;
-  viewer_count: number;
-  started_at: string;
-  language: string;
-  thumbnail_url: string;
-  tag_ids: string[];
+  data: [
+    {
+      id: string;
+      user_id: string;
+      user_name: string;
+      game_id: string;
+      game_name: string;
+      type: string;
+      title: string;
+      viewer_count: number;
+      started_at: string;
+      language: string;
+      thumbnail_url: string;
+      tag_ids: string[];
+    },
+  ];
 }
 
 export enum ImageDrops {
@@ -181,3 +187,16 @@ export enum TwitchAnnouncementColor {
 }
 
 export type MoodEmotes = { [key: string]: string };
+
+export interface StartRaidResponse {
+  status: number;
+  data: [];
+}
+
+export interface TwitchModeratorsResponse {
+  data: TwitchUser[];
+}
+
+export interface TwitchCurrentChattersResponse {
+  data: TwitchUser[];
+}

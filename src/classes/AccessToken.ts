@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import axios from "axios";
 import AccessTokenModel, {
   AccessTokenDoc,
   AccessTokenData,
@@ -15,8 +14,7 @@ import {
   UserAccessTokenResponse,
 } from "../data/types";
 import { URLSearchParams } from "url";
-// import { tmi } from "../tmi";
-// import { config } from "../config";
+import { sendModChannelAuthorizeMessage } from "../discord";
 
 export const USER_SCOPES: string[] = [
   "moderator:read:chatters",
@@ -69,11 +67,9 @@ export default class AccessToken {
       state: "random-uuid",
     });
 
-    // this causes an error right now...
-    // tmi.say(
-    //   config.channel,
-    //   `Doh, ${config.broadcaster.user_name} needs to (re)authorize me with Twitch!`,
-    // );
+    await sendModChannelAuthorizeMessage(
+      `https://id.twitch.tv/oauth2/authorize?${params}`,
+    );
 
     console.log(
       `Please visit: https://id.twitch.tv/oauth2/authorize?${params}`,
@@ -121,10 +117,9 @@ export default class AccessToken {
 
     try {
       const response = await this.fetch();
-      console.log(response);
 
       if (response) {
-        const accessToken = await this.set(response);
+        await this.set(response);
         return this.get();
       }
     } catch (error) {
@@ -140,10 +135,9 @@ export default class AccessToken {
    *
    * "This approach works, but we recommend your document interface not extend Document. Using extends Document makes it difficult for Mongoose to infer which properties are present on query filters, lean documents, and other cases."
    * But how else would one interact with AccessTokenDoc unless it extends the Document signature?
-   * */
-
+   */
   async set(data: AccessTokenResponse): Promise<AccessTokenDoc | any> {
-    const setAccessToken = await AccessTokenModel.updateOne(
+    return AccessTokenModel.updateOne(
       {},
       {
         accessToken: data.access_token,
@@ -153,9 +147,8 @@ export default class AccessToken {
       },
       { upsert: true },
     );
-
-    return setAccessToken;
   }
+
   async setUserAccessToken(
     data: UserAccessTokenResponse,
   ): Promise<UserAccessTokenDoc | null> {
@@ -194,18 +187,24 @@ export default class AccessToken {
   }
 
   async fetch(): Promise<AccessTokenResponse | undefined> {
+    const params = new URLSearchParams({
+      client_id: process.env.CLIENT_ID || "",
+      client_secret: process.env.CLIENT_SECRET || "",
+      grant_type: "client_credentials",
+      scope: "user:edit",
+    });
+
     try {
-      const params = new URLSearchParams({
-        client_id: process.env.CLIENT_ID || "",
-        client_secret: process.env.CLIENT_SECRET || "",
-        grant_type: "client_credentials",
-        scope: "user:edit",
-      });
-      const response = await axios.post<AccessTokenResponse>(
+      const response = await fetch(
         `https://id.twitch.tv/oauth2/token?${params}`,
+        {
+          method: "POST",
+        },
       );
 
-      return response.data;
+      if (response.ok) {
+        return await response.json() as AccessTokenResponse;
+      }
     } catch (error: any) {
       Sentry.captureException(error);
     }
@@ -227,17 +226,23 @@ export default class AccessToken {
   async invokeTokenEndpoint(
     params: any,
   ): Promise<UserAccessTokenResponse | undefined> {
+    const urlParams = new URLSearchParams({
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      ...params,
+    });
+
     try {
-      const urlParams = new URLSearchParams({
-        client_id: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
-        ...params,
-      });
-      const response = await axios.post<UserAccessTokenResponse>(
+      const response = await fetch(
         `https://id.twitch.tv/oauth2/token?${urlParams}`,
+        {
+          method: "POST",
+        },
       );
 
-      return response.data;
+      if (response.ok) {
+        return await response.json() as UserAccessTokenResponse;
+      }
     } catch (error: any) {
       Sentry.captureException(error);
     }

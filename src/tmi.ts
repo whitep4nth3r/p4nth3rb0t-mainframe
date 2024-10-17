@@ -22,7 +22,7 @@ if (testConfig.connectToFdgt) {
 }
 
 export const tmi = new (Client as any)({
-  options: { debug: process.env.NODE_ENV === "development" ? true : false },
+  options: { debug: process.env.NODE_ENV === "development" },
   connection,
   identity: {
     username: process.env.BOT_NAME,

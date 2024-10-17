@@ -39,6 +39,6 @@ discord.on(
       return;
     }
 
-    guild.members.cache.get(user.id)?.roles.add(reactionRole.role_id);
+    await guild.members.cache.get(user.id)?.roles.add(reactionRole.role_id);
   },
 );
