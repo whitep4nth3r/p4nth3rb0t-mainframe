@@ -81,8 +81,9 @@ export const sendModChannelAuthorizeMessage = async (url: string) => {
     .setStyle(ButtonStyle.Link)
     .setURL(url);
 
-  const row = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(authorizeButton);
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    authorizeButton,
+  );
 
   const embed = new EmbedBuilder()
     .setTitle("ACTION REQUIRED")
@@ -113,7 +114,7 @@ export const createTechHelpThread = async (
         const now = new Date();
 
         const vodLink = `https://www.twitch.tv/videos/${
-          vod.data.id
+          vod.id
         }?t=${getTwitchVodTimestampInSeconds(now, streamStartTime)}`;
 
         const postTitle =
@@ -159,7 +160,8 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       );
 
       const videoTitle = stream !== null ? stream.data[0].title : "";
-      const videoThumbnailUrl = stream !== null ? stream.data[0].thumbnail_url : "";
+      const videoThumbnailUrl =
+        stream !== null ? stream.data[0].thumbnail_url : "";
       const category = stream !== null ? stream.data[0].game_name : "";
 
       const embed = buildDiscordEmbed(
@@ -247,11 +249,11 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       user.login,
       user.display_name,
       user.profile_image_url,
-      video.data.title,
-      video.data.thumbnail_url,
-      `Finished streaming • Streamed for ${video.data.duration}`,
+      video.title,
+      video.thumbnail_url,
+      `Finished streaming • Streamed for ${video.duration}`,
       saved_message.category,
-      video.data.id,
+      video.id,
     );
 
     await message.edit({
@@ -321,7 +323,9 @@ export const sendPantherworldFeedEvent = async (
   if (feedChannel) {
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: `${botPrefix}${EVENT_ICONS[type as string]} ${type.toUpperCase().replace("_", " ")}`,
+        name: `${botPrefix}${EVENT_ICONS[type as string]} ${type
+          .toUpperCase()
+          .replace("_", " ")}`,
       })
       .setDescription(formatPantherworldDiscordMessage(type, message))
       .setColor(EVENT_COLORS[type as string]);
