@@ -9,6 +9,7 @@ import {
   TwitchRaidResponse,
   TwitchUser,
   TwitchVideo,
+  TwitchVideoResponse,
 } from "../data/types";
 import { config } from "../config";
 import { UserAccessTokenData } from "../data/models/UserAccessToken";
@@ -18,24 +19,21 @@ export const startRaid = async (
 ): Promise<StartRaidResponse> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "from_broadcaster_id": config.broadcaster.user_id,
-      "to_broadcaster_id": to_broadcaster_id,
+      from_broadcaster_id: config.broadcaster.user_id,
+      to_broadcaster_id: to_broadcaster_id,
     });
 
-    return await fetch(
-      `https://api.twitch.tv/helix/raids?${params}`,
-      {
-        method: "POST",
-        headers: {
-          ...clientAuthConfig(token).headers,
-          "Content-Type": "application/json",
-        },
+    return await fetch(`https://api.twitch.tv/helix/raids?${params}`, {
+      method: "POST",
+      headers: {
+        ...clientAuthConfig(token).headers,
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 
   if (response) {
-    const twitchData = await response.json() as TwitchRaidResponse;
+    const twitchData = (await response.json()) as TwitchRaidResponse;
 
     return {
       status: response.status,
@@ -52,8 +50,8 @@ export const startRaid = async (
 export const getCurrentMods = async (): Promise<TwitchUser[]> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "first": "100",
-      "broadcaster_id": config.broadcaster.user_id,
+      first: "100",
+      broadcaster_id: config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -69,7 +67,7 @@ export const getCurrentMods = async (): Promise<TwitchUser[]> => {
   });
 
   if (response) {
-    const responseData = await response.json() as TwitchModeratorsResponse;
+    const responseData = (await response.json()) as TwitchModeratorsResponse;
 
     return responseData.data as TwitchUser[];
   }
@@ -80,25 +78,23 @@ export const getCurrentMods = async (): Promise<TwitchUser[]> => {
 export const getCurrentChatters = async (): Promise<TwitchUser[]> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "first": "1000",
-      "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.broadcaster.user_id,
+      first: "1000",
+      broadcaster_id: config.broadcaster.user_id,
+      moderator_id: config.broadcaster.user_id,
     });
 
-    return await fetch(
-      `https://api.twitch.tv/helix/chat/chatters?${params}`,
-      {
-        method: "GET",
-        headers: {
-          ...clientAuthConfig(token).headers,
-          "Content-Type": "application/json",
-        },
+    return await fetch(`https://api.twitch.tv/helix/chat/chatters?${params}`, {
+      method: "GET",
+      headers: {
+        ...clientAuthConfig(token).headers,
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 
   if (response) {
-    const responseData = await response.json() as TwitchCurrentChattersResponse;
+    const responseData =
+      (await response.json()) as TwitchCurrentChattersResponse;
 
     return responseData.data as TwitchUser[];
   }
@@ -124,8 +120,8 @@ export const timeoutUserFor60Seconds = async (
 
   await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.broadcaster.user_id,
+      broadcaster_id: config.broadcaster.user_id,
+      moderator_id: config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -147,25 +143,22 @@ export const fetchVideoByUserId = async (
 ): Promise<TwitchVideo | null> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "user_id": user_id,
-      "first": "1",
+      user_id: user_id,
+      first: "1",
     });
 
-    return await fetch(`https://api.twitch.tv/helix/videos?${params}`,
-      {
-        method: "GET",
-        headers: {
-          ...clientAuthConfig(token).headers,
-          "Content-Type": "application/json",
-        },
+    return await fetch(`https://api.twitch.tv/helix/videos?${params}`, {
+      method: "GET",
+      headers: {
+        ...clientAuthConfig(token).headers,
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 
   if (response && response.ok) {
-    const responseData = await response.json() as TwitchVideo;
-
-    return responseData.data[0];
+    const responseData = (await response.json()) as TwitchVideoResponse;
+    return responseData.data[0] as TwitchVideo;
   }
 
   return null;
@@ -176,22 +169,20 @@ export const getActiveBroadcasterStreamByBroadcasterId = async (
 ): Promise<StreamByBroadcasterIdResponse | null> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "user_id": user_id,
+      user_id: user_id,
     });
 
-    return await fetch(`https://api.twitch.tv/helix/streams?${params}`,
-      {
-        method: "GET",
-        headers: {
-          ...clientAuthConfig(token).headers,
-          "Content-Type": "application/json",
-        },
+    return await fetch(`https://api.twitch.tv/helix/streams?${params}`, {
+      method: "GET",
+      headers: {
+        ...clientAuthConfig(token).headers,
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 
   if (response && response.ok) {
-    return await response.json() as StreamByBroadcasterIdResponse;
+    return (await response.json()) as StreamByBroadcasterIdResponse;
   }
 
   return null;
@@ -208,8 +199,8 @@ export const announce = async (
 
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "broadcaster_id": config.broadcaster.user_id,
-      "moderator_id": config.broadcaster.user_id,
+      broadcaster_id: config.broadcaster.user_id,
+      moderator_id: config.broadcaster.user_id,
     });
 
     return await fetch(
@@ -236,20 +227,18 @@ export const announce = async (
 export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
   const response = await callWithUserAccessToken(async (token) => {
     const params = new URLSearchParams({
-      "from_broadcaster_id": config.broadcaster.user_id,
-      "to_broadcaster_id": toBroadcasterId,
-      "moderator_id": config.broadcaster.user_id,
+      from_broadcaster_id: config.broadcaster.user_id,
+      to_broadcaster_id: toBroadcasterId,
+      moderator_id: config.broadcaster.user_id,
     });
 
-    return await fetch(`https://api.twitch.tv/helix/chat/shoutouts?${params}`,
-      {
-        method: "POST",
-        headers: {
-          ...clientAuthConfig(token).headers,
-          "Content-Type": "application/json",
-        },
+    return await fetch(`https://api.twitch.tv/helix/chat/shoutouts?${params}`, {
+      method: "POST",
+      headers: {
+        ...clientAuthConfig(token).headers,
+        "Content-Type": "application/json",
       },
-    );
+    });
   });
 
   if (response) {
@@ -282,7 +271,9 @@ const callWithUserAccessToken = async (
     const ok = await accessTokenUtil.refreshUserAccessToken(accessTokenData);
 
     if (ok) {
-      console.info("Refresh was successful. Loading the new token from storage.");
+      console.info(
+        "Refresh was successful. Loading the new token from storage.",
+      );
 
       accessTokenData = await accessTokenUtil.getUserAccessToken();
 
@@ -304,7 +295,7 @@ const clientAuthConfig = (token: UserAccessTokenData) => {
   return {
     headers: {
       "Client-Id": process.env.CLIENT_ID,
-      "Authorization": `Bearer ${token.accessToken}`,
+      Authorization: `Bearer ${token.accessToken}`,
     },
   };
 };
@@ -312,7 +303,7 @@ const clientAuthConfig = (token: UserAccessTokenData) => {
 export async function validateTwitchSession(accessToken: string) {
   const validateSession = await fetch("https://id.twitch.tv/oauth2/validate", {
     headers: {
-      "Authorization": `OAuth ${accessToken}`,
+      Authorization: `OAuth ${accessToken}`,
     },
   });
 
