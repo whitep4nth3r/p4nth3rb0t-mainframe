@@ -11,13 +11,13 @@
     "dev": "node-dev --notify=false src/app.ts",
     "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development npm install --only=dev --dev",
     "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./build"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./build && sentry-cli sourcemaps upload --org the-claw --project p4nth3rb0t ./build"
   },
   "engines": {
     "node": "20.x"
   },
   "dependencies": {
-    "@sentry/cli": "^2.33.0",
+    "@sentry/cli": "^2.37.0",
     "@sentry/node": "^8.34.0",
     "@sentry/profiling-node": "^8.34.0",
     "@types/cors": "^2.8.14",
