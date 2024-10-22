@@ -1,9 +1,10 @@
 import "./env";
 
 import * as Sentry from "@sentry/node";
-import Database from "./data/database";
 
 import { webServer } from "./webserver";
+import Database from "./data/database";
+
 import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
