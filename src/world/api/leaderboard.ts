@@ -56,29 +56,27 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
     { $group: { _id: "$userId", items: { $push: "$$ROOT" } } },
   ]);
 
+  const playerIds = itemsGroupedByPlayer.map((player) => player._id);
+
   const leaderboardPlayers: Player[] = [];
 
-  const promises = itemsGroupedByPlayer.map(async (player, index) => {
-    const dbPlayer = (await PantherworldPlayerModel.findOne({
-      userId: player._id,
-    })) as PantherworldPlayerData;
+  const allPlayerRecords = await PantherworldPlayerModel.find({
+    userId: { $in: playerIds },
+  });
 
+  for (const player of itemsGroupedByPlayer) {
     const itemsForWealthIndex = constructItemsForWealthIndexCalculation(
       player.items,
     );
 
     leaderboardPlayers.push({
-      username: dbPlayer.userDisplayName,
+      username: allPlayerRecords.find(
+        (playerRecord) => playerRecord.userId === player._id,
+      ).userDisplayName,
       items: player.items.length,
       wealth_index: getWealthIndex(itemsForWealthIndex),
     } as Player);
-  });
-
-  await Promise.all(promises)
-    .then()
-    .catch((err) => {
-      Sentry.captureException(err);
-    });
+  }
 
   const sortedLeaderboard = leaderboardPlayers.sort(sortByWealthIndexDesc);
 
