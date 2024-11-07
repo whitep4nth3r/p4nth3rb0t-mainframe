@@ -4,8 +4,31 @@ import PantherworldItemModel from "../../data/models/PantherworldItem";
 import PantherworldPlayerModel, {
   PantherworldPlayerData,
 } from "../../data/models/PantherworldPlayer";
-import { getAllItemsForPlayer } from "./player/allItems";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
+
+export function constructItemsForWealthIndexCalculation(
+  items,
+): ItemForWealthIndex[] {
+  const itemsForWealthIndex: ItemForWealthIndex[] = [];
+
+  for (let i = 0; i < items.length; i++) {
+    const existingItem = itemsForWealthIndex.find(
+      (item) => item._id === items[i].name,
+    );
+
+    if (existingItem) {
+      existingItem.count += 1;
+    } else {
+      itemsForWealthIndex.push({
+        _id: items[i].name,
+        count: 1,
+        rarity: items[i].rarity,
+      });
+    }
+  }
+
+  return itemsForWealthIndex;
+}
 
 function sortByWealthIndexDesc(a: Player, b: Player) {
   if (a.wealth_index > b.wealth_index) {
@@ -20,8 +43,7 @@ function sortByWealthIndexDesc(a: Player, b: Player) {
 }
 
 export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
-  //  [{ _id: '1069819703', itemCount: 1 }]
-  const players = await PantherworldItemModel.aggregate([
+  const itemsGroupedByPlayer = await PantherworldItemModel.aggregate([
     {
       $match: {
         userId: { $ne: null },
@@ -30,33 +52,31 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
       },
     },
 
-    // Group documents by userId, count the number of items in each group
-    { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
+    // Group documents by userId and push all items into an array
+    { $group: { _id: "$userId", items: { $push: "$$ROOT" } } },
   ]);
+
+  const playerIds = itemsGroupedByPlayer.map((player) => player._id);
 
   const leaderboardPlayers: Player[] = [];
 
-  const promises = players.map(async (player) => {
-    const allItems: ItemForWealthIndex[] = await getAllItemsForPlayer(
-      player._id,
-    );
-
-    const dbPlayer = (await PantherworldPlayerModel.findOne({
-      userId: player._id,
-    })) as PantherworldPlayerData;
-
-    leaderboardPlayers.push({
-      username: dbPlayer.userDisplayName,
-      items: player.itemCount,
-      wealth_index: getWealthIndex(allItems),
-    } as Player);
+  const allPlayerRecords = await PantherworldPlayerModel.find({
+    userId: { $in: playerIds },
   });
 
-  await Promise.all(promises)
-    .then()
-    .catch((err) => {
-      Sentry.captureException(err);
-    });
+  for (const player of itemsGroupedByPlayer) {
+    const itemsForWealthIndex = constructItemsForWealthIndexCalculation(
+      player.items,
+    );
+
+    leaderboardPlayers.push({
+      username: allPlayerRecords.find(
+        (playerRecord) => playerRecord.userId === player._id,
+      ).userDisplayName,
+      items: player.items.length,
+      wealth_index: getWealthIndex(itemsForWealthIndex),
+    } as Player);
+  }
 
   const sortedLeaderboard = leaderboardPlayers.sort(sortByWealthIndexDesc);
 
