@@ -115,7 +115,7 @@ export const sendSubEvent = async (
 //   },
 // );
 
-export function checkGiftSubReceipientUsername(username: string): boolean {
+export function checkGiftSubRecipientUsername(username: string): boolean {
   if (username.includes("trump")) {
     return false;
   }
@@ -134,7 +134,7 @@ tmi.on(
     userstate: SubGiftUserstate,
   ) => {
     const recipientUserName = userstate["msg-param-recipient-user-name"];
-    const allowedUsername = checkGiftSubReceipientUsername(recipientUserName);
+    const allowedUsername = checkGiftSubRecipientUsername(recipientUserName);
 
     if (
       !config.FREEZE_MODE &&

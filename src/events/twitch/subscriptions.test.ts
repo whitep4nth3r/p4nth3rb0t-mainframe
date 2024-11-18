@@ -1,9 +1,9 @@
-import { checkGiftSubReceipientUsername } from "./subscriptions";
+import { checkGiftSubRecipientUsername } from "./subscriptions";
 
 test("checkGiftSubReceipientUsername filters out trump", () => {
-  expect(checkGiftSubReceipientUsername("trump")).toBe(false);
+  expect(checkGiftSubRecipientUsername("trump")).toBe(false);
 });
 
 test("checkGiftSubReceipientUsername filters out something_else_trump_something", () => {
-  expect(checkGiftSubReceipientUsername("trump")).toBe(false);
+  expect(checkGiftSubRecipientUsername("trump")).toBe(false);
 });
