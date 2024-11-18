@@ -13,7 +13,7 @@ export async function getLeaderboard(): Promise<void> {
     // Group documents by userId, count the number of items in each group
     { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
 
-    // Sort the groups by itemCount in ascending order
+    // Sort the groups by itemCount in descending order
     { $sort: { itemCount: -1 } },
 
     { $limit: 3 },

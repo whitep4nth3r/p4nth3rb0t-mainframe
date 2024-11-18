@@ -1,9 +1,6 @@
-import * as Sentry from "@sentry/node";
 import { FullLeaderboardResponse, Player, ItemForWealthIndex } from "./types";
 import PantherworldItemModel from "../../data/models/PantherworldItem";
-import PantherworldPlayerModel, {
-  PantherworldPlayerData,
-} from "../../data/models/PantherworldPlayer";
+import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
 
 export function constructItemsForWealthIndexCalculation(
@@ -56,12 +53,10 @@ export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
     { $group: { _id: "$userId", items: { $push: "$$ROOT" } } },
   ]);
 
-  const playerIds = itemsGroupedByPlayer.map((player) => player._id);
-
   const leaderboardPlayers: Player[] = [];
 
   const allPlayerRecords = await PantherworldPlayerModel.find({
-    userId: { $in: playerIds },
+    userId: { $in: itemsGroupedByPlayer.map((player) => player._id) },
   });
 
   for (const player of itemsGroupedByPlayer) {

@@ -115,6 +115,14 @@ export const sendSubEvent = async (
 //   },
 // );
 
+export function checkGiftSubReceipientUsername(username: string): boolean {
+  if (username.includes("trump")) {
+    return false;
+  }
+
+  return true;
+}
+
 tmi.on(
   "subgift",
   async (
@@ -126,22 +134,25 @@ tmi.on(
     userstate: SubGiftUserstate,
   ) => {
     const recipientUserName = userstate["msg-param-recipient-user-name"];
+    const allowedUsername = checkGiftSubReceipientUsername(recipientUserName);
 
-    if (!config.FREEZE_MODE) {
-      if (typeof recipientUserName === "string") {
-        await spawn({
-          type: SpawnEventType.Sub,
-          data: { username: recipientUserName },
-        });
-        await sendSubEvent(
-          userstate["user-id"] as string,
-          recipientUserName,
-          userstate["id"] as string,
-          "",
-          getSubPlan(userstate["msg-param-sub-plan"]),
-          true,
-        );
-      }
+    if (
+      !config.FREEZE_MODE &&
+      allowedUsername &&
+      typeof recipientUserName === "string"
+    ) {
+      await spawn({
+        type: SpawnEventType.Sub,
+        data: { username: recipientUserName },
+      });
+      await sendSubEvent(
+        userstate["user-id"] as string,
+        recipientUserName,
+        userstate["id"] as string,
+        "",
+        getSubPlan(userstate["msg-param-sub-plan"]),
+        true,
+      );
     }
   },
 );
