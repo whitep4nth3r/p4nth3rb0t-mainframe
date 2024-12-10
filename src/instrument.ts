@@ -2,15 +2,13 @@ import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 Sentry.init({
-  enabled: true, // might toggle this conditionally at some point
-  dsn: process.env.NODE_ENV === "production" ? process.env.SENTRY_DSN : "",
-  // debug: process.env.SENTRY_DEBUG !== "production" ? true : false,
+  dsn: process.env.SENTRY_DSN,
+  spotlight: process.env.NODE_ENV === "development",
+  enabled: process.env.NODE_ENV === "production",
+  debug: process.env.NODE_ENV === "development",
   release: process.env.npm_package_version,
   environment: process.env.NODE_ENV,
-  sampleRate: 0.5,
-  maxBreadcrumbs: 100,
-  sendClientReports: true,
   integrations: [nodeProfilingIntegration()],
-  tracesSampleRate: 0.5,
+  tracesSampleRate: 0.75,
   profilesSampleRate: 0.5,
 });

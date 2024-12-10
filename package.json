@@ -7,8 +7,8 @@
     "test:scan": "jest -- -t 'scan'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
-    "dev": "node-dev --notify=false src/app.ts",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./build",
+    "dev": "node-dev --notify=false --inspect src/app.ts",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org the-claw --project p4nth3rb0t ./build && sentry-cli sourcemaps upload --org the-claw --project p4nth3rb0t ./build"
     "generate-migration": "typeorm-ts-node-commonjs -d src/data/database.ts migration:generate migrations/$npm_config_name",
     "run-migrations": "typeorm-ts-node-commonjs -d src/data/database.ts migration:run",
     "revert-migration": "typeorm-ts-node-commonjs -d src/data/database.ts migration:revert"
