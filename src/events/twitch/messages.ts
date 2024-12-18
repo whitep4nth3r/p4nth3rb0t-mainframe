@@ -35,6 +35,7 @@ import {
   announce,
   getActiveBroadcasterStreamByBroadcasterId,
 } from "../../utils/twitchUtils";
+import { sendBackseatEvent } from "./backseat";
 
 let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
@@ -341,6 +342,7 @@ tmi.on(
         tags.username === config.bot.user_name
       ) {
         tmi.say(config.channel, `!bs ${tags.username}`);
+        await sendBackseatEvent(tags.username.toLowerCase());
       }
 
       const possibleCommand: string =
