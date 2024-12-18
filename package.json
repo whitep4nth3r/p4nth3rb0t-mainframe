@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "test": "jest",
-    "test:scan": "jest -- -t 'scan'",
+    "test:code": "jest -- -t 'messageContainsCode'",
     "start": "node build/src/app.js",
     "build": "tsc && npm run sentry:sourcemaps",
     "dev": "node-dev --notify=false --inspect src/app.ts",
