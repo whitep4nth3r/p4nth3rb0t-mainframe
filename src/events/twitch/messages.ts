@@ -30,10 +30,12 @@ import {
   TimeToTailwindPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 // import { isSillyQuestion } from "../../utils/sillyQuestions";
+import { messageContainsCode } from "../../utils/messageContainsCode";
 import {
   announce,
   getActiveBroadcasterStreamByBroadcasterId,
 } from "../../utils/twitchUtils";
+import { sendBackseatEvent } from "./backseat";
 
 let possibleTeamMember: TwitchUser | undefined;
 const teamMembersGreeted: TeamMembers = [];
@@ -333,6 +335,15 @@ tmi.on(
       //     `p4nth3rPEWPEW Hi there ${tags.username}! You can use the following commands in chat to find out more: !project, !today, !who`,
       //   );
       // }
+
+      if (
+        (messageContainsCode(message) &&
+          tags.username !== config.broadcaster.user_name) ||
+        tags.username === config.bot.user_name
+      ) {
+        tmi.say(config.channel, `!bs ${tags.username}`);
+        await sendBackseatEvent(tags.username.toLowerCase());
+      }
 
       const possibleCommand: string =
         getCommandFromMessage(message).toLowerCase();
