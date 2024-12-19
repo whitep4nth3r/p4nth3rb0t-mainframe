@@ -26,6 +26,7 @@ export async function freeForAll() {
   ]);
 
   const writeQuery = [];
+  
   itemsGroupedByZone.forEach((zone) => {
     const currentZone = zone._id;
 
