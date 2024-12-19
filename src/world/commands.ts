@@ -14,8 +14,16 @@ import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
 import { cookItem } from "./actions/player/cook";
 import { scanZone } from "./actions/player/scan";
+import { freeForAll } from "./actions/leader/freeForAll";
+import { removeInactive } from "./actions/leader/removeInactive";
 
 export const WorldLeaderCommands = {
+  "!removeinactive": async () => {
+    await removeInactive();
+  },
+  "!freeforall": async () => {
+    await freeForAll();
+  },
   "!release": async () => {
     await releaseUnclaimed();
   },

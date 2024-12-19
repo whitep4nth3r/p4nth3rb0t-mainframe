@@ -9,9 +9,6 @@ import { announce } from "../../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { SpawnEventType, spawn } from "../../world/spawn";
-import { getRandomEntry } from "../../utils/getRandomEntry";
-import { PantherworldZones } from "../../world/zones";
-import { movePlayer } from "../../world/actions/player/move";
 
 const twitchFollowerRepository = database.getRepository(TwitchFollower);
 
@@ -67,11 +64,11 @@ export const sendBroadcasterFollowEvent = async (
               followerName + "-" + Date.now(),
             );
 
-            const randomZone = getRandomEntry(PantherworldZones);
-            await movePlayer(user.id, randomZone.name, false);
+            // const randomZone = getRandomEntry(PantherworldZones);
+            // await movePlayer(user.id, randomZone.name, false);
 
             await announce(
-              `🌍 Welcome to p4nth3rworld, @${followerName}! You have been dropped in the ${randomZone.name} zone`,
+              `🌍 Welcome to p4nth3rworld, @${followerName}!`,
               TwitchAnnouncementColor.Green,
             );
           }, 3500);
