@@ -20,7 +20,7 @@ export async function freeForAll() {
 
   const playersGroupedByZone = await PantherworldPlayerModel.aggregate([
     {
-      $match: {},
+      $match: {}, //TODO choose "active players"
     },
     { $group: { _id: "$zone", players: { $push: "$$ROOT" } } },
   ]);
