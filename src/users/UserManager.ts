@@ -36,7 +36,7 @@ export default class UserManager {
 
     if (accessTokenData) {
       const params = new URLSearchParams({
-        "login": login,
+        login: login,
       });
 
       const response = await fetch(
@@ -44,14 +44,14 @@ export default class UserManager {
         {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${accessTokenData.accessToken}`,
+            Authorization: `Bearer ${accessTokenData.accessToken}`,
             "Client-Id": process.env.CLIENT_ID,
           },
         },
       );
 
       if (response.ok) {
-        const responseData = await response.json() as TwitchUserResponse;
+        const responseData = (await response.json()) as TwitchUserResponse;
 
         if (responseData.data.length === 0) {
           tmi.say(config.channel, "User not found, try again!");
@@ -61,7 +61,7 @@ export default class UserManager {
         this.cache.set(login, responseData.data[0]);
 
         const passesAgeCheck = accountIsOlderThanSevenDays(
-          responseData.data[0].created_at
+          responseData.data[0].created_at,
         );
 
         if (!passesAgeCheck) {
@@ -83,20 +83,22 @@ export default class UserManager {
     }
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
-      const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
+      if (data) {
+        const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
 
-      if (!passesAgeCheck) {
-        data.profile_image_url = "";
+        if (!passesAgeCheck) {
+          data.profile_image_url = "";
+        }
+
+        return data;
       }
-
-      return data;
     }
 
     const accessTokenData = await accessTokenUtil.get();
 
     if (accessTokenData) {
       const params = new URLSearchParams({
-        "id": userId,
+        id: userId,
       });
 
       const response = await fetch(
@@ -104,19 +106,19 @@ export default class UserManager {
         {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${accessTokenData.accessToken}`,
+            Authorization: `Bearer ${accessTokenData.accessToken}`,
             "Client-Id": process.env.CLIENT_ID,
           },
         },
       );
 
       if (response.ok) {
-        const responseData = await response.json() as TwitchUserResponse;
+        const responseData = (await response.json()) as TwitchUserResponse;
 
         this.cache.set(userId, responseData.data[0]);
 
         const passesAgeCheck = accountIsOlderThanSevenDays(
-          responseData.data[0].created_at
+          responseData.data[0].created_at,
         );
 
         if (!passesAgeCheck) {
