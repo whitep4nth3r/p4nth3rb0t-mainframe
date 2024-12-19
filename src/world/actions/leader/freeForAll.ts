@@ -26,11 +26,15 @@ export async function freeForAll() {
   ]);
 
   const writeQuery = [];
-  
+
   itemsGroupedByZone.forEach((zone) => {
     const currentZone = zone._id;
 
     if (zone.items.length > 0) {
+      tmi.say(
+        config.channel,
+        `${config.BOT_PREFIX}📡 Searching ${currentZone}...`,
+      );
       const playersInZone = playersGroupedByZone.find(
         (group) => group._id === currentZone,
       );
@@ -41,23 +45,40 @@ export async function freeForAll() {
           zone.items.length / playersInZone.players.length,
         );
 
-        playersInZone.players.forEach((player) => {
-          // build up the bulkWrite query in an array
-          for (let i = 1; i <= itemsPerPlayer; i++) {
-            if (zone.items.length > 0) {
-              // remove last item from zone.items using pop()
-              // use this one to update
-              const itemToDistribute = zone.items.pop();
+        if (itemsPerPlayer === 0) {
+          tmi.say(
+            config.channel,
+            `${config.BOT_PREFIX}⛔️ 0 items per player in ${currentZone}`,
+          );
+        } else {
+          tmi.say(
+            config.channel,
+            `${config.BOT_PREFIX}🍾 Distributing ${itemsPerPlayer} per player`,
+          );
 
-              writeQuery.push({
-                updateOne: {
-                  filter: { _id: itemToDistribute._id },
-                  update: { $set: { userId: player.userId } },
-                },
-              });
+          playersInZone.players.forEach((player) => {
+            // build up the bulkWrite query in an array
+            for (let i = 1; i <= itemsPerPlayer; i++) {
+              if (zone.items.length > 0) {
+                // remove last item from zone.items using pop()
+                // use this one to update
+                const itemToDistribute = zone.items.pop();
+
+                writeQuery.push({
+                  updateOne: {
+                    filter: { _id: itemToDistribute._id },
+                    update: { $set: { userId: player.userId } },
+                  },
+                });
+              }
             }
-          }
-        });
+          });
+        }
+      } else {
+        tmi.say(
+          config.channel,
+          `${config.BOT_PREFIX}⛔️ No players in ${currentZone} to receive items!`,
+        );
       }
     }
   });
@@ -67,7 +88,7 @@ export async function freeForAll() {
   if (bulkWrite.modifiedCount > 0) {
     tmi.say(
       config.channel,
-      "📣 FREE-FOR-ALL DELIVERED! CHECK YOUR ITEMS TO SEE WHAT YOU'VE WON!",
+      `${config.BOT_PREFIX}📣 FREE-FOR-ALL DELIVERED! CHECK YOUR ITEMS TO SEE WHAT YOU'VE WON!`,
     );
   }
 }
