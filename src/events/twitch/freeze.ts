@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { FreezePacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 
 export const sendFreezeEvent = async () => {
   try {

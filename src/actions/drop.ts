@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { config } from "../config";
-import WebSocketServer from "../WebSocketServer";
+import WebSocketServer from "../classes/WebSocketServer";
 import UserManager from "../users/UserManager";
 import {
   DropEmotePacket,

@@ -1,5 +1,6 @@
 import { Badges } from "tmi.js";
 import Discord from "discord.js";
+import WebSocket from "ws";
 
 export interface Config {
   BOT_PREFIX: string;
@@ -42,6 +43,10 @@ export interface Config {
   channelRedemptions: {
     [key: string]: string;
   };
+}
+
+export interface ExtWebSocket extends WebSocket {
+  isAlive: boolean;
 }
 
 export interface TwitchChannel {

@@ -16,7 +16,7 @@ import {
   PlayerCookFailPacket,
   PlayerCookPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebsocketServer from "../../../WebSocketServer";
+import WebsocketServer from "../../../classes/WebSocketServer";
 import { getAllItemsForPlayer } from "../../api/player/allItems";
 
 export function getIngredientsFromCraftCommand(message: string) {

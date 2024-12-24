@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { ChatUserstate } from "tmi.js";
 import { config } from "../../config";
 import {

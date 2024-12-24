@@ -3,7 +3,7 @@ import PantherworldItemModel from "../../../data/models/PantherworldItem";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 
-import WebsocketServer from "../../../WebSocketServer";
+import WebsocketServer from "../../../classes/WebSocketServer";
 import {
   MainframeEvent,
   PlayerClaimPacket,

@@ -1,10 +1,7 @@
 import { Packet } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocket from "ws";
-import { webServer } from "./webserver";
-
-interface ExtWebSocket extends WebSocket {
-  isAlive: boolean;
-}
+import { webServer } from "../webserver";
+import { ExtWebSocket } from "../data/types";
 
 export default class WebsocketServer {
   static wsServer: WebSocket.Server;

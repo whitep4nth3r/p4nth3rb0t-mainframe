@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { tmi } from "../../tmi";
 import { SubGiftUserstate, SubUserstate } from "tmi.js";
 import UserManager from "../../users/UserManager";

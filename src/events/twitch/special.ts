@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { MainframeEvent, SpecialPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import { sendMoodChangeEvent } from "./moods";
 

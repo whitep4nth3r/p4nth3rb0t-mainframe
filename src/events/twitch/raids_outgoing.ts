@@ -7,7 +7,7 @@ import {
   OutgoingRaidData,
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import { startRaid } from "../../utils/twitchUtils";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { SpawnEventType, spawn } from "../../world/spawn";
 
 export const sendRaidEvent = async (

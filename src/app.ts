@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/node";
 import { database } from "./data/database";
 import { webServer } from "./webserver";
 
-import WebSocketServer from "./WebSocketServer";
+import WebSocketServer from "./classes/WebSocketServer";
 import { tmi } from "./tmi";
 import { discord } from "./discord";
 import { testConfig } from "../testConfig";

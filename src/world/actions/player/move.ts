@@ -6,7 +6,7 @@ import UserManager from "../../../users/UserManager";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import * as Sentry from "@sentry/node";
-import WebsocketServer from "../../../WebSocketServer";
+import WebsocketServer from "../../../classes/WebSocketServer";
 import {
   MainframeEvent,
   PlayerMovePacket,

@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { SpawnEventType, spawn } from "../../world/spawn";
 import {
   MainframeEvent,

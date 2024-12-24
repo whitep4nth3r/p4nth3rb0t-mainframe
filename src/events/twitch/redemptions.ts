@@ -10,7 +10,7 @@ import {
   MainframeEvent,
   FirstPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 // import { MoodEmotes } from "../../data/types";
 import { SpawnEventType, spawn } from "../../world/spawn";
 

@@ -1,6 +1,6 @@
 import { FullTwitchUser, TwitchAnnouncementColor } from "../../data/types";
 import * as Sentry from "@sentry/node";
-import WebsocketServer from "../../WebSocketServer";
+import WebsocketServer from "../../classes/WebSocketServer";
 import { config } from "../../config";
 import UserManager from "../../users/UserManager";
 import { database } from "../../data/database";

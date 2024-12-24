@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
 import { config } from "../../config";
 import { BackseatPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import UserManager from "../../users/UserManager";
 import { getCurrentChatterUserNames } from "../../utils/twitchUtils";
 

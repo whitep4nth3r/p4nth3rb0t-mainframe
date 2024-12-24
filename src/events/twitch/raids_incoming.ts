@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { tmi } from "../../tmi";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import { config } from "../../config";
 import UserManager from "../../users/UserManager";
 import { MainframeEvent, RaidPacket } from "@whitep4nth3r/p4nth3rb0t-types";

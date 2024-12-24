@@ -5,7 +5,7 @@ import { sendPantherworldFeedEvent } from "../../../discord";
 import { WorldState } from "../../state";
 import { getRandomEntry } from "../../../utils/getRandomEntry";
 import { PantherworldZones, Zone } from "../../zones";
-import WebsocketServer from "../../../WebSocketServer";
+import WebsocketServer from "../../../classes/WebSocketServer";
 import {
   MainframeEvent,
   ReleaseUnclaimedPacket,

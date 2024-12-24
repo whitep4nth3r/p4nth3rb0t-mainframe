@@ -10,7 +10,7 @@ import {
   MainframeEvent,
   PlayerScannedPacket,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebsocketServer from "../../../WebSocketServer";
+import WebsocketServer from "../../../classes/WebSocketServer";
 
 export function getFullItemsFromDBAggregate(dbItems: any[]): WorldItem[] {
   const itemNames = dbItems.map((item) => item._id);

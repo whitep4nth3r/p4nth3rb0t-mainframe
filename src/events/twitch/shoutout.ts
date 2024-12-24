@@ -7,7 +7,7 @@ import {
   ShoutOutPacket,
   ShoutOutData,
 } from "@whitep4nth3r/p4nth3rb0t-types";
-import WebSocketServer from "../../WebSocketServer";
+import WebSocketServer from "../../classes/WebSocketServer";
 import Team from "../../users/Team";
 import { announce, shoutOut } from "../../utils/twitchUtils";
 
