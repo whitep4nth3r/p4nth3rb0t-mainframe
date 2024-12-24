@@ -1,8 +1,6 @@
 import { Client } from "tmi.js";
 import { testConfig } from "../testConfig";
 
-import { CHANNELS } from "./env";
-
 interface Connection {
   secure: boolean;
   reconnect: boolean;
@@ -28,5 +26,5 @@ export const tmi = new (Client as any)({
     username: process.env.BOT_NAME,
     password: process.env.BOT_AUTH,
   },
-  channels: CHANNELS,
+  channels: process.env.CHANNELS?.split(","),
 });
