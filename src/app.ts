@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/node";
 
 import { database } from "./data/database";
 import { webServer } from "./webserver";
-import Database from "./data/database";
 
 import WebSocketServer from "./WebSocketServer";
 import { tmi } from "./tmi";

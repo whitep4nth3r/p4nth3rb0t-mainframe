@@ -1,4 +1,48 @@
 import { Badges } from "tmi.js";
+import Discord from "discord.js";
+
+export interface Config {
+  BOT_PREFIX: string;
+  FREEZE_MODE: boolean;
+  broadcaster: TwitchUser;
+  bot: TwitchUser;
+  channel: string;
+  drop: {
+    minAccountAge: number;
+  };
+  emotes: {
+    baseUrl: string;
+    sizes: string[];
+  };
+  ignoredUsers: string[];
+  ignoredCharacters: string[];
+  ignoredWords: string[];
+  ignoredMessages: string[];
+  teamShoutoutEnabled: boolean;
+  team: {
+    name: string;
+    displayName: string;
+  };
+  teamWelcomeMessage: (channel: TwitchChannel) => string;
+  discord: {
+    broadcasterUserId: string;
+    liveAnnouncementsChannelId: string;
+    liveAnnouncementsRoleId: string;
+    liveAnnouncementColorOnline: Discord.ColorResolvable;
+    liveAnnouncementColorOffline: Discord.ColorResolvable;
+    liveAnnouncementImageSize: string;
+    techHelpChannelId: string;
+    p4nth3rworldChannelId: string;
+    modChannelId: string;
+    reactionRole: DiscordReactionRole[];
+  };
+  moodRedemptions: {
+    [key: string]: string;
+  };
+  channelRedemptions: {
+    [key: string]: string;
+  };
+}
 
 export interface TwitchChannel {
   broadcaster_id: string;

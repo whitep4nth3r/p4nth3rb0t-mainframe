@@ -2,9 +2,6 @@ import { Packet } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocket from "ws";
 import { webServer } from "./webserver";
 
-//wss - web socket server
-//ws - web socket client
-
 interface ExtWebSocket extends WebSocket {
   isAlive: boolean;
 }

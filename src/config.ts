@@ -1,48 +1,4 @@
-import { DiscordReactionRole, TwitchChannel, TwitchUser } from "./data/types";
-import Discord from "discord.js";
-
-interface Config {
-  BOT_PREFIX: string;
-  FREEZE_MODE: boolean;
-  broadcaster: TwitchUser;
-  bot: TwitchUser;
-  channel: string;
-  drop: {
-    minAccountAge: number;
-  };
-  emotes: {
-    baseUrl: string;
-    sizes: string[];
-  };
-  ignoredUsers: string[];
-  ignoredCharacters: string[];
-  ignoredWords: string[];
-  ignoredMessages: string[];
-  teamShoutoutEnabled: boolean;
-  team: {
-    name: string;
-    displayName: string;
-  };
-  teamWelcomeMessage: (channel: TwitchChannel) => string;
-  discord: {
-    broadcasterUserId: string;
-    liveAnnouncementsChannelId: string;
-    liveAnnouncementsRoleId: string;
-    liveAnnouncementColorOnline: Discord.ColorResolvable;
-    liveAnnouncementColorOffline: Discord.ColorResolvable;
-    liveAnnouncementImageSize: string;
-    techHelpChannelId: string;
-    p4nth3rworldChannelId: string;
-    modChannelId: string;
-    reactionRole: DiscordReactionRole[];
-  };
-  moodRedemptions: {
-    [key: string]: string;
-  };
-  channelRedemptions: {
-    [key: string]: string;
-  };
-}
+import { Config, TwitchChannel } from "./data/types";
 
 const config: Config = {
   BOT_PREFIX: process.env.NODE_ENV === "development" ? "DEV: " : "",
