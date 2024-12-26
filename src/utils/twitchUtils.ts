@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/node";
+import { database } from "../data/database";
 import AccessToken from "../classes/AccessToken";
 import {
   StartRaidResponse,
@@ -12,7 +13,9 @@ import {
   TwitchVideoResponse,
 } from "../data/types";
 import { config } from "../config";
-import { UserAccessTokenData } from "../data/models/UserAccessToken";
+import { UserAccessToken } from "../data/entities/UserAccessTokenEntity";
+
+const userAccessTokenRepository = database.getRepository(UserAccessToken);
 
 export const startRaid = async (
   to_broadcaster_id: string,
@@ -250,11 +253,11 @@ export const shoutOut = async (toBroadcasterId: string): Promise<any> => {
 };
 
 const callWithUserAccessToken = async (
-  callable: (token: UserAccessTokenData) => Promise<Response>,
+  callable: (token: UserAccessToken) => Promise<Response>,
 ): Promise<Response | undefined> => {
   const accessTokenUtil = new AccessToken();
 
-  let accessTokenData = await accessTokenUtil.getUserAccessToken();
+  let accessTokenData = await userAccessTokenRepository.findOneBy({});
 
   if (!accessTokenData) {
     Sentry.captureMessage("Failed to acquire User Access Token");
@@ -275,7 +278,7 @@ const callWithUserAccessToken = async (
         "Refresh was successful. Loading the new token from storage.",
       );
 
-      accessTokenData = await accessTokenUtil.getUserAccessToken();
+      accessTokenData = await userAccessTokenRepository.findOneBy({});
 
       if (!accessTokenData) {
         Sentry.captureMessage("Failed to acquire User Access Token");
@@ -291,7 +294,7 @@ const callWithUserAccessToken = async (
   return response;
 };
 
-const clientAuthConfig = (token: UserAccessTokenData) => {
+const clientAuthConfig = (token: UserAccessToken) => {
   return {
     headers: {
       "Client-Id": process.env.CLIENT_ID,
