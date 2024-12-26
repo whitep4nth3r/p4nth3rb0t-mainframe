@@ -39,11 +39,15 @@ export const PantherworldZones: Zone[] = [
   },
   {
     name: PantherworldZoneNames.Mountain,
-    nearbyZones: [PantherworldZoneNames.Forest],
+    nearbyZones: [
+      PantherworldZoneNames.Forest,
+    ],
   },
   {
     name: PantherworldZoneNames.Desert,
-    nearbyZones: [PantherworldZoneNames.City],
+    nearbyZones: [
+      PantherworldZoneNames.City,
+    ],
   },
   {
     name: PantherworldZoneNames.Swamp,
