@@ -43,7 +43,7 @@ export async function removeInactive() {
   if (updateItems.modifiedCount > 0) {
     tmi.say(
       config.channel,
-      `♻️ ${updateItems.modifiedCount} items reclaimed from inactive users`,
+      `${config.BOT_PREFIX}♻️ ${updateItems.modifiedCount} items reclaimed from inactive users`,
     );
   }
 
@@ -67,9 +67,9 @@ export async function removeInactive() {
   if (deleteUsers.deletedCount > 0) {
     tmi.say(
       config.channel,
-      `💀 ${deleteUsers.deletedCount} inactive players removed from p4nth3rworld`,
+      `${config.BOT_PREFIX}💀 ${deleteUsers.deletedCount} inactive players removed from p4nth3rworld`,
     );
   } else {
-    tmi.say(config.channel, `🚨 No inactive players`);
+    tmi.say(config.channel, `${config.BOT_PREFIX}🚨 No inactive players`);
   }
 }
