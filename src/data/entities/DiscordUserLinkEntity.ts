@@ -8,8 +8,8 @@ import {
 
 @Entity()
 export class DiscordUserLink {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
   @Column({
     type: "varchar",
