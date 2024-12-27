@@ -1,13 +1,13 @@
 import { Router, Request, Response } from "express";
-import asyncWrapper from "../utils/asyncWrapper";
+import asyncWrapper from "../../utils/asyncWrapper";
 import * as Sentry from "@sentry/node";
-import AccessToken from "../classes/AccessToken";
+import AccessToken from "../../classes/AccessToken";
 
 const accessTokenUtil = new AccessToken();
 const router = Router();
 
 router.get(
-  "/authcode",
+  "/",
   asyncWrapper(async (req: Request, res: Response) => {
     const { code, scope } = req.query;
 

@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   res.send(`🤖 ${config.bot.user_name} is online!`);
 });
 
-router.use("/auth", authRoutes);
+router.use("/", authRoutes);
 router.use("/world", worldRoutes);
 router.use("/webhooks", webhookRoutes);
 
