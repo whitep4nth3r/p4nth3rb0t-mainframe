@@ -9,31 +9,27 @@ import {
 @Entity()
 export class DiscordUserLink {
   @PrimaryGeneratedColumn()
-  id: string;
+  id!: number;
 
   @Column({
     type: "varchar",
     length: 255,
+    unique: true,
   })
-  discordUserId: string;
+  discordId!: string;
 
   @Column({
     type: "varchar",
     length: 255,
+    nullable: true,
   })
-  twitchUserId: string;
-
-  @Column({
-    type: "varchar",
-    length: 255,
-  })
-  twitchUserName: string;
+  twitchId?: string;
 
   @CreateDateColumn({
     type: "timestamp with time zone",
     nullable: false,
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({
     type: "timestamp with time zone",
