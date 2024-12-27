@@ -4,7 +4,6 @@ import express, { Request, Response } from "express";
 
 import cors from "cors";
 import http from "http";
-import bodyParser from "body-parser";
 import crypto from "crypto";
 import asyncWrapper from "./utils/asyncWrapper";
 import { sendLiveAnnouncement, sendOfflineAnnouncement } from "./discord";
@@ -28,7 +27,8 @@ import { getRecipes } from "./world/api/recipes";
 const accessTokenUtil = new AccessToken();
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
