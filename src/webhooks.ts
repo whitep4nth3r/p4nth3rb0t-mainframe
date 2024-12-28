@@ -74,7 +74,7 @@ function generateEventData(definition: EventSubDefinition) {
         transport: {
           method: "webhook",
           callback: definition.callbackUrl,
-          secret: "sup3rs3cr3t",
+          secret: process.env.TWITCH_SIGNATURE_SECRET || "sup3rs3cr3t",
         },
       };
     default:
@@ -87,7 +87,7 @@ function generateEventData(definition: EventSubDefinition) {
         transport: {
           method: "webhook",
           callback: definition.callbackUrl,
-          secret: "sup3rs3cr3t",
+          secret: process.env.TWITCH_SIGNATURE_SECRET || "sup3rs3cr3t",
         },
       };
   }
