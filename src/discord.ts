@@ -9,6 +9,7 @@ import Discord, {
   ButtonStyle,
   EmbedBuilder,
   escapeMarkdown,
+  Events,
   GatewayIntentBits,
   Partials,
 } from "discord.js";
@@ -22,7 +23,8 @@ import type { StreamInfo } from "./data/types";
 import { spawn, SpawnEventType } from "./world/spawn";
 import { PantherworldEvent } from "./world/api/types";
 
-const discordAnnouncementRepository = database.getRepository(DiscordAnnouncement);
+const discordAnnouncementRepository =
+  database.getRepository(DiscordAnnouncement);
 
 const getTwitchVodTimestampInSeconds = (
   date_now: Date,
@@ -37,7 +39,12 @@ const getTwitchVodTimestampInSeconds = (
 };
 
 export const discord = new Discord.Client({
-  partials: [Partials.User, Partials.Reaction, Partials.Message],
+  partials: [
+    Partials.User,
+    Partials.Reaction,
+    Partials.Message,
+    Partials.GuildScheduledEvent,
+  ],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
@@ -56,7 +63,7 @@ let helpChannel: ForumChannel;
 import "./events/discord/messageReactionAdd";
 import "./events/discord/messageReactionRemove";
 
-discord.on("ready", async () => {
+discord.on(Events.ClientReady, async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
 
   announcementsChannel = (await discord.channels.fetch(
@@ -186,7 +193,7 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
       const existing = await discordAnnouncementRepository.findOne({
         where: {
           streamId: streamInfo.id,
-        }
+        },
       });
       let message;
       if (existing) {
@@ -234,7 +241,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
   const saved_message = await discordAnnouncementRepository.findOne({
     where: {
       memberId: member_id,
-    }
+    },
   });
 
   if (!saved_message) {
@@ -270,7 +277,7 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       data: { username: user.display_name },
     });
 
-    await discordAnnouncementRepository.delete({memberId: member_id});
+    await discordAnnouncementRepository.delete({ memberId: member_id });
   }
 };
 

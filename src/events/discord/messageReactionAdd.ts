@@ -1,4 +1,5 @@
 import {
+  Events,
   MessageReaction,
   PartialMessageReaction,
   PartialUser,
@@ -9,7 +10,7 @@ import { config } from "../../config";
 import { discord } from "../../discord";
 
 discord.on(
-  "messageReactionAdd",
+  Events.MessageReactionAdd,
   async (
     messageReaction: MessageReaction | PartialMessageReaction,
     user: User | PartialUser,
