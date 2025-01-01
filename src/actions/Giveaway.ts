@@ -113,22 +113,6 @@ export default class Giveaway {
     draw: "!drawga",
   };
 
-  static getAnnounceMessage = (): string => {
-    return "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW";
-  };
-
-  static getInactiveMessage = (): string => {
-    return "p4nth3rTROLL Access denied! There is no giveaway in progress! p4nth3rTROLL";
-  };
-
-  static getAlreadyOpenMessage = (): string => {
-    return "p4nth3rTROLL @whitep4nth3r pressed the wrong button. Giveaway is already open! p4nth3rTROLL";
-  };
-
-  static getNoEntrantsPresentMessage = (): string => {
-    return "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL";
-  };
-
   static announce = (): void => {
     sendGiveawayAnnounceEvent();
   };
@@ -166,7 +150,11 @@ export default class Giveaway {
       currentChatters.includes(e),
     );
     if (presentEntrants.length === 0) {
-      await tmi.say(config.channel, Giveaway.getNoEntrantsPresentMessage());
+      await tmi.say(
+        config.channel,
+        "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL"
+      );
+
       return null;
     }
     const winner =

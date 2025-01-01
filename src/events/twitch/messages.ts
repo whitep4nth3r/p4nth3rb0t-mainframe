@@ -267,12 +267,18 @@ tmi.on(
       if (message === Giveaway.commands.announce && !config.FREEZE_MODE) {
         Giveaway.announce();
 
-        await tmi.say(config.channel, Giveaway.getAnnounceMessage());
+        await tmi.say(
+          config.channel,
+          "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW"
+        );
       }
 
       if (message === Giveaway.commands.open && !config.FREEZE_MODE) {
         if (Giveaway.isOpen) {
-          await tmi.say(config.channel, Giveaway.getAlreadyOpenMessage());
+          await tmi.say(
+            config.channel,
+            `p4nth3rTROLL @${config.broadcaster.user_name} pressed the wrong button. Giveaway is already open! p4nth3rTROLL`
+          );
         } else {
           Giveaway.open();
           await announce(

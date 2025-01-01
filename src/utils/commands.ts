@@ -116,7 +116,10 @@ export const ChatCommands: Commands = {
       if (Giveaway.inProgress()) {
         Giveaway.enter(tags.username as string);
       } else {
-        await tmi.say(config.channel, Giveaway.getInactiveMessage());
+        await tmi.say(
+          config.channel,
+          "p4nth3rTROLL Access denied! There is no giveaway in progress! p4nth3rTROLL"
+        );
       }
     }
   },
