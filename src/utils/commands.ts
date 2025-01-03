@@ -22,7 +22,6 @@ import { sendFreezeEvent } from "../events/twitch/freeze";
 import { sendTheClawEvent } from "../events/twitch/theclaw";
 import { megaTimeOut } from "../events/twitch/megatimeout";
 import { announce } from "./twitchUtils";
-import { WorldCommands, WorldLeaderCommands } from "../world/commands";
 
 export const getCommandFromMessage = (message: string) => message.split(" ")[0];
 
@@ -42,7 +41,6 @@ export const ExclusiveCommands: Commands = {
   "!raid": async (tags, message) => {
     await sendRaidEvent(tags["id"] as string, message);
   },
-  ...WorldLeaderCommands,
 };
 
 export const BroadcasterCommands: Commands = {
@@ -209,5 +207,4 @@ export const ChatCommands: Commands = {
       await sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },
-  ...WorldCommands,
 };

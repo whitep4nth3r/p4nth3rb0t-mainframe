@@ -1,6 +1,5 @@
 import * as Sentry from "@sentry/node";
 import WebSocketServer from "../../classes/WebSocketServer";
-import { SpawnEventType, spawn } from "../../world/spawn";
 import {
   MainframeEvent,
   HypeTrainBeginPacket,
@@ -19,13 +18,6 @@ export async function sendHypeTrainBeginEvent(level: number): Promise<void> {
     };
 
     WebSocketServer.sendData(hypeTrainBeginPacket);
-
-    for (let i = 0; i < level; i++) {
-      await spawn({
-        type: SpawnEventType.Hype,
-        data: { level: level },
-      });
-    }
   } catch (error) {
     Sentry.captureException(error);
   }
@@ -42,11 +34,6 @@ export async function sendHypeTrainProgressEvent(level: number): Promise<void> {
     };
 
     WebSocketServer.sendData(hypeTrainProgressPacket);
-
-    await spawn({
-      type: SpawnEventType.Hype,
-      data: { level: level },
-    });
   } catch (error) {
     Sentry.captureException(error);
   }
@@ -63,13 +50,6 @@ export async function sendHypeTrainEndEvent(level: number): Promise<void> {
     };
 
     WebSocketServer.sendData(hypeTrainEndPacket);
-
-    for (let i = 0; i < level; i++) {
-      await spawn({
-        type: SpawnEventType.Hype,
-        data: { level: level },
-      });
-    }
   } catch (error) {
     Sentry.captureException(error);
   }
