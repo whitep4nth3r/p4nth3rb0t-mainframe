@@ -1,14 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity } from "typeorm";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class DiscordAnnouncement {
-  @PrimaryColumn({
+export class DiscordAnnouncement extends BaseEntity {
+  @Column({
     type: "varchar",
     length: 255,
   })
@@ -33,17 +28,4 @@ export class DiscordAnnouncement {
     nullable: true,
   })
   category: string;
-
-  @CreateDateColumn({
-    type: "timestamp with time zone",
-    nullable: false,
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: "timestamp with time zone",
-    nullable: true,
-    default: false,
-  })
-  updatedAt?: Date;
 }

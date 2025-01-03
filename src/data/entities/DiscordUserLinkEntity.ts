@@ -1,16 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity } from "typeorm";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class DiscordUserLink {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
-
+export class DiscordUserLink extends BaseEntity {
   @Column({
     type: "varchar",
     length: 255,
@@ -24,17 +16,4 @@ export class DiscordUserLink {
     nullable: true,
   })
   twitchId?: string;
-
-  @CreateDateColumn({
-    type: "timestamp with time zone",
-    nullable: false,
-  })
-  createdAt!: Date;
-
-  @UpdateDateColumn({
-    type: "timestamp with time zone",
-    nullable: true,
-    default: false,
-  })
-  updatedAt?: Date;
 }

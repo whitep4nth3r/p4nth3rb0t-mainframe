@@ -1,16 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity } from "typeorm";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class AccessToken {
-  @PrimaryGeneratedColumn()
-  id: string;
-
+export class AccessToken extends BaseEntity {
   @Column({
     type: "varchar",
     length: 255,
@@ -30,17 +22,4 @@ export class AccessToken {
     nullable: false,
   })
   expiresIn: number;
-
-  @CreateDateColumn({
-    type: "timestamp with time zone",
-    nullable: false,
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: "timestamp with time zone",
-    nullable: true,
-    default: false,
-  })
-  updatedAt?: Date;
 }

@@ -1,26 +1,14 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { PantherworldZoneNames } from "../../world/zones";
 import { PantherworldPlayer } from "./PantherworldPlayerEntity";
+import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class PantherworldItem {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column({
-    type: "uuid",
-    nullable: true,
-  })
+export class PantherworldItem extends BaseEntity {
   @ManyToOne(() => PantherworldPlayer, (player) => player.items, {
     nullable: true,
   })
+  @JoinColumn({ name: 'userId' })
   userId: PantherworldPlayer;
 
   @Column({
@@ -64,17 +52,4 @@ export class PantherworldItem {
     default: false,
   })
   spoiled: boolean;
-
-  @CreateDateColumn({
-    type: "timestamp with time zone",
-    nullable: false,
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: "timestamp with time zone",
-    nullable: true,
-    default: false,
-  })
-  updatedAt?: Date;
 }
