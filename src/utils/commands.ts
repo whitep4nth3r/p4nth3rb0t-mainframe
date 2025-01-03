@@ -1,4 +1,4 @@
-import { tmi } from "./../tmi";
+import { tmi } from "../tmi";
 import { config } from "../config";
 import {
   sendDropEmotesEvent,

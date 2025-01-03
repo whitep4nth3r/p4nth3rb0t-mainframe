@@ -66,21 +66,19 @@ import "./events/discord/messageReactionRemove";
 discord.on(Events.ClientReady, async () => {
   console.log(`🤖 Logged in to Discord as ${discord.user?.username}!`);
 
-  announcementsChannel = (await discord.channels.fetch(
-    config.discord.liveAnnouncementsChannelId,
-  )) as TextChannel;
+  const channels = await Promise.all([
+    discord.channels.fetch(config.discord.liveAnnouncementsChannelId),
+    discord.channels.fetch(config.discord.p4nth3rworldChannelId),
+    discord.channels.fetch(config.discord.modChannelId),
+    discord.channels.fetch(config.discord.techHelpChannelId),
+  ]);
 
-  feedChannel = (await discord.channels.fetch(
-    config.discord.p4nth3rworldChannelId,
-  )) as TextChannel;
-
-  modChannel = (await discord.channels.fetch(
-    config.discord.modChannelId,
-  )) as TextChannel;
-
-  helpChannel = (await discord.channels.fetch(
-    config.discord.techHelpChannelId,
-  )) as ForumChannel;
+  [announcementsChannel, feedChannel, modChannel, helpChannel] = channels as [
+    TextChannel,
+    TextChannel,
+    TextChannel,
+    ForumChannel,
+  ];
 });
 
 const POST_TITLE_CHAR_LIMIT = 100;
@@ -195,7 +193,9 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
           streamId: streamInfo.id,
         },
       });
-      let message;
+
+      let message: Discord.Message<true>;
+
       if (existing) {
         message = await announcementsChannel.messages.fetch(
           `${existing.messageId}`,

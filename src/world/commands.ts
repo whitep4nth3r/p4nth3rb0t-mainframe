@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { isValidPantherworldZone, PantherworldZones } from "../world/zones";
+import { isValidPantherworldZone, PantherworldZones } from "./zones";
 import { movePlayer } from "./actions/player/move";
 import { locatePlayer } from "./actions/player/locate";
 import { claimItem } from "./actions/player/claim";
@@ -8,7 +8,7 @@ import { listPopulation } from "./actions/player/listPopulation";
 import { throwItem } from "./actions/player/throw";
 import { giftItem } from "./actions/player/gift";
 import { getRestOfMessage } from "../utils/commands";
-import { tmi } from "./../tmi";
+import { tmi } from "../tmi";
 import { getLeaderboard } from "./actions/leader/getLeaderboard";
 import { releaseUnclaimed } from "./actions/leader/releaseUnclaimed";
 import { EventData, SpawnEventType, spawn } from "./spawn";
@@ -89,7 +89,10 @@ export const WorldLeaderCommands = {
 export const WorldCommands = {
   "!map": async () => {
     const zones = PantherworldZones.map((zone) => zone.name).join(", ");
-    tmi.say(config.channel, `${config.BOT_PREFIX}🗺️ Available zones: ${zones}`);
+    await tmi.say(
+      config.channel,
+      `${config.BOT_PREFIX}🗺️ Available zones: ${zones}`
+    );
   },
   "!move": async (tags, message) => {
     if (!config.FREEZE_MODE) {
@@ -98,7 +101,7 @@ export const WorldCommands = {
       if (isValid) {
         await movePlayer(tags["user-id"] as string, zone);
       } else {
-        tmi.say(
+        await tmi.say(
           config.channel,
           `${config.BOT_PREFIX}❌ Move failed: zone is void`,
         );

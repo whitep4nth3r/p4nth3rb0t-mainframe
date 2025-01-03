@@ -54,7 +54,7 @@ export default class UserManager {
         const responseData = (await response.json()) as TwitchUserResponse;
 
         if (responseData.data.length === 0) {
-          tmi.say(config.channel, "User not found, try again!");
+          await tmi.say(config.channel, "User not found, try again!");
           return undefined;
         }
 
@@ -83,6 +83,7 @@ export default class UserManager {
     }
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
+
       if (data) {
         const passesAgeCheck = accountIsOlderThanSevenDays(data.created_at);
 
