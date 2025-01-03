@@ -15,7 +15,7 @@ router.post(
     }
 
     if (req.body.challenge) {
-      console.log(`💘  Webhook subscribed for broadcaster follows!`);
+      console.log(`💘 Webhook subscribed for broadcaster follows!`);
 
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {

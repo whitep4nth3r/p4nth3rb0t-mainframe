@@ -4,7 +4,6 @@ import { URLSearchParams } from "url";
 import { config } from "./config";
 import {
   TeamMembers,
-  TwitchUser,
   EventSubscriptionResponse,
   EventSubDefinition,
   EventSubType,
@@ -169,12 +168,12 @@ function callbackUrlAllowed(url: string): boolean {
   const allowed: string[] = [];
   const myCallbackUrl = process.env.TWITCH_API_CALLBACK_URL ?? "";
 
-  // Delete all subscriptions with callback urls not explicitly allowed
-  existingSubs.forEach(async (id) => await deleteSubscription(id));
+  for (const id of existingSubs) {
+    await deleteSubscription(id);
+  }
 
   if (subscriptionResponse) {
-    subscriptionResponse.data.forEach(async (eventSub) => {
-      //await deleteSubscription(eventSub.id);
+    for (const eventSub of subscriptionResponse.data) {
       const def: EventSubDefinition = {
         eventType: eventSub.type as EventSubType,
         userId: eventSub.condition.broadcaster_user_id,
@@ -188,11 +187,12 @@ function callbackUrlAllowed(url: string): boolean {
       } else {
         deletableSubIds.push(eventSub.id);
       }
-    });
+    }
   }
 
-  // Delete all subscriptions with callback urls not explicitly allowed
-  deletableSubIds.forEach(async (id) => await deleteSubscription(id));
+  for (const id of deletableSubIds) {
+    await deleteSubscription(id);
+  }
 
   const hypeTrainBeginDefinition: EventSubDefinition = {
     eventType: EventSubType.HypeTrainBegin,
@@ -248,7 +248,7 @@ function callbackUrlAllowed(url: string): boolean {
 
   // Register any team member stream listeners that are not already registered
   const teamMembers: TeamMembers = await Team.getMembers();
-  teamMembers.forEach(async (member: TwitchUser) => {
+  for (const member of teamMembers) {
     const offlineDefinition = createStreamerOfflineDefinition(member.user_id);
     if (existingSubs.has(JSON.stringify(offlineDefinition))) {
       console.log(
@@ -265,7 +265,7 @@ function callbackUrlAllowed(url: string): boolean {
     } else {
       await registerEventSub(onlineDefinition);
     }
-  });
+  }
 
   console.log("Webhooks initialization complete");
 })();

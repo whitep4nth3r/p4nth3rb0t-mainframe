@@ -19,7 +19,7 @@ router.post(
     }
 
     if (req.body.challenge) {
-      console.log(`🚂  Webhook subscribed for hype train begin!`);
+      console.log(`🚂 Webhook subscribed for hype train begin!`);
 
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {
@@ -42,7 +42,7 @@ router.post(
     }
 
     if (req.body.challenge) {
-      console.log(`🚂  Webhook subscribed for hype train progress!`);
+      console.log(`🚂 Webhook subscribed for hype train progress!`);
 
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {
@@ -65,7 +65,7 @@ router.post(
     }
 
     if (req.body.challenge) {
-      console.log(`🚂  Webhook subscribed for hype train end!`);
+      console.log(`🚂 Webhook subscribed for hype train end!`);
 
       return res.status(200).contentType("text/plain").send(req.body.challenge);
     } else {

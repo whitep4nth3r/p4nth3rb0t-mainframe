@@ -42,6 +42,7 @@ export const sendBroadcasterFollowEvent = async (
 
     if (user) {
       console.log(`🚨 ${user.login} is now following 🚨`);
+
       try {
         if (!config.FREEZE_MODE) {
           const broadcasterFollowEvent: FollowPacket = {

@@ -34,7 +34,7 @@ router.post(
 
     if (req.body.challenge) {
       console.log(
-        `↪️  Webhook subscribed for ${member.user_name} ${subType} events!`,
+        `↪️ Webhook subscribed for ${member.user_name} ${subType} events!`,
       );
 
       return res.status(200).contentType("text/plain").send(req.body.challenge);

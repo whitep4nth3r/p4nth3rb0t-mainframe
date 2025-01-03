@@ -55,7 +55,6 @@ import "./events/twitch/moods";
         ? "I AM IN DEV MODE"
         : "p4nth3rPEWPEW Welcome to p4nth3rworld [object Object] p4nth3rPEWPEW";
 
-    // Bot is online 🔥
     if (process.env.NODE_ENV !== "development") {
       await announce(announceMessage, TwitchAnnouncementColor.Primary);
     }

@@ -18,21 +18,22 @@ export default class WebsocketServer {
 
       const ping = setInterval(() => {
         this.wsServer.clients.forEach((ws: any) => {
-          if (!ws.isAlive) return ws.terminate();
+          if (!ws.isAlive) {
+            return ws.terminate();
+          }
 
           ws.isAlive = false;
+
           ws.ping(() => {
             return true;
           });
         });
       }, 10000);
 
-      ws.on("close", function (cc: number, cmsg: string) {
+      ws.on("close", function(cc: number, cmsg: string) {
         clearInterval(ping);
       });
 
-      //send feedback to the incoming connection
-      //eg: chat overlay
       ws.send(
         JSON.stringify({
           status: 200,
