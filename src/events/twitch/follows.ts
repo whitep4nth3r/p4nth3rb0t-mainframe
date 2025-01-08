@@ -8,6 +8,7 @@ import { TwitchFollower } from "../../data/entities/TwitchFollowerEntity";
 import { announce } from "../../utils/twitchUtils";
 import { FollowPacket, MainframeEvent } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const twitchFollowerRepository = database.getRepository(TwitchFollower);
 
@@ -29,6 +30,11 @@ export const sendBroadcasterFollowEvent = async (
 
   if (!existingFollower) {
     console.log(`🚨 NEW FOLLOWER ${followerName} DETECTED! 🚨`);
+
+    await spawn({
+      type: SpawnEventType.Follow,
+      data: { username: followerName },
+    });
 
     const user: FullTwitchUser = await UserManager.getUserById(
       followerUserId as string,
@@ -58,6 +64,9 @@ export const sendBroadcasterFollowEvent = async (
               newRandomMood,
               followerName + "-" + Date.now(),
             );
+
+            // const randomZone = getRandomEntry(PantherworldZones);
+            // await movePlayer(user.id, randomZone.name, false);
 
             await announce(
               `🌍 Welcome to p4nth3rworld, @${followerName}!`,

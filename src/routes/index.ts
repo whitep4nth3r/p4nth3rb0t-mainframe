@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { config } from "../config";
 import authRoutes from "./auth";
+import worldRoutes from "./world";
 import webhookRoutes from "./webhooks";
 
 const router = Router();
@@ -10,6 +11,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/", authRoutes);
+router.use("/world", worldRoutes);
 router.use("/webhooks", webhookRoutes);
 
 export default router;

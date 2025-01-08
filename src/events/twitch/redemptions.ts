@@ -12,6 +12,7 @@ import {
 } from "@whitep4nth3r/p4nth3rb0t-types";
 import WebSocketServer from "../../classes/WebSocketServer";
 // import { MoodEmotes } from "../../data/types";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const sendNumeronymEvent = async (isActive: boolean) => {
   try {
@@ -77,6 +78,11 @@ tmi.on(
       if (Object.keys(config.channelRedemptions).includes(rewardId)) {
         const rewardName = config.channelRedemptions[rewardId];
 
+        await spawn({
+          type: SpawnEventType.Redeem,
+          data: { reward: rewardName },
+        });
+
         switch (rewardName) {
           case "numeronym":
             await sendNumeronymEvent(true);
@@ -100,6 +106,11 @@ tmi.on(
         const mood: string = config.moodRedemptions[rewardId];
 
         await sendMoodChangeEvent(mood, rewardId);
+
+        await spawn({
+          type: SpawnEventType.Redeem,
+          data: { reward: mood },
+        });
       }
     }
   },

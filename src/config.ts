@@ -47,6 +47,7 @@ const config: Config = {
     liveAnnouncementColorOffline: "#AE8439",
     liveAnnouncementImageSize: "1280x720",
     techHelpChannelId: "1006450043089326201",
+    p4nth3rworldChannelId: "1233405365392117791",
     modChannelId: "749651628067651674",
     reactionRole: [
       {

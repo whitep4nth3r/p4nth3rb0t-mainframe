@@ -1,0 +1,186 @@
+import { BeachItems } from "./../items/beach";
+import { Vegetables } from "./../items/vegetables";
+import { Natural } from "./../items/natural";
+import { UniversalItems } from "./../items/universal";
+import { Herbs } from "../items/herbs";
+import { Recipe } from "../api/types";
+import { Fruits } from "../items/fruits";
+import { Legumes } from "../items/legumes";
+import { Spices } from "../items/spices";
+
+export const FoodRecipes: Record<string, Recipe> = {
+  "Marinated green olives": {
+    title: "Marinated green olives",
+    description: "Combine green olive with fresh herbs, garlic and chilli.",
+    names: [
+      "mix",
+      "medley",
+      "tapenade",
+      "fusion",
+      "combo",
+      "blend",
+      "concoction",
+    ],
+    ingredients: {
+      primary: Vegetables.find((item) => item.name === "green olive"),
+      secondary: [
+        Herbs.find((item) => item.name === "fresh thyme"),
+        Herbs.find((item) => item.name === "fresh basil"),
+        Herbs.find((item) => item.name === "fresh parsley"),
+        Herbs.find((item) => item.name === "fresh coriander"),
+        Herbs.find((item) => item.name === "fresh rosemary"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Nut butter": {
+    title: "Nut butter",
+    description: "Combine butter with nuts for a tasty treat.",
+    names: ["spread", "nut butter", "paste", "smör", "smør", "medley"],
+    ingredients: {
+      primary: UniversalItems.find((item) => item.name === "stick of butter"),
+      secondary: [
+        Natural.find((item) => item.name === "peanut"),
+        Natural.find((item) => item.name === "almond"),
+        Natural.find((item) => item.name === "pistachio"),
+        Natural.find((item) => item.name === "hazelnut"),
+        Natural.find((item) => item.name === "chestnut"),
+        Natural.find((item) => item.name === "walnut"),
+        Natural.find((item) => item.name === "pecan nut"),
+        BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Pasta and sauce": {
+    title: "Pasta and sauce",
+    description:
+      "Cook up a tasty Italian-inspired dish with fresh pasta, vegetables, herbs and spices.",
+    names: [
+      "arrabiata",
+      "bolognese",
+      "spaghetti",
+      "fusilli",
+      "conchiglie",
+      "farfalle",
+      "ravioli",
+      "tortellini",
+    ],
+    ingredients: {
+      primary: UniversalItems.find((item) => item.name === "fresh pasta"),
+      secondary: [
+        Herbs.find((item) => item.name === "fresh basil"),
+        Fruits.find((item) => item.name === "tomato"),
+        Vegetables.find((item) => item.name === "carrot"),
+        Herbs.find((item) => item.name === "fresh parsley"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Vegetables.find((item) => item.name === "generic mushroom"),
+        Vegetables.find((item) => item.name === "chestnut mushroom"),
+        Vegetables.find((item) => item.name === "celery stick"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "red onion"),
+        Vegetables.find((item) => item.name === "shallot"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Red lentil concoction": {
+    title: "Red lentil concoction",
+    description: "Mix red lentils with vegetables, herbs, spices and love.",
+    names: ["daal", "stew", "hot pot", "curry"],
+    ingredients: {
+      primary: Legumes.find((item) => item.name === "red lentils"),
+      secondary: [
+        Fruits.find((item) => item.name === "tomato"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "red onion"),
+        Vegetables.find((item) => item.name === "shallot"),
+        Vegetables.find((item) => item.name === "red bell pepper"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Herbs.find((item) => item.name === "fresh coriander"),
+        Herbs.find((item) => item.name === "fresh ginger"),
+        Spices.find((item) => item.name === "turmeric root"),
+        Spices.find((item) => item.name === "cumin seeds"),
+        Spices.find((item) => item.name === "cardamom pods"),
+        Spices.find((item) => item.name === "cinnamon stick"),
+        Spices.find((item) => item.name === "cloves"),
+        Spices.find((item) => item.name === "whole nutmeg"),
+        Spices.find((item) => item.name === "black pepper"),
+        BeachItems.find((item) => item.name === "sea salt"),
+      ],
+    },
+  },
+  "Mashed avocado (aka guacamole)": {
+    title: "Mashed avocado (aka guacamole)",
+    description:
+      "Try adding various herbs, spices, fruits, citrus or maybe even something from the sea to a delicious avocado.",
+    names: [
+      "guacamole",
+      "guac",
+      "fancy mash",
+      "mash",
+      "dip",
+      "molido",
+      "salsa",
+      "röra",
+    ],
+    ingredients: {
+      primary: Vegetables.find((item) => item.name === "avocado"),
+      secondary: [
+        Vegetables.find((item) => item.name === "black olive"),
+        Vegetables.find((item) => item.name === "spring onions"),
+        Vegetables.find((item) => item.name === "watercress"),
+        Vegetables.find((item) => item.name === "red onion"),
+        BeachItems.find((item) => item.name === "crab claw"),
+        BeachItems.find((item) => item.name === "lobster claw"),
+        BeachItems.find((item) => item.name === "sea salt"),
+        Herbs.find((item) => item.name === "fresh thyme"),
+        Herbs.find((item) => item.name === "fresh ginger"),
+        Herbs.find((item) => item.name === "fresh green chilli"),
+        Herbs.find((item) => item.name === "fresh red chilli"),
+        Herbs.find((item) => item.name === "fresh parsley"),
+        Herbs.find((item) => item.name === "garlic bulb"),
+        Fruits.find((item) => item.name === "tomato"),
+        Fruits.find((item) => item.name === "lemon"),
+        Fruits.find((item) => item.name === "lime"),
+        Fruits.find((item) => item.name === "mango chunk"),
+        Fruits.find((item) => item.name === "whole mango"),
+        Spices.find((item) => item.name === "black pepper"),
+      ],
+    },
+  },
+  "Clam chowder": {
+    title: "Clam chowder",
+    description:
+      "Combine a clam shell with other shellfish, sea salt and fresh herbs and vegetables for a hearty seaside-inspired chowder.",
+    names: ["chowder", "soup", "broth", "stew", "bisque"],
+    ingredients: {
+      primary: BeachItems.find((item) => item.name === "clam shell"),
+      secondary: [
+        BeachItems.find((item) => item.name === "sea salt"),
+        BeachItems.find((item) => item.name === "whelk shell"),
+        BeachItems.find((item) => item.name === "mussel shell"),
+        Vegetables.find((item) => item.name === "white potato"),
+        Vegetables.find((item) => item.name === "sweet potato"),
+        Vegetables.find((item) => item.name === "yam"),
+        Vegetables.find((item) => item.name === "carrot"),
+        Vegetables.find((item) => item.name === "parsnip"),
+        Vegetables.find((item) => item.name === "cabbage"),
+        Vegetables.find((item) => item.name === "spring onions"),
+        Vegetables.find((item) => item.name === "white onion"),
+        Vegetables.find((item) => item.name === "celery stick"),
+        Vegetables.find((item) => item.name === "radish"),
+        Vegetables.find((item) => item.name === "chestnut mushroom"),
+        Vegetables.find((item) => item.name === "shallot"),
+      ],
+    },
+  },
+};

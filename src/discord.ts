@@ -20,6 +20,8 @@ import {
   getActiveBroadcasterStreamByBroadcasterId,
 } from "./utils/twitchUtils";
 import type { StreamInfo } from "./data/types";
+import { spawn, SpawnEventType } from "./world/spawn";
+import { PantherworldEvent } from "./world/api/types";
 
 const discordAnnouncementRepository =
   database.getRepository(DiscordAnnouncement);
@@ -66,11 +68,13 @@ discord.on(Events.ClientReady, async () => {
 
   const channels = await Promise.all([
     discord.channels.fetch(config.discord.liveAnnouncementsChannelId),
+    discord.channels.fetch(config.discord.p4nth3rworldChannelId),
     discord.channels.fetch(config.discord.modChannelId),
     discord.channels.fetch(config.discord.techHelpChannelId),
   ]);
 
-  [announcementsChannel, modChannel, helpChannel] = channels as [
+  [announcementsChannel, feedChannel, modChannel, helpChannel] = channels as [
+    TextChannel,
     TextChannel,
     TextChannel,
     ForumChannel,
@@ -211,6 +215,11 @@ export const sendLiveAnnouncement = async (streamInfo: StreamInfo) => {
         });
       }
 
+      await spawn({
+        type: SpawnEventType.StreamOnline,
+        data: { username: user.display_name },
+      });
+
       const discordAnnouncement = new DiscordAnnouncement();
       discordAnnouncement.memberId = streamInfo.broadcaster_user_id;
       discordAnnouncement.messageId = message.id;
@@ -263,7 +272,78 @@ export const sendOfflineAnnouncement = async (member_id: string) => {
       embeds: [embed],
     });
 
+    await spawn({
+      type: SpawnEventType.StreamOffline,
+      data: { username: user.display_name },
+    });
+
     await discordAnnouncementRepository.delete({ memberId: member_id });
+  }
+};
+
+const EVENT_COLORS = {
+  [PantherworldEvent.CLAIM]: "#ffffff",
+  [PantherworldEvent.COOKED]: "#a3e635",
+  [PantherworldEvent.COOK_FAILED]: "#ff0000",
+  [PantherworldEvent.THROW]: "#fc814a",
+  [PantherworldEvent.GIFT]: "#fc814a",
+  [PantherworldEvent.MOVE]: "#0E0016",
+  [PantherworldEvent.SPAWN]: "#F0047F",
+  [PantherworldEvent.SCANNED]: "#38bdf8",
+  [PantherworldEvent.RELEASE]: "#fc814a",
+  [PantherworldEvent.LEADERBOARD]: "#0E0016",
+  [PantherworldEvent.LIST_POPULATION]: "#0E0016",
+  [PantherworldEvent.LOCK]: "#0E0016",
+};
+
+const EVENT_ICONS = {
+  [PantherworldEvent.CLAIM]: "🎒",
+  [PantherworldEvent.COOKED]: "🍳",
+  [PantherworldEvent.COOK_FAILED]: "🤮",
+  [PantherworldEvent.THROW]: "🫳",
+  [PantherworldEvent.GIFT]: "🎁",
+  [PantherworldEvent.MOVE]: "➡️",
+  [PantherworldEvent.SPAWN]: "🌎",
+  [PantherworldEvent.SCANNED]: "👀",
+  [PantherworldEvent.RELEASE]: "📦",
+  [PantherworldEvent.LEADERBOARD]: "🏆",
+  [PantherworldEvent.LIST_POPULATION]: "📊",
+  [PantherworldEvent.LOCK]: "🔒",
+};
+
+function formatPantherworldDiscordMessage(
+  type: PantherworldEvent,
+  message: string,
+): string {
+  switch (type) {
+    case PantherworldEvent.RELEASE:
+    case PantherworldEvent.SCANNED:
+      // eslint-disable-next-line no-case-declarations
+      const newMessage = message.split(":").join("\n");
+      return newMessage.split(",").join("\n");
+    default:
+      return message;
+  }
+}
+
+export const sendPantherworldFeedEvent = async (
+  message: string,
+  type: PantherworldEvent,
+  botPrefix: string,
+) => {
+  if (feedChannel) {
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: `${botPrefix}${EVENT_ICONS[type as string]} ${type
+          .toUpperCase()
+          .replace("_", " ")}`,
+      })
+      .setDescription(formatPantherworldDiscordMessage(type, message))
+      .setColor(EVENT_COLORS[type as string]);
+
+    await feedChannel.send({
+      embeds: [embed],
+    });
   }
 };
 

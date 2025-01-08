@@ -6,6 +6,7 @@ import UserManager from "../../users/UserManager";
 import { MainframeEvent, SubPacket } from "@whitep4nth3r/p4nth3rb0t-types";
 import Moods, { sendMoodChangeEvent } from "./moods";
 import { config } from "../../config";
+import { SpawnEventType, spawn } from "../../world/spawn";
 
 const getSubPlan = (subPlan: string | undefined): string => {
   if (subPlan === "Prime") {
@@ -140,6 +141,10 @@ tmi.on(
       allowedUsername &&
       typeof recipientUserName === "string"
     ) {
+      await spawn({
+        type: SpawnEventType.Sub,
+        data: { username: recipientUserName },
+      });
       await sendSubEvent(
         userstate["user-id"] as string,
         recipientUserName,
@@ -162,6 +167,11 @@ tmi.on(
     userstate: SubUserstate,
   ) => {
     if (!config.FREEZE_MODE) {
+      await spawn({
+        type: SpawnEventType.Sub,
+        data: { username: userstate["display-name"] as string },
+      });
+
       await sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,
@@ -184,6 +194,12 @@ tmi.on(
     // methods: Record<string, unknown>,
   ) => {
     if (!config.FREEZE_MODE) {
+      const doubleUsername =
+        userstate["display-name"] + userstate["display-name"];
+      await spawn({
+        type: SpawnEventType.Sub,
+        data: { username: doubleUsername },
+      });
       await sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,

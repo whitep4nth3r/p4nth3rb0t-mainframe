@@ -33,6 +33,7 @@ export interface Config {
     liveAnnouncementColorOffline: Discord.ColorResolvable;
     liveAnnouncementImageSize: string;
     techHelpChannelId: string;
+    p4nth3rworldChannelId: string;
     modChannelId: string;
     reactionRole: DiscordReactionRole[];
   };

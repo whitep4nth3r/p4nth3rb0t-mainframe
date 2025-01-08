@@ -13,6 +13,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "https://pantherworld.netlify.app",
+      "https://p4nth3r.world",
     ],
     credentials: true,
   }),
