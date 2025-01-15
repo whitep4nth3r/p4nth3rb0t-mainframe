@@ -336,14 +336,14 @@ tmi.on(
       //   );
       // }
 
-      if (
-        (messageContainsCode(message) &&
-          tags.username !== config.broadcaster.user_name) ||
-        tags.username === config.bot.user_name
-      ) {
-        tmi.say(config.channel, `!bs ${tags.username}`);
-        await sendBackseatEvent(tags.username.toLowerCase());
-      }
+      // if (
+      //   (messageContainsCode(message) &&
+      //     tags.username !== config.broadcaster.user_name) ||
+      //   tags.username === config.bot.user_name
+      // ) {
+      //   tmi.say(config.channel, `!bs ${tags.username}`);
+      //   await sendBackseatEvent(tags.username.toLowerCase());
+      // }
 
       const possibleCommand: string =
         getCommandFromMessage(message).toLowerCase();
