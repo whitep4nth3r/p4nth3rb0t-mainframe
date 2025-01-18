@@ -1,19 +1,25 @@
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @CreateDateColumn({
-    type: "timestamp with time zone",
-    nullable: false,
+    name: "createdAt",
+    type: "timestamptz",
+    default: () => "CURRENT_TIMESTAMP",
   })
-  createdAt!: Date;
+  readonly createdAt!: Date;
 
   @UpdateDateColumn({
-    type: "timestamp with time zone",
+    name: "updatedAt",
+    type: "timestamptz",
+    onUpdate: "CURRENT_TIMESTAMP",
     nullable: true,
-    default: false,
   })
-  updatedAt?: Date;
+  readonly updatedAt?: Date;
 }
