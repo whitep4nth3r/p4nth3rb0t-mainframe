@@ -1,6 +1,11 @@
 import * as Sentry from "@sentry/node";
 import AccessToken from "../classes/AccessToken";
-import { TeamMembers, TeamResponse, TwitchChannel, TwitchChannelResponse } from "../data/types";
+import {
+  TeamMembers,
+  TeamResponse,
+  TwitchChannel,
+  TwitchChannelResponse,
+} from "../data/types";
 import { config } from "../config";
 
 const accessTokenUtil = new AccessToken();
@@ -20,7 +25,7 @@ export default class Team {
     if (accessTokenData) {
       try {
         const params = new URLSearchParams({
-          "broadcaster_id": broadcasterId,
+          broadcaster_id: broadcasterId,
         });
 
         const response = await fetch(
@@ -28,14 +33,14 @@ export default class Team {
           {
             method: "GET",
             headers: {
-              "Authorization": `Bearer ${accessTokenData.accessToken}`,
+              Authorization: `Bearer ${accessTokenData.accessToken}`,
               "Client-Id": process.env.CLIENT_ID,
             },
           },
         );
 
         if (response && response.ok) {
-          const responseData = await response.json() as TwitchChannelResponse;
+          const responseData = (await response.json()) as TwitchChannelResponse;
 
           return responseData.data[0];
         }
@@ -57,7 +62,7 @@ export default class Team {
     if (accessTokenData) {
       try {
         const params = new URLSearchParams({
-          "name": config.team.name,
+          name: config.team.name,
         });
 
         const response = await fetch(
@@ -65,14 +70,14 @@ export default class Team {
           {
             method: "GET",
             headers: {
-              "Authorization": `Bearer ${accessTokenData.accessToken}`,
+              Authorization: `Bearer ${accessTokenData.accessToken}`,
               "Client-Id": process.env.CLIENT_ID,
             },
           },
         );
 
         if (response.ok) {
-          const data = await response.json() as TeamResponse;
+          const data = (await response.json()) as TeamResponse;
 
           Team.cache = data.data[0].users;
 

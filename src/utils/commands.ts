@@ -106,6 +106,7 @@ export const ChatCommands: Commands = {
   "!bs": async (tags, message) => {
     if (!config.FREEZE_MODE) {
       const username = getRestOfMessage(message)[0];
+
       if (username !== undefined) {
         await sendBackseatEvent(username.replace("@", "").toLowerCase());
       }
@@ -118,7 +119,7 @@ export const ChatCommands: Commands = {
       } else {
         await tmi.say(
           config.channel,
-          "p4nth3rTROLL Access denied! There is no giveaway in progress! p4nth3rTROLL"
+          "p4nth3rTROLL Access denied! There is no giveaway in progress! p4nth3rTROLL",
         );
       }
     }
@@ -145,7 +146,10 @@ export const ChatCommands: Commands = {
       }
 
       if (getRestOfMessage(message)[0] === "me") {
-        await sendDropUserEvent(tags["user-id"] as string, tags["id"] as string);
+        await sendDropUserEvent(
+          tags["user-id"] as string,
+          tags["id"] as string,
+        );
       }
     }
   },
@@ -186,7 +190,10 @@ export const ChatCommands: Commands = {
       if (userToYeet[0] === "me" && tags["display-name"]) {
         await sendYeetEvent(tags["display-name"], tags["id"] as string);
       } else if (userToYeet.length === 1) {
-        await sendYeetEvent(userToYeet[0].replace("@", ""), tags["id"] as string);
+        await sendYeetEvent(
+          userToYeet[0].replace("@", ""),
+          tags["id"] as string,
+        );
       }
     }
   },
@@ -206,6 +213,7 @@ export const ChatCommands: Commands = {
         "p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH Check out The Claw Stream Team! https://theclaw.team p4nth3rMOTH p4nth3rMOTH p4nth3rMOTH",
         TwitchAnnouncementColor.Purple,
       );
+
       await sendImageDropEvent(ImageDrops.TheClaw, tags["id"] as string);
     }
   },

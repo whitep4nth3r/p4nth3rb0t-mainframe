@@ -55,6 +55,7 @@ export default class UserManager {
 
         if (responseData.data.length === 0) {
           await tmi.say(config.channel, "User not found, try again!");
+
           return undefined;
         }
 
@@ -81,6 +82,7 @@ export default class UserManager {
     if (userId === undefined) {
       return undefined;
     }
+
     if (this.cache.has(userId)) {
       const data = this.cache.get(userId);
 

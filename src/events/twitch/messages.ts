@@ -46,16 +46,13 @@ const sendTailwindEvent = async (user_id: string) => {
     const liveStream = await getActiveBroadcasterStreamByBroadcasterId(
       config.broadcaster.user_id,
     );
+
     if (liveStream !== null) {
       const streamStartTime = new Date(liveStream.data[0].started_at).valueOf();
       const now = new Date().valueOf();
-
       const timeInMs = now - streamStartTime;
-
       const tailwindTime = new Date(timeInMs);
-
       const timeToSend = `${tailwindTime.getUTCHours()}h ${tailwindTime.getUTCMinutes()}m ${tailwindTime.getUTCSeconds()}s`;
-
       const user = await UserManager.getUserById(user_id as string);
 
       if (user !== undefined) {
@@ -258,6 +255,7 @@ tmi.on(
       if (message === "!reset") {
         teamMembersGreeted.splice(0, teamMembersGreeted.length);
         tailwind_found = false;
+
         await tmi.say(
           config.channel,
           `${config.team.displayName} greetings cache and time to tailwind boolean has been reset. Current length of cache is ${teamMembersGreeted.length}.`,
@@ -269,7 +267,7 @@ tmi.on(
 
         await tmi.say(
           config.channel,
-          "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW"
+          "p4nth3rPEWPEW !win !win !win !win !win !win !win !win p4nth3rPEWPEW",
         );
       }
 
@@ -277,10 +275,11 @@ tmi.on(
         if (Giveaway.isOpen) {
           await tmi.say(
             config.channel,
-            `p4nth3rTROLL @${config.broadcaster.user_name} pressed the wrong button. Giveaway is already open! p4nth3rTROLL`
+            `p4nth3rTROLL @${config.broadcaster.user_name} pressed the wrong button. Giveaway is already open! p4nth3rTROLL`,
           );
         } else {
           Giveaway.open();
+
           await announce(
             "p4nth3rPEWPEW The giveaway is open! Enter !win in chat to be in with a chance of winning! p4nth3rPEWPEW",
             TwitchAnnouncementColor.Primary,
@@ -290,6 +289,7 @@ tmi.on(
 
       if (message === Giveaway.commands.close && !config.FREEZE_MODE) {
         Giveaway.close();
+
         await announce(
           "p4nth3rPEWPEW The giveaway is closed! Thanks for playing! p4nth3rPEWPEW",
           TwitchAnnouncementColor.Primary,
@@ -330,6 +330,7 @@ tmi.on(
         );
 
         teamMembersGreeted.push(possibleTeamMember);
+
         await sendteamMemberJoinEvent(possibleTeamMember);
       }
     }

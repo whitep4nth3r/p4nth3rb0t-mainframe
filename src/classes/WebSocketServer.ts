@@ -30,7 +30,7 @@ export default class WebsocketServer {
         });
       }, 10000);
 
-      ws.on("close", function(cc: number, cmsg: string) {
+      ws.on("close", function (cc: number, cmsg: string) {
         clearInterval(ping);
       });
 

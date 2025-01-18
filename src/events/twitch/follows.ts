@@ -60,6 +60,7 @@ export const sendBroadcasterFollowEvent = async (
           setTimeout(async () => {
             // Send random mood change
             const newRandomMood: string = Moods.getRandomNewMood();
+
             await sendMoodChangeEvent(
               newRandomMood,
               followerName + "-" + Date.now(),

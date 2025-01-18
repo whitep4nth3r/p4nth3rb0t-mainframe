@@ -92,6 +92,7 @@ const sendGiveawayDrawEvent = async (winner: string) => {
       };
 
       WebSocketServer.sendData(drawGiveawayEvent);
+
       await announce(
         `p4nth3rPEWPEW Congratulations to @${winner}! p4nth3rPEWPEW Please whisper @Steffi128 to claim your prize!`,
         TwitchAnnouncementColor.Green,
@@ -121,6 +122,7 @@ export default class Giveaway {
     if (!Giveaway.isOpen) {
       Giveaway.entrants.clear();
       Giveaway.isOpen = true;
+
       sendGiveawayStartEvent();
     }
   };
@@ -128,6 +130,7 @@ export default class Giveaway {
   static close = (): void => {
     Giveaway.isOpen = false;
     Giveaway.entrants.clear();
+
     sendGiveawayEndEvent();
   };
 
@@ -146,13 +149,15 @@ export default class Giveaway {
   static draw = async (): Promise<string | null> => {
     const allEntrants: string[] = Array.from(Giveaway.entrants);
     const currentChatters = await getCurrentChatterUserNames();
+
     const presentEntrants: string[] = allEntrants.filter((e) =>
       currentChatters.includes(e),
     );
+
     if (presentEntrants.length === 0) {
       await tmi.say(
         config.channel,
-        "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL"
+        "p4nth3rTROLL None of the giveaway entrants are present in chat! p4nth3rTROLL",
       );
 
       return null;
@@ -164,6 +169,7 @@ export default class Giveaway {
       // return the winner if it is in current chatters
       await sendGiveawayDrawEvent(winner);
       Giveaway.entrants.delete(winner);
+
       return winner;
     }
 

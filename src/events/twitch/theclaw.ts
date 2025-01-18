@@ -15,6 +15,7 @@ export const sendTheClawEvent = async () => {
   const mergeTeamWithUserData = async (): Promise<TeamMemberForOverlay[]> => {
     const promises = team.map(async (member: TwitchUser) => {
       const user = await UserManager.getUserById(member.user_id);
+
       if (user) {
         return {
           displayName: member.user_name as string,

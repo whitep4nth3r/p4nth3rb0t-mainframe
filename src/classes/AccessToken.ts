@@ -43,12 +43,15 @@ export default class AccessToken {
       }
     } else {
       const authCode = await authCodeRepository.findOneBy({});
+
       if (!authCode) {
         await this.announceMissingAuthCode();
       } else {
         const token = await this.fetchUserAccessToken(authCode.code);
+
         if (token) {
           await this.setUserAccessToken(token);
+
           return await userAccessTokenRepository.findOneBy({});
         } else {
           await this.announceMissingAuthCode();
@@ -75,32 +78,37 @@ export default class AccessToken {
     );
   }
 
-  async refreshUserAccessToken(accessTokenData: UserAccessToken): Promise<boolean> {
+  async refreshUserAccessToken(
+    accessTokenData: UserAccessToken,
+  ): Promise<boolean> {
     try {
       const params = {
         grant_type: "refresh_token",
         refresh_token: accessTokenData.refreshToken,
       };
+
       const token = await this.invokeTokenEndpoint(params);
+
       if (token) {
         await this.setUserAccessToken(token);
+
         return true;
       } else {
         // Most likely, Twitch did not accept the refresh token so should clear it
         await userAccessTokenRepository.remove(accessTokenData);
-        console.log(
-          `Failed to refresh token. The token is deleted from db.`
-        );
+        console.log(`Failed to refresh token. The token is deleted from db.`);
       }
     } catch (error: any) {
       Sentry.captureException(error);
     }
+
     return false;
   }
 
   async get(): Promise<AccessTokenEntity | undefined> {
     const getAccessToken = await accessTokenRepository.findOneBy({});
-    const isValid = getAccessToken && await this.checkExistsAndValid(getAccessToken);
+    const isValid =
+      getAccessToken && (await this.checkExistsAndValid(getAccessToken));
 
     if (getAccessToken && isValid) {
       return getAccessToken;
@@ -133,8 +141,11 @@ export default class AccessToken {
     return accessTokenRepository.save(accessToken);
   }
 
-  async setUserAccessToken(data: UserAccessTokenResponse): Promise<UserAccessToken> {
+  async setUserAccessToken(
+    data: UserAccessTokenResponse,
+  ): Promise<UserAccessToken> {
     let userAccessToken = await userAccessTokenRepository.findOneBy({});
+
     if (!userAccessToken) {
       userAccessToken = userAccessTokenRepository.create();
     }
@@ -150,13 +161,13 @@ export default class AccessToken {
 
   async setAuthCode(data: AuthCodeResponse): Promise<AuthCode> {
     let authCode = await authCodeRepository.findOneBy({});
+
     if (!authCode) {
       authCode = authCodeRepository.create();
     }
 
     authCode.code = data.code;
     authCode.scope = data.scope;
-    authCode.updatedAt = new Date();
 
     return authCodeRepository.save(authCode);
   }
@@ -185,7 +196,7 @@ export default class AccessToken {
       );
 
       if (response.ok) {
-        return await response.json() as AccessTokenResponse;
+        return (await response.json()) as AccessTokenResponse;
       }
     } catch (error: any) {
       Sentry.captureException(error);
@@ -194,7 +205,9 @@ export default class AccessToken {
     return undefined;
   }
 
-  async fetchUserAccessToken(code: string): Promise<UserAccessTokenResponse | undefined> {
+  async fetchUserAccessToken(
+    code: string,
+  ): Promise<UserAccessTokenResponse | undefined> {
     const params = {
       code: code,
       grant_type: "authorization_code",
@@ -204,7 +217,9 @@ export default class AccessToken {
     return this.invokeTokenEndpoint(params);
   }
 
-  async invokeTokenEndpoint(params: any): Promise<UserAccessTokenResponse | undefined> {
+  async invokeTokenEndpoint(
+    params: any,
+  ): Promise<UserAccessTokenResponse | undefined> {
     const urlParams = new URLSearchParams({
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
@@ -220,7 +235,7 @@ export default class AccessToken {
       );
 
       if (response.ok) {
-        return await response.json() as UserAccessTokenResponse;
+        return (await response.json()) as UserAccessTokenResponse;
       }
     } catch (error: any) {
       Sentry.captureException(error);

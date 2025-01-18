@@ -55,6 +55,7 @@ export const sendDropEmotesEvent = (
   dropType: string,
 ) => {
   const imgSize = bigEmotes ? config.emotes.sizes[2] : config.emotes.sizes[1];
+
   try {
     const urls = emoteIds.map(
       (emoteId) => `${config.emotes.baseUrl}${emoteId}/${imgSize}`,

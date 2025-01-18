@@ -12,7 +12,7 @@ export const megaTimeOut = async (): Promise<void> => {
   }
 
   const currentMods = await getCurrentMods();
-  const currentModIds = currentMods.map(c => c.user_id);
+  const currentModIds = currentMods.map((c) => c.user_id);
 
   for (const chatter of currentChatters) {
     if (!currentModIds.includes(chatter.user_id)) {

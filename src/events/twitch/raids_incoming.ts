@@ -57,6 +57,7 @@ const sendRaidEvent = async (raiderCount: number, username: string) => {
 tmi.on("raided", (channel: string, username: string, viewers: number) => {
   if (!config.FREEZE_MODE) {
     tmi.say(config.channel, getRaidShoutout(username, viewers));
+
     sendRaidEvent(viewers, username);
   }
 });

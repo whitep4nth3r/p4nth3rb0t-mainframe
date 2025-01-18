@@ -145,6 +145,7 @@ tmi.on(
         type: SpawnEventType.Sub,
         data: { username: recipientUserName },
       });
+
       await sendSubEvent(
         userstate["user-id"] as string,
         recipientUserName,
@@ -196,10 +197,12 @@ tmi.on(
     if (!config.FREEZE_MODE) {
       const doubleUsername =
         userstate["display-name"] + userstate["display-name"];
+
       await spawn({
         type: SpawnEventType.Sub,
         data: { username: doubleUsername },
       });
+
       await sendSubEvent(
         userstate["user-id"] as string,
         userstate["display-name"] as string,

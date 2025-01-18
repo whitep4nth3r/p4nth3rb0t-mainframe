@@ -161,6 +161,7 @@ export const fetchVideoByUserId = async (
 
   if (response && response.ok) {
     const responseData = (await response.json()) as TwitchVideoResponse;
+
     return responseData.data[0] as TwitchVideo;
   }
 

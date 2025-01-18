@@ -5,6 +5,7 @@ import { sendMoodChangeEvent } from "./moods";
 
 export const sendSpecialEvent = async (data: unknown): Promise<void> => {
   const id = new Date().toString();
+
   try {
     const specialEvent: SpecialPacket = {
       event: MainframeEvent.special,
