@@ -1,5 +1,6 @@
 import { getPlayerZoneString } from "./locate";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import { WorldItems } from "../../items/all";
 import { PantherworldEvent, WorldItem } from "../../api/types";
 import { tmi } from "../../../tmi";
@@ -33,7 +34,10 @@ function getStringListOfAvailableKeyValuePairs(keyValuePairs: object): string {
 }
 
 // not tested because of random key generation
-export function getCategoryCountKeyValuePairs(fullWorldItems: WorldItem[], dbQueryItems) {
+export function getCategoryCountKeyValuePairs(
+  fullWorldItems: WorldItem[],
+  dbQueryItems,
+) {
   const keyValuePairs = fullWorldItems.map((item) => {
     return {
       [getRandomEntry(item.categories)]: getCountOfDbItemByName(
@@ -50,7 +54,8 @@ export async function scanZone(
   userId: string,
   username: string,
 ): Promise<void> {
-  // get user's current zone
+  const itemRepository = database.getRepository(PantherworldItem);
+
   const zone = await getPlayerZoneString(userId);
 
   if (zone === null) {
@@ -61,11 +66,14 @@ export async function scanZone(
     return;
   }
 
-  // look up all unclaimed items in current zone from DB
-  const itemsInDb = await PantherworldItemModel.aggregate([
-    { $match: { userId: null, zone: zone } },
-    { $group: { _id: "$name", count: { $sum: 1 } } },
-  ]);
+  const itemsInDb = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NULL")
+    .andWhere("item.zone = :zone", { zone })
+    .groupBy("item.name")
+    .select("item.name", "_id")
+    .addSelect("COUNT(item.id)", "count")
+    .getRawMany();
 
   const fullItems = getFullItemsFromDBAggregate(itemsInDb);
 
@@ -82,7 +90,9 @@ export async function scanZone(
     }
   });
 
-  const scannedMessage = `@${username} scanned ${zone} zone and observed: ${getStringListOfAvailableKeyValuePairs(deDupedList)} items`;
+  const scannedMessage = `@${username} scanned ${zone} zone and observed: ${getStringListOfAvailableKeyValuePairs(
+    deDupedList,
+  )} items`;
 
   tmi.say(config.channel, `${config.BOT_PREFIX}👀 ${scannedMessage}`);
 

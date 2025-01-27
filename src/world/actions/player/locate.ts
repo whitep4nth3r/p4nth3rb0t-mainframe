@@ -1,12 +1,15 @@
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 
 export async function getPlayerZoneString(
   userId: string,
 ): Promise<string | null> {
-  const entry = await PantherworldPlayerModel.findOne({
-    userId: userId,
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
+  const entry = await playerRepository.findOne({
+    where: { userId: userId },
   });
 
   if (entry) {

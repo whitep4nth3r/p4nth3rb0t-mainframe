@@ -1,4 +1,4 @@
-import { PantherworldZoneNames, Zone } from "./zones";
+import { Zone } from "./zones";
 
 interface WORLD_STATE {
   RELEASE_ZONES: Zone[];

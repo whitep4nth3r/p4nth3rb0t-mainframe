@@ -1,7 +1,6 @@
-import PantherworldPlayerModel, {
-  PantherworldPlayerDoc,
-} from "../../../data/models/PantherworldPlayer";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import UserManager from "../../../users/UserManager";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
@@ -23,7 +22,6 @@ async function runSpawnAndReleaseCheck(
   userDisplayName: string,
   moveToZone: string,
 ): Promise<void> {
-  // 15% chance of spawning an item
   const willSpawn = Math.random() > 0.85;
 
   if (willSpawn) {
@@ -32,7 +30,6 @@ async function runSpawnAndReleaseCheck(
       data: { username: userDisplayName },
     });
   } else {
-    // if no spawn, 15% probability of release
     const willRelease = Math.random() > 0.85;
 
     if (willRelease) {
@@ -88,9 +85,12 @@ export function canMoveFromCurrentZoneToDesiredZone(
 }
 
 async function dealWithExistingPlayer(
-  player: PantherworldPlayerDoc,
+  player: PantherworldPlayer,
   moveToZone: string,
 ): Promise<void> {
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
   const canMove = canMoveFromCurrentZoneToDesiredZone(player.zone, moveToZone);
 
   if (canMove === false) {
@@ -102,29 +102,19 @@ async function dealWithExistingPlayer(
     return;
   }
 
-  // we movin'
-  const allItems = await PantherworldItemModel.aggregate([
-    {
-      $match: {
-        userId: player.userId,
-        used: { $ne: true },
-        spoiled: { $ne: true },
-      },
-    },
-    { $count: "total" },
-  ]);
+  const allItems = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId = :userId", { userId: player.userId })
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .getCount();
 
-  const itemCount = allItems.length > 0 ? allItems[0].total : 0;
+  const itemCount = allItems;
   const delayInMs = (itemCount / ITEMS_PER_MS) * 1000;
 
   setTimeout(async () => {
-    await PantherworldPlayerModel.findOneAndUpdate(
-      { userId: player.userId },
-      {
-        zone: moveToZone,
-      },
-      { returnDocument: "after" },
-    );
+    player.zone = moveToZone;
+    await playerRepository.save(player);
 
     await announceMove(player.userDisplayName, moveToZone, delayInMs);
     await sendWebsocketEvent(player.userId, player.userDisplayName, moveToZone);
@@ -137,24 +127,21 @@ async function dealWithNewPlayer(
   moveToZone: string,
   announceToChat: boolean = true,
 ): Promise<void> {
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
   const user = await UserManager.getUserById(userId as string);
 
   if (user) {
     try {
-      const created = new Date();
-      const newPlayerInsert: any =
-        (await PantherworldPlayerModel.findOneAndUpdate(
-          { userId: userId },
-          {
-            userId: userId,
-            userDisplayName: user.display_name,
-            zone: moveToZone,
-            createdAt: created,
-          },
-          { upsert: true, returnDocument: "after" },
-        )) as PantherworldPlayerDoc | null;
+      const newPlayer = playerRepository.create({
+        userId: userId,
+        userDisplayName: user.display_name,
+        zone: moveToZone,
+      });
 
-      if (newPlayerInsert !== null) {
+      const newPlayerInsert = await playerRepository.save(newPlayer);
+
+      if (newPlayerInsert) {
         if (announceToChat === true) {
           await announceMove(newPlayerInsert.userDisplayName, moveToZone);
         }
@@ -165,7 +152,10 @@ async function dealWithNewPlayer(
           moveToZone,
         );
 
-        await runSpawnAndReleaseCheck(newPlayerInsert.userDisplayName, moveToZone);
+        await runSpawnAndReleaseCheck(
+          newPlayerInsert.userDisplayName,
+          moveToZone,
+        );
       }
     } catch (error) {
       Sentry.captureException(error);
@@ -178,8 +168,10 @@ export async function movePlayer(
   moveToZone: string,
   announceToChat: boolean = true,
 ): Promise<void> {
-  const playerFind = await PantherworldPlayerModel.findOne({
-    userId: userId,
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
+  const playerFind = await playerRepository.findOne({
+    where: { userId: userId },
   });
 
   if (playerFind !== null) {

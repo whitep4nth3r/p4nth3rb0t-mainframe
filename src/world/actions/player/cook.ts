@@ -2,8 +2,9 @@ import * as Sentry from "@sentry/node";
 import { PantherworldEvent, Recipe, WorldItem } from "./../../api/types";
 import { WorldRecipes } from "../../recipes/all";
 import { getCommandFromMessage } from "../../../utils/commands";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
 import { config } from "../../../config";
 import { tmi } from "../../../tmi";
 import { WorldItems } from "../../items/all";
@@ -31,7 +32,9 @@ function getCannotCookMsg(username: string): string {
 }
 
 function getSpoiledMessage(username: string, ingredientList: string[]): string {
-  return `@${username} your recipe spoiled! You lost ${ingredientList.join(", ")!}`;
+  return `@${username} your recipe spoiled! You lost ${ingredientList.join(
+    ", ",
+  )!}`;
 }
 
 function getCookedMessage(
@@ -51,13 +54,10 @@ function getCookedMessage(
 function shuffle(array) {
   let currentIndex = array.length;
 
-  // While there remain elements to shuffle...
   while (currentIndex != 0) {
-    // Pick a remaining element...
     const randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
-    // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex],
@@ -94,7 +94,9 @@ export function makeUniqueRecipeName(
   }
 
   const endWord = getRandomEntry(recipe.names);
-  return `${shuffledUnique.join(" ")} ${recipe.ingredients.primary.name} ${endWord}`;
+  return `${shuffledUnique.join(" ")} ${
+    recipe.ingredients.primary.name
+  } ${endWord}`;
 }
 
 export function getCombinedRarity(ingredientList: WorldItem[]) {
@@ -160,20 +162,22 @@ export function findSecondaryIngredients(
   return matched;
 }
 
-// !cook green olive + fresh red chilli + fresh parsley
-
 export async function cookItem(
   recipe: string,
   userId: string,
   username: string,
 ): Promise<void> {
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
   const ingredientList = getIngredientsFromCraftCommand(recipe);
 
   const allUserItems = await getAllItemsForPlayer(userId);
 
-  // check user has all of the ingredients specified
   for (let i = 0; i < ingredientList.length; i++) {
-    if (allUserItems.some((item) => item._id === ingredientList[i]) === false) {
+    if (
+      allUserItems.some((item) => item.name === ingredientList[i]) === false
+    ) {
       tmi.say(
         config.channel,
         `${config.BOT_PREFIX}❌ ${getCannotCookMsg(username)}`,
@@ -182,7 +186,6 @@ export async function cookItem(
     }
   }
 
-  // check if recipe with first ingredient is available
   const recipeMatch = findRecipe(ingredientList[0]);
 
   if (recipeMatch === null) {
@@ -193,7 +196,6 @@ export async function cookItem(
     return;
   }
 
-  // check to see if any ingredients match secondary of that recipe
   const matchedSecondaryIngredients: WorldItem[] = findSecondaryIngredients(
     recipeMatch,
     ingredientList,
@@ -210,23 +212,16 @@ export async function cookItem(
     return;
   }
 
-  // calculate the rarity of all ingredients (with some probability of a multiplier)
   const combinedRarity = getCombinedRarity(matchedSecondaryIngredients);
 
-  // 30% chance of a multiplier
   const doMultiplier = Math.random() >= 0.7;
 
-  // multiplier is a random rarity from one of the ingredients
   const finalRarity = doMultiplier
     ? combinedRarity * getRandomEntry(matchedSecondaryIngredients).rarity
     : combinedRarity;
 
-  // calculate name
   const uniqueName = makeUniqueRecipeName(recipeMatch, ingredientList);
 
-  // 5% probability of spoiling for all
-  // 25% probability of spoiling if wealth index > 50000
-  // all items get DESTROYED
   const userWealthIndex = getWealthIndex(allUserItems);
   const willSpoil =
     userWealthIndex > 50000 ? Math.random() >= 0.75 : Math.random() >= 0.95;
@@ -234,20 +229,20 @@ export async function cookItem(
   const itemUpdates = [];
 
   if (willSpoil) {
-    // set all raw ingredients from user to spoiled
     for (let i = 0; i < ingredientList.length; i++) {
-      itemUpdates.push(
-        await PantherworldItemModel.updateOne(
-          {
-            name: ingredientList[i],
-            userId: userId,
-            used: { $ne: true },
-            spoiled: { $ne: true },
-            cooked: { $ne: true },
-          },
-          { spoiled: true },
-        ),
-      );
+      const item = await itemRepository.findOne({
+        where: {
+          name: ingredientList[i],
+          userId: userId,
+          used: false,
+          spoiled: false,
+          cooked: false,
+        },
+      });
+      if (item) {
+        item.spoiled = true;
+        itemUpdates.push(itemRepository.save(item));
+      }
     }
 
     tmi.say(
@@ -272,31 +267,36 @@ export async function cookItem(
 
     WebsocketServer.sendData(playerCookFailEvent);
   } else {
-    // set all raw ingredients from user to used
     for (let i = 0; i < ingredientList.length; i++) {
-      itemUpdates.push(
-        await PantherworldItemModel.updateOne(
-          {
-            name: ingredientList[i],
-            userId: userId,
-            used: { $ne: true },
-            spoiled: { $ne: true },
-            cooked: { $ne: true },
-          },
-          { used: true },
-        ),
-      );
+      const item = await itemRepository.findOne({
+        where: {
+          name: ingredientList[i],
+          userId: userId,
+          used: false,
+          spoiled: false,
+          cooked: false,
+        },
+      });
+      if (item) {
+        item.used = true;
+        itemUpdates.push(itemRepository.save(item));
+      }
     }
 
-    const currentPlayer = await PantherworldPlayerModel.findOne({
-      userId: userId,
+    const currentPlayer = await playerRepository.findOne({
+      where: { id: userId },
     });
 
     await saveItem(uniqueName, finalRarity, currentPlayer.zone, true, userId);
 
     tmi.say(
       config.channel,
-      `${config.BOT_PREFIX}🍳 ${getCookedMessage(username, uniqueName, finalRarity, unmatchedSecondaryIngredients)}`,
+      `${config.BOT_PREFIX}🍳 ${getCookedMessage(
+        username,
+        uniqueName,
+        finalRarity,
+        unmatchedSecondaryIngredients,
+      )}`,
     );
 
     await sendPantherworldFeedEvent(

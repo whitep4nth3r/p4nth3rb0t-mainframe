@@ -1,7 +1,6 @@
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
-import PantherworldItemModel, {
-  PantherworldItemDoc,
-} from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import WebsocketServer from "../../../classes/WebSocketServer";
@@ -17,23 +16,24 @@ export async function throwItem(
   userId: string,
   displayName: string,
 ): Promise<void> {
-  const zoneQuery = await PantherworldPlayerModel.findOne({
-    userId: userId,
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
+  const zoneQuery = await playerRepository.findOne({
+    where: { userId: userId },
   });
 
   if (zoneQuery !== null) {
-    // any because whatever
-    const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
-      { userId: userId, name: item },
-      {
-        userId: null,
-        zone: zoneQuery.zone,
-        dropped: true,
-      },
-      { returnDocument: "after" },
-    )) as PantherworldItemDoc | null;
+    const itemUpdate = await itemRepository.findOne({
+      where: { userId: userId, name: item },
+    });
 
     if (itemUpdate !== null) {
+      itemUpdate.userId = null;
+      itemUpdate.zone = zoneQuery.zone;
+      itemUpdate.dropped = true;
+      await itemRepository.save(itemUpdate);
+
       const message = `@${displayName} dropped ${item} in the ${zoneQuery.zone} zone! (rarity: ${itemUpdate.rarity})`;
 
       tmi.say(config.channel, `${config.BOT_PREFIX}🫳 ${message}`);

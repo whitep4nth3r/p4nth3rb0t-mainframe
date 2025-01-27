@@ -1,9 +1,13 @@
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
 
 export async function getLocation(userId: string): Promise<string> {
-  const entry = await PantherworldPlayerModel.findOne({
-    userId: userId,
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
+  const entry = await playerRepository.findOne({
+    where: { userId: userId },
   });
+
   if (entry) {
     return entry.zone;
   } else {

@@ -1,34 +1,35 @@
 import { config } from "../../../config";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
 import { tmi } from "../../../tmi";
 
 export async function freeForAll() {
-  const itemsGroupedByZone = await PantherworldItemModel.aggregate([
-    {
-      $match: {
-        userId: { $eq: null },
-        used: { $ne: true },
-        spoiled: { $ne: true },
-        zone: { $ne: null },
-      },
-    },
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
 
-    // Group documents by zone and push all items into an array
-    { $group: { _id: "$zone", items: { $push: "$$ROOT" } } },
-  ]);
+  const itemsGroupedByZone = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NULL")
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .andWhere("item.zone IS NOT NULL")
+    .groupBy("item.zone")
+    .select("item.zone", "zone")
+    .addSelect("array_agg(item)", "items")
+    .getRawMany();
 
-  const playersGroupedByZone = await PantherworldPlayerModel.aggregate([
-    {
-      $match: {}, //TODO choose "active players"
-    },
-    { $group: { _id: "$zone", players: { $push: "$$ROOT" } } },
-  ]);
+  const playersGroupedByZone = await playerRepository
+    .createQueryBuilder("player")
+    .groupBy("player.zone")
+    .select("player.zone", "zone")
+    .addSelect("array_agg(player)", "players")
+    .getRawMany();
 
   const writeQuery = [];
 
   itemsGroupedByZone.forEach((zone) => {
-    const currentZone = zone._id;
+    const currentZone = zone.zone;
 
     if (zone.items.length > 0) {
       tmi.say(
@@ -36,11 +37,10 @@ export async function freeForAll() {
         `${config.BOT_PREFIX}📡 Searching ${currentZone}...`,
       );
       const playersInZone = playersGroupedByZone.find(
-        (group) => group._id === currentZone,
+        (group) => group.zone === currentZone,
       );
 
       if (playersInZone.players.length > 0) {
-        // work out how many items per player (roughly, there may be some left over, I don't care right now)
         const itemsPerPlayer = Math.floor(
           zone.items.length / playersInZone.players.length,
         );
@@ -57,18 +57,13 @@ export async function freeForAll() {
           );
 
           playersInZone.players.forEach((player) => {
-            // build up the bulkWrite query in an array
             for (let i = 1; i <= itemsPerPlayer; i++) {
               if (zone.items.length > 0) {
-                // remove last item from zone.items using pop()
-                // use this one to update
                 const itemToDistribute = zone.items.pop();
 
                 writeQuery.push({
-                  updateOne: {
-                    filter: { _id: itemToDistribute._id },
-                    update: { $set: { userId: player.userId } },
-                  },
+                  id: itemToDistribute.id,
+                  userId: player.id,
                 });
               }
             }
@@ -83,9 +78,11 @@ export async function freeForAll() {
     }
   });
 
-  const bulkWrite = await PantherworldItemModel.bulkWrite(writeQuery);
+  for (const query of writeQuery) {
+    await itemRepository.update(query.id, { userId: query.userId });
+  }
 
-  if (bulkWrite.modifiedCount > 0) {
+  if (writeQuery.length > 0) {
     tmi.say(
       config.channel,
       `${config.BOT_PREFIX}📣 FREE-FOR-ALL DELIVERED! CHECK YOUR ITEMS TO SEE WHAT YOU'VE WON!`,

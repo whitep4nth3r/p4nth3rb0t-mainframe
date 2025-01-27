@@ -1,4 +1,5 @@
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 
@@ -6,16 +7,18 @@ export async function getInventory(
   userId: string,
   username: string,
 ): Promise<void> {
-  const items = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId, not used, not spoiled
-    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
+  const itemRepository = database.getRepository(PantherworldItem);
 
-    // Group documents by name, count the number of items in each group
-    { $group: { _id: "$name", count: { $sum: 1 } } },
-
-    // Sort the groups by count in descending order
-    { $sort: { count: -1 } },
-  ]);
+  const items = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId = :userId", { userId })
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .groupBy("item.name")
+    .select("item.name", "_id")
+    .addSelect("COUNT(item.id)", "count")
+    .orderBy("count", "DESC")
+    .getRawMany();
 
   let total = 0;
 

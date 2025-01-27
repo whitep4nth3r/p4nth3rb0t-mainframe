@@ -1,10 +1,7 @@
-import PantherworldPlayerModel, {
-  PantherworldPlayerDoc,
-} from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import UserManager from "../../../users/UserManager";
-import PantherworldItemModel, {
-  PantherworldItemDoc,
-} from "../../../data/models/PantherworldItem";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import WebsocketServer from "../../../classes/WebSocketServer";
@@ -30,7 +27,7 @@ function isUserIdInCurrentChatters(
 export function getRandPlayerInSameZoneFromCurrentChatters(
   currentChatters: any[],
   players: any[],
-): PantherworldPlayerDoc | null {
+): PantherworldPlayer | null {
   if (currentChatters.length === 0) {
     return null;
   }
@@ -66,7 +63,9 @@ export async function giftItem(
   giverId: string,
   giverName: string,
 ): Promise<void> {
-  // !gift receiver item
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
   const nonEligibleMessage = `${config.BOT_PREFIX}❌ @${giverName}: there is no one eligible to receive your gift`;
 
   const currentChatters = await getCurrentChatters();
@@ -79,8 +78,8 @@ export async function giftItem(
   let receiverAsUser;
 
   if (receiver === "random") {
-    const allPlayersInGiverZone = await PantherworldPlayerModel.find({
-      zone: giverZone,
+    const allPlayersInGiverZone = await playerRepository.find({
+      where: { zone: giverZone },
     });
 
     const allPlayersInGiverZoneMinusReceiver = allPlayersInGiverZone.filter(
@@ -112,8 +111,6 @@ export async function giftItem(
   }
 
   if (receiverAsUser.id === giverId) {
-    // we shouldn't get here now because we remove the giver from the players array
-    // but we'll leave it anyway
     return;
   }
 
@@ -126,16 +123,15 @@ export async function giftItem(
     return;
   }
 
-  const itemUpdate: any = (await PantherworldItemModel.findOneAndUpdate(
-    { userId: giverId, name: item },
-    {
-      userId: receiverAsUser.id,
-      zone: giverZone,
-    },
-    { returnDocument: "after" },
-  )) as PantherworldItemDoc | null;
+  const itemUpdate = await itemRepository.findOne({
+    where: { userId: giverId, name: item },
+  });
 
-  if (itemUpdate !== null) {
+  if (itemUpdate) {
+    itemUpdate.userId = receiverAsUser.id;
+    itemUpdate.zone = giverZone as keyof typeof PantherworldZoneNames;
+    await itemRepository.save(itemUpdate);
+
     const message = `@${giverName} gifted ${item} to @${receiverAsUser.display_name} in the ${giverZone} zone! (rarity: ${itemUpdate.rarity})`;
 
     tmi.say(config.channel, `${config.BOT_PREFIX}🎁 ${message}`);
@@ -161,10 +157,6 @@ export async function giftItem(
 
     WebsocketServer.sendData(playerGiftEvent);
 
-    // attempt wealth distribution on recipient
-    await wealthDistribution(
-      receiverAsUser.display_name,
-      receiverAsUser.user_id,
-    );
+    await wealthDistribution(receiverAsUser.display_name, receiverAsUser.id);
   }
 }

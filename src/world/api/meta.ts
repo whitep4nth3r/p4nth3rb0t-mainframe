@@ -1,36 +1,23 @@
-import PantherworldItemModel, {
-  PantherworldItemData,
-} from "./../../data/models/PantherworldItem";
+import { database } from "../../data/database";
+import { PantherworldItem } from "../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../data/entities/PantherworldPlayerEntity";
 import { FullTwitchUser } from "./../../data/types";
-import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
 import UserManager from "../../users/UserManager";
 import { MetaResponse, Population } from "./types";
 
 export async function getMeta(): Promise<MetaResponse> {
-  const mostRecentUpdatedItem = (
-    await PantherworldItemModel.aggregate([
-      {
-        $match: {
-          userId: { $ne: null },
-          used: { $ne: true },
-          spoiled: { $ne: true },
-          cooked: { $ne: true },
-        },
-      },
-      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
-      { $limit: 1 }, // Limit the result to 1 document
-      {
-        $project: {
-          // Specify the fields to include
-          _id: 0, // Exclude the _id field
-          rarity: 1,
-          name: 1,
-          zone: 1,
-          userId: 1,
-        },
-      },
-    ])
-  ).pop() as PantherworldItemData;
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
+
+  const mostRecentUpdatedItem = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NOT NULL")
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .andWhere("item.cooked = false")
+    .orderBy("item.updatedAt", "DESC")
+    .select(["item.rarity", "item.name", "item.zone", "item.userId"])
+    .getOne();
 
   const latestClaimAsTwitchUser: FullTwitchUser = await UserManager.getUserById(
     mostRecentUpdatedItem.userId,
@@ -48,24 +35,13 @@ export async function getMeta(): Promise<MetaResponse> {
     },
   };
 
-  // most recent cook
-  const mostRecentCook = (
-    await PantherworldItemModel.aggregate([
-      { $match: { userId: { $ne: null }, cooked: true } }, // Filter documents where userId is not null and item cooked
-      { $sort: { updatedAt: -1 } }, // Sort documents by updatedAt in descending order
-      { $limit: 1 }, // Limit the result to 1 document
-      {
-        $project: {
-          // Specify the fields to include
-          _id: 0, // Exclude the _id field
-          rarity: 1,
-          name: 1,
-          zone: 1,
-          userId: 1,
-        },
-      },
-    ])
-  ).pop() as PantherworldItemData;
+  const mostRecentCook = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NOT NULL")
+    .andWhere("item.cooked = true")
+    .orderBy("item.updatedAt", "DESC")
+    .select(["item.rarity", "item.name", "item.zone", "item.userId"])
+    .getOne();
 
   const mostRecentCookAsTwitchUser: FullTwitchUser =
     await UserManager.getUserById(mostRecentCook.userId);
@@ -82,10 +58,12 @@ export async function getMeta(): Promise<MetaResponse> {
     },
   };
 
-  //population
-  const zoneCounts = await PantherworldPlayerModel.aggregate([
-    { $group: { _id: "$zone", count: { $sum: 1 } } },
-  ]);
+  const zoneCounts = await playerRepository
+    .createQueryBuilder("player")
+    .groupBy("player.zone")
+    .select("player.zone", "_id")
+    .addSelect("COUNT(player.id)", "count")
+    .getRawMany();
 
   const population: Population = {};
 
@@ -93,39 +71,28 @@ export async function getMeta(): Promise<MetaResponse> {
     population[zone._id] = zone.count;
   });
 
-  // latest spawned
-  const recentItem = await PantherworldItemModel.aggregate([
-    { $sort: { createdAt: -1 } },
-    { $limit: 1 },
-  ]);
+  const recentItem = await itemRepository
+    .createQueryBuilder("item")
+    .orderBy("item.createdAt", "DESC")
+    .getOne();
 
-  // most and least spawned
-  const spawnedItems = await PantherworldItemModel.aggregate([
-    {
-      $match: {
-        cooked: null,
-      },
-    },
-    // Group documents by name, count the number of items in each group
-    {
-      $group: {
-        _id: "$name",
-        count: { $sum: 1 },
-        rarity: { $first: "$rarity" },
-      },
-    },
-
-    // Sort the groups by count in descending order
-    { $sort: { count: -1 } },
-  ]);
+  const spawnedItems = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.cooked IS NULL")
+    .groupBy("item.name")
+    .select("item.name", "_id")
+    .addSelect("COUNT(item.id)", "count")
+    .addSelect("item.rarity", "rarity")
+    .orderBy("count", "DESC")
+    .getRawMany();
 
   return {
     latestCook: latestCook,
     latestSpawned: {
-      name: recentItem[0].name,
-      zone: recentItem[0].zone,
-      createdAt: recentItem[0].createdAt,
-      rarity: recentItem[0].rarity,
+      name: recentItem.name,
+      zone: recentItem.zone,
+      createdAt: recentItem.createdAt,
+      rarity: recentItem.rarity,
     },
     mostSpawned: {
       name: spawnedItems[0]._id,

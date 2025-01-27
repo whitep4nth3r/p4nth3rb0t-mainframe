@@ -1,6 +1,7 @@
 import { FullLeaderboardResponse, Player, ItemForWealthIndex } from "./types";
-import PantherworldItemModel from "../../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../../data/models/PantherworldPlayer";
+import { database } from "../../data/database";
+import { PantherworldItem } from "../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../data/entities/PantherworldPlayerEntity";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
 
 export function constructItemsForWealthIndexCalculation(
@@ -40,24 +41,24 @@ function sortByWealthIndexDesc(a: Player, b: Player) {
 }
 
 export async function getFullLeaderboard(): Promise<FullLeaderboardResponse> {
-  const itemsGroupedByPlayer = await PantherworldItemModel.aggregate([
-    {
-      $match: {
-        userId: { $ne: null },
-        used: { $ne: true },
-        spoiled: { $ne: true },
-      },
-    },
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
 
-    // Group documents by userId and push all items into an array
-    { $group: { _id: "$userId", items: { $push: "$$ROOT" } } },
-  ]);
+  const itemsGroupedByPlayer = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NOT NULL")
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .groupBy("item.userId")
+    .select("item.userId", "_id")
+    .addSelect("array_agg(item)", "items")
+    .getRawMany();
 
   const leaderboardPlayers: Player[] = [];
 
-  const allPlayerRecords = await PantherworldPlayerModel.find({
-    userId: { $in: itemsGroupedByPlayer.map((player) => player._id) },
-  });
+  const allPlayerRecords = await playerRepository.findByIds(
+    itemsGroupedByPlayer.map((player) => player._id),
+  );
 
   for (const player of itemsGroupedByPlayer) {
     const itemsForWealthIndex = constructItemsForWealthIndexCalculation(

@@ -1,41 +1,27 @@
 import { InventoryResponse } from "./types";
-import PantherworldItemModel from "../../data/models/PantherworldItem";
-import PantherworldPlayerModel, {
-  PantherworldPlayerData,
-} from "../../data/models/PantherworldPlayer";
+import { database } from "../../data/database";
+import { PantherworldItem } from "../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../data/entities/PantherworldPlayerEntity";
 import { getWealthIndex } from "../actions/wealth/wealthDistribution";
 
 export async function getFullInventory(
   userId: string,
 ): Promise<InventoryResponse> {
-  const items = await PantherworldItemModel.aggregate([
-    // Match documents with a specific userId, not spoiled, not used
-    { $match: { userId: userId, used: { $ne: true }, spoiled: { $ne: true } } },
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
 
-    // Group documents by name, count the number of items in each group
-    {
-      $group: {
-        _id: "$name",
-        rarity: { $first: "$rarity" },
-        cooked: { $first: "$cooked" },
-        count: { $sum: 1 },
-      },
-    },
-
-    // Project to rename _id to name
-    {
-      $project: {
-        _id: 0,
-        name: "$_id",
-        count: 1,
-        rarity: 1,
-        cooked: 1,
-      },
-    },
-
-    // Sort the groups by rarity in descending order
-    { $sort: { rarity: -1 } },
-  ]);
+  const items = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId = :userId", { userId })
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .groupBy("item.name")
+    .select("item.name", "name")
+    .addSelect("COUNT(item.id)", "count")
+    .addSelect("item.rarity", "rarity")
+    .addSelect("item.cooked", "cooked")
+    .orderBy("rarity", "DESC")
+    .getRawMany();
 
   let total = 0;
 
@@ -47,16 +33,16 @@ export async function getFullInventory(
   let spawnDateString = null;
   let playersInZone = 0;
 
-  const player = (await PantherworldPlayerModel.findOne({
-    userId: userId,
-  })) as PantherworldPlayerData;
+  const player = await playerRepository.findOne({
+    where: { id: userId },
+  });
 
   if (player) {
     locationString = player.zone;
     spawnDateString = player.createdAt;
 
-    const otherPlayers = await PantherworldPlayerModel.find({
-      zone: player.zone,
+    const otherPlayers = await playerRepository.find({
+      where: { zone: player.zone },
     });
 
     playersInZone = otherPlayers.length;

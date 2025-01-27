@@ -1,4 +1,5 @@
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { sendPantherworldFeedEvent } from "../../../discord";
@@ -13,28 +14,30 @@ import {
 import { PantherworldEvent } from "../../api/types";
 
 export async function releaseUnclaimed(zoneName?: string): Promise<void> {
+  const itemRepository = database.getRepository(PantherworldItem);
+
   const randomZone =
     zoneName !== undefined
       ? PantherworldZones.find((fullZone) => fullZone.name === zoneName)
       : getRandomEntry(PantherworldZones);
 
-  const unclaimed = await PantherworldItemModel.aggregate([
-    // Match documents with a null userId and random zone name
-    { $match: { userId: null, zone: randomZone.name } },
-
-    // Group documents by name, count the number of items in each group
-    { $group: { _id: "$name", count: { $sum: 1 } } },
-
-    // Sort the groups by count in descending order
-    { $sort: { count: -1 } },
-  ]);
+  const unclaimed = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NULL")
+    .andWhere("item.zone = :zone", { zone: randomZone.name })
+    .groupBy("item.name")
+    .select("item.name", "_id")
+    .addSelect("COUNT(item.id)", "count")
+    .orderBy("count", "DESC")
+    .getRawMany();
 
   if (unclaimed.length === 0) {
     const message = `${config.BOT_PREFIX}🪹 There are no unclaimed items in the ${randomZone.name} zone!`;
 
     tmi.say(config.channel, message);
   } else if (!zoneContainsActiveRelease(randomZone)) {
-    WorldState.RELEASE_ZONES.push(randomZone)
+    WorldState.RELEASE_ZONES.push(randomZone);
+
     const itemList = unclaimed
       .map((item) => `${item.count} ${item._id}`)
       .join(", ");
@@ -76,6 +79,5 @@ export async function releaseUnclaimed(zoneName?: string): Promise<void> {
 }
 
 export function zoneContainsActiveRelease(randomZone: Zone): boolean {
-  return WorldState.RELEASE_ZONES.find((z) => z === randomZone) !== undefined
+  return WorldState.RELEASE_ZONES.find((z) => z === randomZone) !== undefined;
 }
-

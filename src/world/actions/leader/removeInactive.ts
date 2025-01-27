@@ -1,73 +1,60 @@
 import { config } from "../../../config";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
-import PantherworldPlayerModel from "../../../data/models/PantherworldPlayer";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
+import { PantherworldPlayer } from "../../../data/entities/PantherworldPlayerEntity";
 import { tmi } from "../../../tmi";
 
 export async function removeInactive() {
-  const itemsGroupedByPlayer = await PantherworldItemModel.aggregate([
-    {
-      $match: {
-        userId: { $ne: null },
-        used: { $ne: true },
-        spoiled: { $ne: true },
-      },
-    },
+  const itemRepository = database.getRepository(PantherworldItem);
+  const playerRepository = database.getRepository(PantherworldPlayer);
 
-    // Group documents by userId and push all items into an array
-    { $group: { _id: "$userId", items: { $push: "$$ROOT" } } },
-  ]);
+  const itemsGroupedByPlayer = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NOT NULL")
+    .andWhere("item.used = false")
+    .andWhere("item.spoiled = false")
+    .groupBy("item.userId")
+    .select("item.userId", "_id")
+    .addSelect("array_agg(item)", "items")
+    .getRawMany();
 
-  // inactive players are those with 2 items or fewer
   const playersWith2ItemsOrFewer = itemsGroupedByPlayer.filter(
     (player) => player.items.length <= 2,
   );
 
-  // collect item IDs for items belonging to inactive players
   const itemIdsToRemoveFromUsers = playersWith2ItemsOrFewer
-    .map((player) => player.items.map((item) => item._id))
+    .map((player) => player.items.map((item) => item.id))
     .flat();
 
-  const itemWriteQuery = itemIdsToRemoveFromUsers.map((item) => {
-    return {
-      updateOne: {
-        filter: {
-          _id: item,
-        },
-        update: { $set: { userId: null } },
-      },
-    };
-  });
+  const updateItems = await itemRepository
+    .createQueryBuilder()
+    .update(PantherworldItem)
+    .set({ userId: null })
+    .whereInIds(itemIdsToRemoveFromUsers)
+    .execute();
 
-  const updateItems = await PantherworldItemModel.bulkWrite(itemWriteQuery);
-
-  if (updateItems.modifiedCount > 0) {
+  if (updateItems.affected > 0) {
     tmi.say(
       config.channel,
-      `${config.BOT_PREFIX}♻️ ${updateItems.modifiedCount} items reclaimed from inactive users`,
+      `${config.BOT_PREFIX}♻️ ${updateItems.affected} items reclaimed from inactive users`,
     );
   }
 
-  //twitch user IDs
   const inactivePlayerIds = playersWith2ItemsOrFewer.map(
     (player) => player._id,
   );
 
-  const playerWriteQuery = inactivePlayerIds.map((player) => {
-    return {
-      deleteOne: {
-        filter: {
-          userId: player,
-        },
-      },
-    };
-  });
+  const deleteUsers = await playerRepository
+    .createQueryBuilder()
+    .delete()
+    .from(PantherworldPlayer)
+    .whereInIds(inactivePlayerIds)
+    .execute();
 
-  const deleteUsers = await PantherworldPlayerModel.bulkWrite(playerWriteQuery);
-
-  if (deleteUsers.deletedCount > 0) {
+  if (deleteUsers.affected > 0) {
     tmi.say(
       config.channel,
-      `${config.BOT_PREFIX}💀 ${deleteUsers.deletedCount} inactive players removed from p4nth3rworld`,
+      `${config.BOT_PREFIX}💀 ${deleteUsers.affected} inactive players removed from p4nth3rworld`,
     );
   } else {
     tmi.say(config.channel, `${config.BOT_PREFIX}🚨 No inactive players`);

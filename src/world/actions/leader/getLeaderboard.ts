@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
-import PantherworldItemModel from "../../../data/models/PantherworldItem";
+import { database } from "../../../data/database";
+import { PantherworldItem } from "../../../data/entities/PantherworldItemEntity";
 import { tmi } from "../../../tmi";
 import { config } from "../../../config";
 import { sendPantherworldFeedEvent } from "../../../discord";
@@ -7,17 +8,17 @@ import UserManager from "../../../users/UserManager";
 import { PantherworldEvent } from "../../api/types";
 
 export async function getLeaderboard(): Promise<void> {
-  const query = await PantherworldItemModel.aggregate([
-    { $match: { userId: { $ne: null } } },
+  const itemRepository = database.getRepository(PantherworldItem);
 
-    // Group documents by userId, count the number of items in each group
-    { $group: { _id: "$userId", itemCount: { $sum: 1 } } },
-
-    // Sort the groups by itemCount in descending order
-    { $sort: { itemCount: -1 } },
-
-    { $limit: 3 },
-  ]);
+  const query = await itemRepository
+    .createQueryBuilder("item")
+    .where("item.userId IS NOT NULL")
+    .groupBy("item.userId")
+    .select("item.userId", "_id")
+    .addSelect("COUNT(item.id)", "itemCount")
+    .orderBy("itemCount", "DESC")
+    .limit(3)
+    .getRawMany();
 
   const leaderboardInfo = [];
 
@@ -27,8 +28,9 @@ export async function getLeaderboard(): Promise<void> {
     const user = await UserManager.getUserById(item._id);
 
     if (user) {
-      leaderboardInfo[index] =
-        `${emojis[index]} @${user.display_name} ${item.itemCount}`;
+      leaderboardInfo[
+        index
+      ] = `${emojis[index]} @${user.display_name} ${item.itemCount}`;
     } else {
       return null;
     }
@@ -39,7 +41,7 @@ export async function getLeaderboard(): Promise<void> {
       const message = `${leaderboardInfo.join(", ")}`;
 
       tmi.say(config.channel, `${config.BOT_PREFIX}${message}`);
-      
+
       await sendPantherworldFeedEvent(
         message,
         PantherworldEvent.LEADERBOARD,
