@@ -1,5 +1,4 @@
-import { config } from "dotenv";
-config();
+import "dotenv/config";
 
 import * as Sentry from "@sentry/node";
 
@@ -13,8 +12,6 @@ import { testConfig } from "../testConfig";
 import { announce } from "./utils/twitchUtils";
 import { TwitchAnnouncementColor } from "./data/types";
 
-import "./webhooks";
-
 import "./events/twitch/messages";
 import "./events/twitch/follows";
 import "./events/twitch/subscriptions";
@@ -25,11 +22,23 @@ import "./events/twitch/moods";
 
 (async () => {
   try {
-    await database.initialize().then(() => {
-      console.log("📒 Database connection has been established successfully")
-    }).catch((error) => {
-      console.error("Unable to connect to the database:", error)
+    webServer.listen(8999, () => {
+      console.log(
+        `Webserver started at ${(webServer.address() as any).address}:${
+          (webServer.address() as any).port
+        }`,
+      );
     });
+
+    WebSocketServer.create();
+
+    await database
+      .initialize()
+      .then(() => {
+        console.log("📒 Database connection has been established successfully");
+      }).catch((error) => {
+        console.error("Unable to connect to the database:", error);
+      });
 
     webServer.listen(process.env.PORT || 8999, () => {
       console.log(
@@ -39,10 +48,10 @@ import "./events/twitch/moods";
       );
     });
 
+    await import("./webhooks");
+
     await tmi.connect();
     await discord.login(process.env.DISCORD_TOKEN);
-
-    WebSocketServer.create();
 
     if (testConfig.connectToFdgt) {
       setTimeout(() => {
