@@ -258,7 +258,7 @@ const callWithUserAccessToken = async (
 ): Promise<Response | undefined> => {
   const accessTokenUtil = new AccessToken();
 
-  let accessTokenData = await userAccessTokenRepository.findOneBy({});
+  let accessTokenData = await accessTokenUtil.getUserAccessToken();
 
   if (!accessTokenData) {
     Sentry.captureMessage("Failed to acquire User Access Token");
