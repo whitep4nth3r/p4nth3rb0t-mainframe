@@ -2,7 +2,7 @@
 
 System requirements:
 
-```
+```text
 NodeJs
 Docker
 ```
@@ -17,7 +17,7 @@ The p4nth3rbot-mainframe uses a MongoDB to store non-relational documents.
 
 To spin up the docker container and database instance, open terminal and run:
 
-```
+```text
 cd path/to/repo
 docker-compose up
 ```
@@ -28,7 +28,7 @@ Access the database UI at: `http://localhost:8081/db/p4nth3rb0t/`
 
 In a separate terminal tab, run:
 
-```
+```text
 cd path/to/repo
 npm run dev
 ```

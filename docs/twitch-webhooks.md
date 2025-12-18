@@ -18,8 +18,8 @@ When a member of the stream team goes live or offline, a POST request is sent to
 2. Configure the webhook you want to subscribe to in `webhooks.ts`. You'll need the `topicUrl` and you may need to configure a new `WebhookType`.
 3. Add a `GET` request to `webserver.ts` to handle the initial webhook subscription. It's important that you send the following as the response to the `GET` request in order for the subscription to be successful.
 
-```
+```javascript
 res.status(200).send(req.query["hub.challenge"]);
 ```
 
-3. Add a `POST` request to `webserver.ts` to handle the webhook changes (on the same path as the `GET` request you configured above).
+4. Add a `POST` request to `webserver.ts` to handle the webhook changes (on the same path as the `GET` request you configured above).

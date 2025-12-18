@@ -16,7 +16,7 @@ If `testConfig.connectToFdgt === true`, the following things will happen:
 
 3. Userstate and other values that are sent from the Twitch API are not provided in full by fdgt. You will need to mock these. Use `testConfig` values to send test events accordingly, for example, sending user ids to subscription events, like so:
 
-```
+```javascript
   testConfig.connectToFdgt
       ? sendSubEvent(testConfig.userId, testConfig.userId)
       : sendSubEvent(userstate["user-id"] as string, userstate["id"] as string);
